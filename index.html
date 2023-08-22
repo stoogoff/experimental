@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Reactive UI Experiments</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+<div class="grid">
+
+<aside>
+	<ul>
+		<li><a href="index.html">Index</a></li>
+		<li><a href="input.html">Form Input</a></li>
+		<li><a href="counter.html">Counter</a></li>
+		<li><a href="directive.html">Creating New Directives</a></li>
+		<li><a href="hideshow.html">Hide / Show Directives</a></li>
+		<li><a href="todo.html">Simple TODOs</a></li>
+	</ul>
+</aside>
+
+<main>
+
+<h1>Reactive UI Experiments</h1>
+
+<p>This is born out of a general dissatisfaction with the way I currently build website frontends. I like Vue and Nuxt, they're perfect for complex web applications, but they're overkill for smaller scale websites that don't require heavy Javascript usage.</p>
+
+<p>Plus I miss the days of being able to look at the source code and see <em>exactly</em> what is going on. And keeping the entire library in the 5KB range <em>before</em> minifying or compressing is pretty sweet.</p>
+
+<h2>Emitter</h2>
+
+<p>The experiment begins with the <code>Emitter</code> class which has methods for subscribing and unsubscribing from events as well as broadcasting. Events are any string and the emitter handles multiple subscriptions.</p>
+
+<p>The following methods are available:</p>
+
+<dl>
+	<dt><code>on(string eventName, function callback)</code></dt>
+	<dd>Subscribe to any events with the given name. Returns a reference which can be used to unsubscribe from the event.</dd>
+
+	<dt><code>off(string eventName, number reference)</code></dt>
+	<dd>Unsubscribe from the event.</dd>
+
+	<dt><code>emit(string eventName, ...args)</code></dt>
+	<dd>Emit an event with the given name. Any additional arguments are passed to subscriber callback functions.</dd>
+</dd>
+
+<p>Example code:</p>
+
+<pre>
+const emitter = new Emitter()
+
+emitter.on('hello', world => alert(`Hello ${world}`))
+emitter.on('hello', world => document.getElementById('output1').innerText = `Hello ${world}`)
+
+document.getElementById('clicker1').onclick = () => {
+	const value = document.getElementById('input1').value
+
+	emitter.emit('hello', value)
+}
+</pre>
+
+<div class="example">
+	<p>Setting the text will emit 'hello' which will be picked up by the <code>on</code> functions.</p>
+	<p>Hello <input type="text" id="input1" /></p>
+	<button id="clicker1">Emit</button>
+	<p id="output1"></p>
+</div>
+
+<p>This is the first step in removing the dependency between the code which is updating the UI and the business logic.</p>
+
+<h2>Observable</h2>
+
+<p>The next step is the <code>Observable</code> class. This extends <code>Emitter</code> and takes a plain Javascript object. It reads the properties of the supplied object and adds them to itself with <code>get</code> and <code>set</code> functions. The getter just returns the value while the setter emits two events with the old and new value. This is how you would subscribe to the events:</p>
+
+<dl>
+	<dt><code>on(`change`, propertyName, newValue, oldValue)</code></dt>
+	<dd>The propertyName is the name of the property which has changed. newValue is the updated value. oldValue is the previous value.</dd>
+
+	<dt><code>on(`change:${propertyName}`, propertyName, newValue, oldValue)</code></dt>
+	<dd>This passes the same arguments as the previous version but a subscriber can just listen for events for a single property rather than all property changes.</dd>
+</dl>
+
+<p>Example code:</p>
+
+<pre>
+const observable = new Observable({
+	greeting: 'Hello',
+	world: 'Earth',
+})
+
+observable.on('change:world', (key, value, old) => alert(`Hello ${value}`))
+observable.on('change', (key, value, old) => document.getElementById('output2').innerText =
+	`Property: ${key}. New value: ${value}. Old value: ${old}`)
+
+document.getElementById('clicker2').onclick = () => {
+	const greeting = document.getElementById('greeting').value
+	const world = document.getElementById('world').value
+
+	observable.greeting = greeting
+	observable.world = world
+}
+</pre>
+
+<div class="example">
+	<p>This will alert if the value of <code>world</code> changes and will update the text beneath the button if either <code>greeting</code> or <code>world</code> changes.
+	<p>
+		<input type="text" id="greeting" placeholder="Greeting" />
+		<input type="text" id="world" placeholder="World" />
+	</p>
+	<p><button id="clicker2">Emit</button> (this will only alert if you change the text to something new)</p>
+	<p id="output2"></p>
+</div>
+
+<p>This is better as the button click handler just sets properties on an object. It no longer needs to know what happens when it sets that property. But it's still more directly involved in the process than I'd like. So the next step is to break that connection with...</p>
+
+<h2>Directives</h2>
+
+<p>Rather than have to manage DOM nodes directly I want to be able to apply some attributes to the HTML and have that watch for events on the <code>Observable</code> and update the DOM accordingly. Examples of this would be the <code>data-value</code> directive which automatically displays a property and is aware of its changes.</p>
+
+<div class="example">
+	<p>Counter: <span data-value="count"></span></p>
+	<div>
+		<button onclick="increment()">+</button>
+		<button onclick="decrement()">-</button>
+	</div>
+	<p>Other DOM nodes which are watching the count...</p>
+	<p>
+		<strong data-value="count"></strong>
+		<em data-value="count"></em>
+		<u data-value="count"></u>
+	</p>
+	<h5 data-value="count"></h5>
+	<h6 data-value="count"></h6>
+</div>
+
+<p>Example code:</p>
+
+<pre>
+const counter = new Observable({
+	count: 0,
+})
+
+function increment() {
+	counter.count++
+}
+
+function decrement() {
+	counter.count--
+}
+
+function valueDirective(scope) {
+	const nodes = Array.from(document.querySelectorAll('[data-value]'))
+
+	nodes.forEach(node => {
+		const property = node.dataset.value
+
+		node.innerText = scope[property]
+
+		scope.on(`change:${property}`, (key, value, old) => {
+			node.innerText = value
+		})
+	})
+}
+
+valueDirective(counter)
+</pre>
+
+<p>There's now more code involved but the code which is updating the counter knows nothing about how to update the presentation — in fact there are multiple DOM nodes which display the counter all independently.</p>
+
+<p>I'm happy with that as an approach. There's no need for ShadowDOM shenanigens or diffing the current state with the new state or anything like that. The Directive concept is straightforward and makes for lots of small functions with single areas of responsibility which are (for the most part) independent of each and it's easy to add new ones. I've added a <code>directives</code> singleton which handles a lot of the boilerplate involved. The value directive now looks like this:</p>
+
+<pre>
+directives.register('value', (node, property, scope) => {
+	node.innerText = scope.data[property]
+
+	scope.data.on(`change:${property}`, (key, value, old) => {
+		node.innerText = value
+	})
+})
+</pre>
+
+<p>The <code>directives</code> singleton only has two methods:</p>
+
+<dl>
+	<dt><code>register(string attribute, function callback)</code></dt>
+	<dd>Register a directive with the system. This takes an attribute name which needs to be prefixed with <code>data-</code> in the HTML. The callback function takes three arguments: the node which has the attribute, the attribute value and the current scope which contains any data.</dd>
+
+	<dt><code>load(domNodeOrId, scope)</code></dt>
+	<dd>This loads the directive functionality using the supplied DOM Node (or a string ID) as the root node. The supplied scope could in theory be an Observable, but there's some extra functionality which you might need (e.g. methods for handling clicks) so is an instance of the Component class, which I'll get to in a sec.</dd>
+</dl>
+
+<p>There are several pre-written directives which cover a bunch of use cases, plus it's super-simple to add more.</p>
+
+<dl>
+	<dt>value</dt>
+	<dd>Displays a property by setting the <code>innerText</code> property of the node.</dd>
+
+	<dt>input</dt>
+	<dd>Updates a property using the <code>onchange</code> event of an input element.</dd>
+
+	<dt>click</dt>
+	<dd>When click event fires it calls the supplied method on the scope object.</dd>
+
+	<dt>disabled</dt>
+	<dd>Disables an element if the property is true by adding the <code>disabled</code> attribute. Otherwise it removes it.</dd>
+
+	<dt>enabled</dt>
+	<dd>Removes the <code>disabled</code> attribute from an element if the property is true. Otherwise it adds the <code>disabled</code> attribute.</dd>
+
+	<dt>each</dt>
+	<dd>Expects the property to be an array which it iterates over, copying the node each time. If the array contains non-object values it sets the <code>innerText</code> of the new node to the current array value. If the array contains objects it recursively applies all directives using each object as the current scope. <em>(this works but isn't as smooth as I'd like and needs improvement)</em></dd>
+</dl>
+
+<h2>Components</h2>
+
+<p>The <code>Component</code> class is weirdly not very interesting but also where most implement code will interact. It is mainly a wrapper around <code>Observable</code> and does a couple of useful boilerplate things. It has the following constructor signature:</p>
+
+<dl>
+	<dt><code>constructor(domNodeOrId, component = {})</code></dt>
+	<dd>domNodeOrId is passed directly to <code>directives.load</code> and is the root node for the component. The component object has the following properties:</dd>
+
+	<dt>data (object)</dt>
+	<dd>The data object is converted to an observable and all properties which might change or need to be displayed in the HTML should be here.</dd>
+
+	<dt>watch (object, optional)</dt>
+	<dd>The properties of the watch object are created as watchers for properties of the data object and can be used to update a property based on a change in another property.</dd>
+
+	<dt>onload (function, optional)</dt>
+	<dd>An optional onload function which is called once the Component is ready but before the directives are loaded.</dd>
+
+	<dt><em>other</em> (any, optional)</dt>
+	<dd>Any other properties of the component are added to the Component but nothing special happens to them. Some directives (e.g. click) call a method on the component which would be defined here.</dd>
+</dl>
+
+<p>Let's redo the counter from earlier using a component and the available directives.</p>
+
+<div class="example" id="counterExample">
+	<p>Counter: <span data-value="count"></span></p>
+	<div>
+		<button data-click="increment">+</button>
+		<button data-click="decrement">-</button>
+	</div>
+	<p>Other DOM nodes which are watching the count...</p>
+	<p>
+		<strong data-value="count"></strong>
+		<em data-value="count"></em>
+		<u data-value="count"></u>
+	</p>
+	<h5 data-value="count"></h5>
+	<h6 data-value="count"></h6>
+</div>
+
+<p>The code for this is now incredibly concise, with no concerns for the DOM nodes that need to be updated.</p>
+
+<pre>
+const counterComponent = new Component('counterExample', {
+	data: {
+		count: 0,
+	},
+	increment() {
+		this.data.count++
+	},
+	decrement() {
+		this.data.count--
+	},
+})
+</pre>
+
+<p>A more complex example which appends elements to an array and displays them. The component uses a watcher to decide if the button is enabled and to display the last day in the chosen list.</p>
+
+<div class="example" id="componentExample">
+	<select data-input="selectedDay">
+		<option></option>
+		<option data-each="days"></option>
+	</select>
+	<div style="display:grid;">
+		<ul>
+			<li data-each="chosenDays"></li>
+		</ul>
+		<div><strong>Most recent day</strong> <span data-value="mostRecent"></span></div>
+	</div>
+	<button data-click="add" data-enabled="canAdd">Add</button>
+</div>
+
+<p>Example code:</p>
+
+<pre>
+const component = new Component('componentExample', {
+	data: {
+		days: [],
+		selectedDay: null,
+		chosenDays: [],
+		canAdd: false,
+		mostRecent: null,
+	},
+
+	watch: {
+		selectedDay(value, old) {
+			this.data.canAdd = value !== null && value !== ''
+		},
+
+		chosenDays(value, old) {
+			if(value.length > 0) {
+				this.data.mostRecent = value[value.length - 1]
+			}
+		},
+	},
+
+	onload() {
+		// there's no real reason to do this here
+		// unless you were pulling the data from an API
+		this.data.days = [
+			'Monday',
+			'Tuesday',
+			'Wednesday',
+			'Thursday',
+			'Friday',
+			'Saturday',
+			'Sunday',
+		]
+	},
+
+	add() {
+		if(this.data.selectedDay) {
+			this.data.chosenDays = [ ...this.data.chosenDays, this.data.selectedDay ]
+		}
+	},
+})
+</pre>
+
+</main>
+
+</div>
+
+<script src="emitter.js"></script>
+<script src="observable.js"></script>
+<script src="component.js"></script>
+<script>
+
+// emitter example
+const emitter = new Emitter()
+
+emitter.on('hello', world => alert(`Hello ${world}`))
+emitter.on('hello', world => document.getElementById('output1').innerText = `Hello ${world}`)
+
+document.getElementById('clicker1').onclick = () => {
+	const value = document.getElementById('input1').value
+
+	emitter.emit('hello', value)
+}
+
+// observable example
+const observable = new Observable({
+	greeting: 'Hello',
+	world: 'Earth',
+})
+
+observable.on('change:world', (key, value, old) => alert(`Hello ${value}`))
+observable.on('change', (key, value, old) => document.getElementById('output2').innerText = `Property: ${key}. New value: ${value}. Old value: ${old}`)
+
+document.getElementById('clicker2').onclick = () => {
+	const greeting = document.getElementById('greeting').value
+	const world = document.getElementById('world').value
+
+	observable.greeting = greeting
+	observable.world = world
+}
+
+// directive example
+const counter = new Observable({
+	count: 0,
+})
+
+function increment() {
+	counter.count++
+}
+
+function decrement() {
+	counter.count--
+}
+
+function valueDirective(scope) {
+	const nodes = Array.from(document.querySelectorAll('[data-value]'))
+
+	nodes.forEach(node => {
+		const property = node.dataset.value
+
+		node.innerText = scope[property]
+
+		scope.on(`change:${property}`, (key, value, old) => {
+			node.innerText = value
+		})
+	})
+}
+
+valueDirective(counter)
+
+// counter component example
+const counterComponent = new Component('counterExample', {
+	data: {
+		count: 0,
+	},
+	increment() {
+		this.data.count++
+	},
+	decrement() {
+		this.data.count--
+	},
+})
+
+// full component example
+const component = new Component('componentExample', {
+	data: {
+		days: [],
+		selectedDay: null,
+		chosenDays: [],
+		canAdd: false,
+		mostRecent: null,
+	},
+
+	watch: {
+		selectedDay(value, old) {
+			this.data.canAdd = value !== null && value !== ''
+		},
+
+		chosenDays(value, old) {
+			if(value.length > 0) {
+				this.data.mostRecent = value[value.length - 1]
+			}
+		},
+	},
+
+	onload() {
+		// there's no real reason to do this here
+		// unless you were pulling the data from an API
+		this.data.days = [
+			'Monday',
+			'Tuesday',
+			'Wednesday',
+			'Thursday',
+			'Friday',
+			'Saturday',
+			'Sunday',
+		]
+	},
+
+	add() {
+		if(this.data.selectedDay) {
+			this.data.chosenDays = [ ...this.data.chosenDays, this.data.selectedDay ]
+		}
+	},
+})
+
+</script>
+
+</body>
+</html>

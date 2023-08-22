@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Form Inputs :: Reactive UI Experiments</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+<div class="grid">
+
+<aside>
+	<ul>
+		<li><a href="index.html">Index</a></li>
+		<li><a href="input.html">Form Input</a></li>
+		<li><a href="counter.html">Counter</a></li>
+		<li><a href="directive.html">Creating New Directives</a></li>
+		<li><a href="hideshow.html">Hide / Show Directives</a></li>
+		<li><a href="todo.html">Simple TODOs</a></li>
+	</ul>
+</aside>
+
+<main>
+
+<h1>Form Inputs</h1>
+
+<p>Data is updated on input <code>onChange</code> event so will happen when tabbing away from the field. Checkboxes expect a boolean value. Radio buttons are finicky and need to use <code>data-click</code> to set their value.</p>
+
+<div id="form">
+	<div class="form-field">
+		<label>
+			First Name
+			<input type="text" data-input="firstName" />
+		</label>
+	</div>
+	<div class="form-field">
+		<label>
+			Last Name
+			<input type="text" data-input="lastName" />
+		</label>
+	</div>
+	<div class="form-field">
+		<label>
+			Age
+			<input type="text" data-input="age" />
+		</label>
+	</div>
+	<div class="form-field">
+		<label>
+			Favourite hobby
+			<select data-input="hobby">
+				<option value="">Choose</option>
+				<option>Reading</option>
+				<option>Writing</option>
+				<option>Programming</option>
+				<option>Music</option>
+			</select>
+		</label>
+	</div>
+	<div class="form-field">
+		<label>
+			Checkbox
+			<input type="checkbox" data-input="checked" />
+		</label>
+	</div>
+	<div class="form-field">
+		Radio list
+		<div>
+			<label>
+				<input type="radio" name="group" value="Reading" data-click="setRadio" /> Reading
+			</label>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="group" value="Writing" data-click="setRadio" /> Writing
+			</label>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="group" value="Programming" data-click="setRadio" checked /> Programming
+			</label>
+		</div>
+		<div>
+			<label>
+				<input type="radio" name="group" value="Music" data-click="setRadio" /> Music
+			</label>
+		</div>
+	</div>
+	<p>
+		<strong data-value="firstName"></strong>
+		<strong data-value="lastName"></strong> is
+		<strong data-value="age"></strong> years old and his favourite hobby is
+		<strong data-value="hobby"></strong>.
+	</p>
+	<p>
+		The checkbox state is
+		<strong data-value="checked"></strong>
+	</p>
+	<p>
+		The radio list is
+		<strong data-value="radio"></strong>
+	</p>
+</div>
+
+<h3>Javascript</h3>
+
+<pre>
+const person = new Component('form', {
+	data: {
+		firstName: 'Stoo',
+		lastName: 'Goff',
+		age: 48,
+		hobby: '',
+		checked: true,
+		radio: 'Programming',
+	},
+	setRadio(evt) {
+		this.data.radio = evt.target.value
+	}
+})
+</pre>
+
+
+<h3>HTML</h3>
+
+<pre>
+&lt;div id="form">
+	&lt;div class="form-field">
+		&lt;label>
+			First Name
+			&lt;input type="text" data-input="firstName" />
+		&lt;/label>
+	&lt;/div>
+	&lt;div class="form-field">
+		&lt;label>
+			Last Name
+			&lt;input type="text" data-input="lastName" />
+		&lt;/label>
+	&lt;/div>
+	&lt;div class="form-field">
+		&lt;label>
+			Age
+			&lt;input type="text" data-input="age" />
+		&lt;/label>
+	&lt;/div>
+	&lt;div class="form-field">
+		&lt;label>
+			Favourite hobby
+			&lt;select data-input="hobby">
+				&lt;option value="">Choose&lt;/option>
+				&lt;option>Reading&lt;/option>
+				&lt;option>Writing&lt;/option>
+				&lt;option>Programming&lt;/option>
+				&lt;option>Music&lt;/option>
+			&lt;/select>
+		&lt;/label>
+	&lt;/div>
+	&lt;div class="form-field">
+		&lt;label>
+			Checkbox
+			&lt;input type="checkbox" data-input="checked" />
+		&lt;/label>
+	&lt;/div>
+	&lt;div class="form-field">
+		Radio list
+		&lt;div>
+			&lt;label>
+				&lt;input
+					type="radio" name="group"
+					value="Reading"
+					data-click="setRadio"
+				/> Reading
+			&lt;/label>
+		&lt;/div>
+		&lt;div>
+			&lt;label>
+				&lt;input
+					type="radio" name="group"
+					value="Writing"
+					data-click="setRadio"
+				/> Writing
+			&lt;/label>
+		&lt;/div>
+		&lt;div>
+			&lt;label>
+				&lt;input
+					type="radio" name="group"
+					value="Programming"
+					data-click="setRadio"
+					checked /> Programming
+			&lt;/label>
+		&lt;/div>
+		&lt;div>
+			&lt;label>
+				&lt;input
+					type="radio" name="group"
+					value="Music"
+					data-click="setRadio"
+				/> Music
+			&lt;/label>
+		&lt;/div>
+	&lt;/div>
+	&lt;p>
+		&lt;strong data-value="firstName">&lt;/strong>
+		&lt;strong data-value="lastName">&lt;/strong> is
+		&lt;strong data-value="age">&lt;/strong> years old and his favourite hobby is
+		&lt;strong data-value="hobby">&lt;/strong>.
+	&lt;/p>
+	&lt;p>
+		The checkbox state is
+		&lt;strong data-value="checked">&lt;/strong>
+	&lt;/p>
+	&lt;p>
+		The radio list is
+		&lt;strong data-value="radio">&lt;/strong>
+	&lt;/p>
+&lt;/div>
+</pre>
+
+</main>
+
+</div>
+
+<script src="emitter.js"></script>
+<script src="observable.js"></script>
+<script src="component.js"></script>
+<script>
+
+const person = new Component('form', {
+	data: {
+		firstName: 'Stoo',
+		lastName: 'Goff',
+		age: 48,
+		hobby: '',
+		checked: true,
+		radio: 'Programming',
+	},
+	setRadio(evt) {
+		this.data.radio = evt.target.value
+	}
+})
+
+</script>
+
+</body>
+</html>

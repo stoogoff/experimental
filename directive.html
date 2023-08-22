@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Creating New Directives :: Reactive UI Experiments</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+<div class="grid">
+
+<aside>
+	<ul>
+		<li><a href="index.html">Index</a></li>
+		<li><a href="input.html">Form Input</a></li>
+		<li><a href="counter.html">Counter</a></li>
+		<li><a href="directive.html">Creating New Directives</a></li>
+		<li><a href="hideshow.html">Hide / Show Directives</a></li>
+		<li><a href="todo.html">Simple TODOs</a></li>
+	</ul>
+</aside>
+
+<main>
+
+<h1></h1>
+
+<p>Adding a new <strong>directive</strong> is straightforward. Call <code>directives.register</code> before the component is created. This takes a string key and a callback function. The key is prefixed with data and becomes the HTML attribute the directive uses. The callback function takes a DOM node, the attribute value, and the current scope (which is an instance of <code>Component</code> or very close to it) as arguments.</p>
+<p>The value of the attribute on the node should be found on the <code>data</code> property of the scope object. The node can then be updated as needed with that value and, as data is an <code>Observable</code>, updates to the data property can be subscribed to and the node updated again as needed.</p>
+
+<div id="cssclass">
+	<p>
+		<strong>CSS Class</strong>
+		<span data-value="cssClass" class="bg" data-class="cssClass"></span>
+		<strong data-value="cssClass" data-class="cssClass"></strong>
+	</p>
+	<label>
+		<input type="radio" name="css" value="red" data-click="changeClass" checked />
+		Red
+	</label>
+	<label>
+		<input type="radio" name="css" value="green" data-click="changeClass" />
+		Green
+	</label>
+	<label>
+		<input type="radio" name="css" value="blue" data-click="changeClass" />
+		Blue
+	</label>
+	<label>
+		<input type="radio" name="css" value="none" data-click="changeClass" />
+		None
+	</label>
+</div>
+
+<h3>Directive Javascript</h3>
+
+<pre>
+directives.register('class', (node, property, scope) => {
+	node.classList.add(scope.data[property])
+
+	scope.data.on(`change:${property}`, (key, value, old) => {
+		if(old !== '') node.classList.remove(old)
+		if(value !== '') node.classList.add(value)
+	})
+})
+</pre>
+
+<h3>HTML</h3>
+
+<pre>
+&lt;div id="cssclass">
+	&lt;p>
+		&lt;strong>CSS Class&lt;/strong>
+		&lt;span data-value="cssClass" class="bg" data-class="cssClass">&lt;/span>
+		&lt;strong data-value="cssClass" data-class="cssClass">&lt;/strong>
+	&lt;/p>
+	&lt;label>
+		&lt;input type="radio" name="css" value="red" data-click="changeClass" checked />
+		Red
+	&lt;/label>
+	&lt;label>
+		&lt;input type="radio" name="css" value="green" data-click="changeClass" />
+		Green
+	&lt;/label>
+	&lt;label>
+		&lt;input type="radio" name="css" value="blue" data-click="changeClass" />
+		Blue
+	&lt;/label>
+	&lt;label>
+		&lt;input type="radio" name="css" value="none" data-click="changeClass" />
+		None
+	&lt;/label>
+&lt;/div>
+</pre>
+
+<h3>CSS</h3>
+
+<pre>
+.bg {
+	background-color: black;
+	color: whitesmoke;
+	display: inline-block;
+	padding: 0.5rem 1rem;
+}
+.red {
+	color: red;
+}
+.green {
+	color: green;
+}
+.blue {
+	color: blue;
+}
+
+.bg.red {
+	background-color: pink;
+}
+.bg.green {
+	background-color: lightgreen;
+}
+.bg.blue {
+	background-color: skyblue;
+}
+</pre>
+
+<h3>Component Javascript</h3>
+
+<pre>
+const cssClass = new Component('cssclass', {
+	data: {
+		cssClass: 'red',
+	},
+
+	changeClass(evt) {
+		this.data.cssClass = evt.target.value
+	}
+})
+</pre>
+
+</main>
+
+</div>
+
+<script src="emitter.js"></script>
+<script src="observable.js"></script>
+<script src="component.js"></script>
+<script>
+
+directives.register('class', (node, property, scope) => {
+	node.classList.add(scope.data[property])
+
+	scope.data.on(`change:${property}`, (key, value, old) => {
+		if(old !== '') node.classList.remove(old)
+		if(value !== '') node.classList.add(value)
+	})
+})
+
+const cssClass = new Component('cssclass', {
+	data: {
+		cssClass: 'red',
+	},
+
+	changeClass(evt) {
+		this.data.cssClass = evt.target.value
+	}
+})
+
+</script>
+
+</body>
+</html>
