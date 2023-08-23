@@ -13,7 +13,7 @@
 	<ul>
 		<li><a href="index.html">Index</a></li>
 		<li><a href="input.html">Form Input</a></li>
-		<li><a href="counter.html">Counter</a></li>
+		<li><a href="timer.html">Counter</a></li>
 		<li><a href="directive.html">Creating New Directives</a></li>
 		<li><a href="hideshow.html">Hide / Show Directives</a></li>
 		<li><a href="todo.html">Simple TODOs</a></li>
@@ -26,7 +26,7 @@
 
 <p>Using <code>watch</code> to update a boolean property.</p>
 
-<div id="counter">
+<div id="timer">
 	Counting <strong data-value="count"></strong>
 	<button data-click="start" data-disabled="active">Start</button>
 	<button data-click="stop" data-enabled="active">Stop</button>
@@ -35,7 +35,7 @@
 <h3>HTML</h3>
 
 <pre>
-&lt;div id="counter">
+&lt;div id="timer">
 	Counting &lt;strong data-value="count">&lt;/strong>
 	&lt;button data-click="start" data-disabled="active">Start&lt;/button>
 	&lt;button data-click="stop" data-enabled="active">Stop&lt;/button>
@@ -45,7 +45,7 @@
 <h3>Javascript</h3>
 
 <pre>
-const timer = new Component('counter', {
+const timer = new Component('timer', {
 	data: {
 		count: 0,
 		active: false,
