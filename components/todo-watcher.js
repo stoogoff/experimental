@@ -1,5 +1,5 @@
 
-import { store } from '../store.js'
+import { todoStore } from '../store.js'
 
 export default {
 	data: {
@@ -16,10 +16,10 @@ export default {
 	},
 
 	created() {
-		this.data.todos = store.all()
+		this.data.todos = todoStore.all()
 
-		store.on('add', (updated) => this.data.todos = [ ...this.data.todos, updated ])
-		store.on('remove', (updated) => {
+		todoStore.on('add', (updated) => this.data.todos = [ ...this.data.todos, updated ])
+		todoStore.on('remove', (updated) => {
 			updated.done = true
 
 			this.data.todos = this.data.todos.map(todo =>

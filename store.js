@@ -1,42 +1,36 @@
 
 import { Emitter } from '/reactive/emitter.js'
+import { CollectionStore } from '/reactive/store.js'
 
-const max = (a, c) => Math.max(a, c)
+export const todoStore = new CollectionStore([{ id: 1, text: 'Cooking', done: false }])
 
-class Store extends Emitter {
-	#data
-
+class ObjectStore extends Emitter {
 	constructor(data) {
 		super()
 
-		this.#data = data
-	}
+		Object.keys(data).forEach(key => {
+			Object.defineProperty(this, key, {
+				get() {
+					return data[key]
+				},
 
-	all() {
-		return this.#data
-	}
+				set(newValue) {
+					const oldValue = data[key]
 
-	add(item) {
-		const nextId = this.#data.map(({ id }) => id).reduce(max, 0) + 1
-		const newItem = { ...item, id: nextId }
+					if(oldValue === newValue) return
 
-		this.#data = [ ...this.#data, newItem ]
+					data[key] = newValue
 
-		this.emit('add', newItem)
-		this.emit('change', this.#data)
-
-		return newItem
-	}
-
-	remove(item) {
-		this.#data =  this.#data.filter(({ id }) => id !== item.id)
-
-		this.emit('remove', item)
-		this.emit('change', this.#data)
-
-		return item
+					this.emit('change', key, newValue, oldValue)
+					this.emit(`change:${key}`, key, newValue, oldValue)
+				},
+			}) 
+		})
 	}
 }
 
-
-export const store = new Store([{ id: 1, text: 'Cooking', done: false }])
+export const personStore = new ObjectStore({
+	firstName: 'Stoo',
+	lastName: 'Goff',
+	age: 49,
+})

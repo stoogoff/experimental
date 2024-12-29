@@ -1,5 +1,5 @@
 
-import { store } from '../store.js'
+import { todoStore } from '../store.js'
 
 export default {
 	data: {
@@ -11,21 +11,21 @@ export default {
 			return this.data.newTodo !== ''
 		},
 		hasTodos() {
-			return store.all().length > 0
+			return todoStore.all().length > 0
 		},
 		todos() {
-			return store.all()
+			return todoStore.all()
 		},
 	},
 
 	addTodo() {
-		store.add({ text: this.data.newTodo, done: false })
+		todoStore.add({ text: this.data.newTodo, done: false })
 
 		this.data.newTodo = ''
 	},
 
 	completeTodo(scope, evt) {
-		store.remove(scope.data)
+		todoStore.remove(scope.data)
 	}
 }
 

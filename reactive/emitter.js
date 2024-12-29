@@ -1,4 +1,6 @@
 
+import { isNull } from '/utils/assert.js'
+
 // subscribe / publish handler
 export class Emitter {
 	constructor() {
@@ -9,7 +11,7 @@ export class Emitter {
 	// emit calls any functions which are mapped to the supplied string. All parameters after the first are passed to each
 	// function that is called.
 	emit(event, ...args) {
-		if(!this.events[event]) {
+		if(isNull(this.events[event])) {
 			return false
 		}
 
@@ -24,7 +26,7 @@ export class Emitter {
 
 	// Link the supplied callback function to supplied event string.
 	on(event, callback) {
-		if(!this.events[event]) {
+		if(isNull(this.events[event])) {
 			this.events[event] = {}
 		}
 
@@ -37,7 +39,7 @@ export class Emitter {
 
 	// Delete the referenced function from the event.
 	off(event, reference) {
-		if(!this.events[event]) {
+		if(isNull(this.events[event])) {
 			return false
 		}
 
