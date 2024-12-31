@@ -6,6 +6,7 @@
   "homepage": "https://github.com/stoogoff/exerimental",
   "repository": "github:stoogoff/exerimental",
   "type": "module",
+  "module": "main.js",
   "license": {
     "type": "MIT",
     "url": "https://opensource.org/license/mit"
