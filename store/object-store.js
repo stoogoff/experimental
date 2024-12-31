@@ -1,10 +1,7 @@
 
 import { Emitter } from '/reactive/emitter.js'
-import { CollectionStore } from '/reactive/store.js'
 
-export const todoStore = new CollectionStore([{ id: 1, text: 'Cooking', done: false }])
-
-class ObjectStore extends Emitter {
+export class ObjectStore extends Emitter {
 	constructor(data) {
 		super()
 
@@ -28,9 +25,3 @@ class ObjectStore extends Emitter {
 		})
 	}
 }
-
-export const personStore = new ObjectStore({
-	firstName: 'Stoo',
-	lastName: 'Goff',
-	age: 49,
-})

@@ -5,7 +5,6 @@ const createNode = (node, parent, value, scope, directives) => {
 	clone.removeAttribute('data-each')
 
 	if(clone.childNodes.length === 0) {
-		console.log('single node')
 		clone.innerText = value
 	}
 	else {
@@ -20,7 +19,7 @@ const createNode = (node, parent, value, scope, directives) => {
 export const each = (node, property, scope, directives) => {
 	const parent = node.parentNode
 	const values = scope.data[property]
-	console.log('each', { values })
+
 	if(!values) return
 
 	// clone nodes

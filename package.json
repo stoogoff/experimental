@@ -1,4 +1,15 @@
 {
+  "name": "exp",
+  "version": "1.0.0",
+  "description": "An experiment in a lightweight reactive framework.",
+  "author": "Stoo Goff",
+  "homepage": "https://github.com/stoogoff/exerimental",
+  "repository": "github:stoogoff/exerimental",
+  "type": "module",
+  "license": {
+    "type": "MIT",
+    "url": "https://opensource.org/license/mit"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

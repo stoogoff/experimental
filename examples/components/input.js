@@ -1,5 +1,5 @@
 
-import { personStore } from '/store.js'
+import { personStore } from '../store.js'
 
 export default {
 	data: {
