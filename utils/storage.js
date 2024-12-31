@@ -1,5 +1,5 @@
 
-import { notNull } from '/utils/assert.js'
+import { notNull } from './assert.js'
 
 // wrapper around localStorage and sessionStorage
 // which automatically converts data to and from JSON

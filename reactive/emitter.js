@@ -1,5 +1,5 @@
 
-import { isNull } from '/utils/assert.js'
+import { isNull } from '../utils/assert.js'
 
 // subscribe / publish handler
 export class Emitter {

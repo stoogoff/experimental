@@ -1,5 +1,5 @@
 
-import { Emitter } from '/reactive/emitter.js'
+import { Emitter } from '../reactive/emitter.js'
 
 export class ObjectStore extends Emitter {
 	constructor(data) {

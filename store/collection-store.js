@@ -1,7 +1,7 @@
 
-import { Emitter } from '/reactive/emitter.js'
-import { notNull } from '/utils/assert.js'
-import { max } from '/utils/list.js'
+import { Emitter } from '../reactive/emitter.js'
+import { notNull } from '../utils/assert.js'
+import { max } from '../utils/list.js'
 
 export class CollectionStore extends Emitter {
 	#data = []
