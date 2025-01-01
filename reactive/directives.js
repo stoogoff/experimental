@@ -1,6 +1,6 @@
 
 import { Component } from './component.js'
-import { click, disabled, each, input, value, _if } from './directives/index.js'
+import * as core from './directives/index.js'
 
 const _directives = []
 const _components = {}
@@ -16,38 +16,48 @@ export const directives = {
 		_components[name] = component
 	},
 
-	load(domNodeOrId) {
+	load(domNodeOrId, input = {}) {
 		const root = domNodeOrId instanceof Node
 			? domNodeOrId
 			: document.getElementById(domNodeOrId)
 
-		for(let name in _components) {
-			const componentNodes = root.querySelectorAll(`[data-component=${name}]`)
+		const scope = new Component(input)
 
-			Array.from(componentNodes).forEach(node => {
-				const attributes = node.dataset['attributes'] || '{}'
-				const scope = new Component(_components[name], JSON.parse(attributes))
-
-				this.loadDirectivesForNode(node, scope)
-
-				scope.mounted()
-			})
-		}
+		this.walkTree(root, scope)
 	},
 
-	loadDirectivesForNode(node, scope) {
-		_directives.forEach(({ attribute, callback }) => {
-			const nodes = node.querySelectorAll(`[data-${attribute}]`)
+	walkTree(root, scope) {
+		const childNodes = Array.from(root.childNodes)
 
-			Array.from(nodes).forEach(node => callback(node, node.dataset[attribute], scope, this))
+		childNodes.forEach(node => {
+			if(node.nodeType !== 1) return
+
+			_directives.forEach(({ attribute, callback }) => {
+				if(!(attribute in node.dataset)) return
+
+				callback(node, node.dataset[attribute], scope, this)
+
+				node.removeAttribute(`data-${ attribute }`)
+			})
+
+			if(node.hasChildNodes()) {
+				this.walkTree(node, scope)
+			}
 		})
 	},
 }
 
 // register core directives
-directives.register('click', click)
-directives.register('disabled', disabled)
-directives.register('if', _if)
-directives.register('input', input)
-directives.register('value', value)
-directives.register('each', each)
+Object.keys(core).forEach(key => {
+	directives.register(key.replace(/^_/, ''), core[key])
+})
+
+directives.register('component', (node, property, scope, d) => {
+	const newScope = new Component(_components[property], scope.data)
+
+	if(!(property in _components)) throw new Error(`Component '${ property }' not found.`)
+
+	d.walkTree(node, newScope)
+
+	newScope.mounted()
+})

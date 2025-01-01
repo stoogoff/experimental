@@ -13,21 +13,66 @@ div div {
 	padding-bottom: 0;
 	border: 0;
 }
+.red, .blue, .green {
+	display: inline-block;
+	padding: 0.5rem;
+	color: white;
+	font-weight: bold;
+}
+.red {
+	background-color: red;
+}
+.blue {
+	background-color: blue;
+}
+.green {
+	background-color: green;
+}
 </style>
 </head>
 <body>
 <p>Hello world</p>
 
-<div data-component="todo">
-	<ul data-if="hasTodos">
-		<li data-each="todos">
-			<strong data-value="text"></strong>
-			<button data-click="completeTodo">Complete</button>
-		</li>
+<p data-value="scope"></p>
+<p data-value="test1"></p>
+
+<div data-value="test2"></div>
+
+<div>
+	<strong data-value="test1"></strong>
+
+	<ul>
+		<li>Before</li>
+		<li data-value="test2"></li>
+		<li data-click="clicky">After</li>
 	</ul>
-	<div data-if="!hasTodos"><em>Nothing todo</em></div>
-	<input type="text" data-input="newTodo" />
-	<button data-click="addTodo" data-disabled="!canAdd">Add</button>
+</div>
+
+<p data-value="test1"></p>
+
+<div id="count-wrapper">
+	<div data-component="counter" id="counter">
+		<p data-value="scope" id="counter-scope"></p>
+		<span data-value="count" data-class="cssClass" id='counter-count'></span>
+		<div id="counter-div">
+			<button id="counter-increment" data-click="increment">Add</button>
+			<button id="counter-decrement" data-click="decrement">Subtract</button>
+		</div>
+	</div>
+</div>
+
+<div>
+	<div data-component="todo">
+		<ul data-if="hasTodos">
+			<li data-each="todos">
+				<strong data-value="text"></strong>
+				<button data-click="completeTodo">Complete</button>
+			</li>
+		</ul>
+		<div data-if="!hasTodos"><em>Nothing todo</em></div>
+		<input type="text" data-input="newTodo" />
+		<button data-click="addTodo" data-disabled="!canAdd">Add</button>
+	</div>
 </div>
 
 <ul data-component="todo-watcher">
@@ -42,7 +87,7 @@ div div {
 </div>
 
 <div data-component="counter">
-	<span data-value="count"></span>
+	<span data-value="count" data-class="cssClass"></span>
 	<div>
 		<button data-click="increment">Add</button>
 		<button data-click="decrement">Subtract</button>
@@ -54,6 +99,18 @@ div div {
 	<div>
 		<button data-click="increment">Add</button>
 		<button data-click="decrement">Subtract</button>
+	</div>
+</div>
+
+<div data-component="counterWrapper">
+	<div data-each="counters">
+		<div data-component="counter">
+			<span data-value="count" data-class="cssClass"></span>
+			<div>
+				<button data-click="increment">Add</button>
+				<button data-click="decrement">Subtract</button>
+			</div>
+		</div>
 	</div>
 </div>
 

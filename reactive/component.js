@@ -2,7 +2,7 @@
 import { Emitter } from './emitter.js'
 
 export class Component extends Emitter {
-	#computed =  {};
+	#computed = {};
 
 	constructor(component = {}, attributes = {}) {
 		super()
