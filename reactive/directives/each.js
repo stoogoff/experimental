@@ -7,7 +7,7 @@ const createNode = (node, parent, value, scope, directives) => {
 	if(clone.hasChildNodes()) {
 		const newScope = scope.clone(value)
 
-		directives.walkTree(clone, newScope)
+		directives.loadDirectivesForNode(clone, newScope)
 	}
 	else {
 		clone.innerText = value

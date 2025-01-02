@@ -4,9 +4,10 @@ import { Emitter } from './emitter.js'
 export class Component extends Emitter {
 	#computed = {};
 
-	constructor(component = {}, attributes = {}) {
+	constructor(node, component = {}, attributes = {}) {
 		super()
 
+		this.node = node
 		this.created = () => {}
 		this.mounted = () => {}
 
@@ -77,7 +78,7 @@ export class Component extends Emitter {
 	}
 
 	clone(data) {
-		const skipProperties = ['data', 'watch', 'mounted', 'created', 'ref', 'events']
+		const skipProperties = ['node', 'data', 'watch', 'mounted', 'created', 'ref', 'events']
 		const newScope = {
 			data: new Proxy(data, this),
 			emit: this.emit.bind(this),

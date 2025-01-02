@@ -38,6 +38,7 @@ export default {
 	},
 
 	mounted() {
+		this.node.style.backgroundColor = 'skyblue'
 		console.log(`mounted: ${this.data.count}`)
 	},
 

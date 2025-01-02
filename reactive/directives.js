@@ -21,12 +21,12 @@ export const directives = {
 			? domNodeOrId
 			: document.getElementById(domNodeOrId)
 
-		const scope = new Component(input)
+		const scope = new Component(root, input)
 
-		this.walkTree(root, scope)
+		this.loadDirectivesForNode(root, scope)
 	},
 
-	walkTree(root, scope) {
+	loadDirectivesForNode(root, scope) {
 		const childNodes = Array.from(root.childNodes)
 
 		childNodes.forEach(node => {
@@ -41,7 +41,7 @@ export const directives = {
 			})
 
 			if(node.hasChildNodes()) {
-				this.walkTree(node, scope)
+				this.loadDirectivesForNode(node, scope)
 			}
 		})
 	},
@@ -53,11 +53,11 @@ Object.keys(core).forEach(key => {
 })
 
 directives.register('component', (node, property, scope, d) => {
-	const newScope = new Component(_components[property], scope.data)
-
 	if(!(property in _components)) throw new Error(`Component '${ property }' not found.`)
 
-	d.walkTree(node, newScope)
+	const newScope = new Component(node, _components[property], scope.data)
+
+	d.loadDirectivesForNode(node, newScope)
 
 	newScope.mounted()
 })
