@@ -63,7 +63,7 @@ div div {
 
 <div>
 	<div data-component="todo">
-		<ul data-if="hasTodos">
+		<ul>
 			<li data-each="todos">
 				<strong data-value="text"></strong>
 				<button data-click="completeTodo">Complete</button>
@@ -166,11 +166,11 @@ div div {
 	<div>lastName = <span data-value="lastName"></span></div>
 	<div>fullName = <span data-value="fullName"></span></div>
 	<ul>
-		<li data-each="list1"></li>
+		<li data-each="list1" id="test"></li>
 	</ul>
 </div>
 
-<div data-component="input">
+<iv data-component="input">
 	<div data-value="text"></div>
 	<ul>
 		<li data-each="list2">

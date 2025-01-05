@@ -5,4 +5,6 @@ export const value = (node, property, scope) => {
 	scope.on(`change:${property}`, (key, value, old) => {
 		node.innerText = value
 	})
+
+	return false
 }

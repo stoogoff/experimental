@@ -17,4 +17,6 @@ export const input = (node, property, scope) => {
 	scope.on(`change:${property}`, (key, value, old) => {
 		node.value = value
 	})
+
+	return false
 }

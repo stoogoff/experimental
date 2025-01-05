@@ -1,6 +1,4 @@
 
-import { isEmptyArray } from '../../utils/assert.js'
-
 const createNode = (node, parent, value, scope, directives) => {
 	const clone = node.cloneNode(true)
 
@@ -20,18 +18,16 @@ export const each = (node, property, scope, directives) => {
 	const parent = node.parentNode
 	const values = scope.data[property]
 
-	if(isEmptyArray(values)) return
-
-	// clone nodes
-	values.forEach(value => {
-		createNode(node, parent, value, scope, directives)
-	})
-
 	// clone the base node to maintain data-* attributes
 	const clone = node.cloneNode(true)
 
 	// remove base node
 	node.remove()
+
+	// clone nodes
+	values.forEach(value => {
+		createNode(clone, parent, value, scope, directives)
+	})
 
 	scope.on(`change:${property}`, (key, values, old) => {
 		// remove existing nodes
@@ -44,4 +40,6 @@ export const each = (node, property, scope, directives) => {
 			createNode(clone, parent, value, scope, directives)
 		})
 	})
+
+	return true
 }

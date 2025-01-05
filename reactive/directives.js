@@ -5,6 +5,8 @@ import * as core from './directives/index.js'
 const _directives = []
 const _components = {}
 
+let num = 0
+
 export const directives = {
 	register(attribute, callback) {
 		_directives.push({ attribute, callback })
@@ -14,6 +16,12 @@ export const directives = {
 		if(name in _components) throw new Error(`Component with name '${name}' already exists`)
 
 		_components[name] = component
+	},
+
+	getComponent(name) {
+		if(!(name in _components)) throw new Error(`Component '${ name }' not found.`)
+
+		return _components[name]
 	},
 
 	load(domNodeOrId, input = {}) {
@@ -28,6 +36,7 @@ export const directives = {
 
 	loadDirectivesForNode(root, scope) {
 		const childNodes = Array.from(root.childNodes)
+		let complete = false
 
 		childNodes.forEach(node => {
 			if(node.nodeType !== 1) return
@@ -35,12 +44,14 @@ export const directives = {
 			_directives.forEach(({ attribute, callback }) => {
 				if(!(attribute in node.dataset)) return
 
-				callback(node, node.dataset[attribute], scope, this)
+				const result = callback(node, node.dataset[attribute], scope, this)
 
 				node.removeAttribute(`data-${ attribute }`)
+
+				if(!complete) complete = result
 			})
 
-			if(node.hasChildNodes()) {
+			if(!complete && node.hasChildNodes()) {
 				this.loadDirectivesForNode(node, scope)
 			}
 		})
@@ -50,14 +61,4 @@ export const directives = {
 // register core directives
 Object.keys(core).forEach(key => {
 	directives.register(key.replace(/^_/, ''), core[key])
-})
-
-directives.register('component', (node, property, scope, d) => {
-	if(!(property in _components)) throw new Error(`Component '${ property }' not found.`)
-
-	const newScope = new Component(node, _components[property], scope.data)
-
-	d.loadDirectivesForNode(node, newScope)
-
-	newScope.mounted()
 })

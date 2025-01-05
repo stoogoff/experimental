@@ -14,6 +14,8 @@ export function booleanDirective(type, updateNode) {
 		scope.on(`change:${property}`, (key, value, old) => {
 			updateNode(node, invert ? !value : value, initialValue)
 		})
+
+		return false
 	}
 }
 

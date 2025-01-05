@@ -6,6 +6,8 @@ export function attributeDirective(attr) {
 		scope.on(`change:${property}`, (key, value, old) => {
 			node.setAttribute(attr, value)
 		})
+
+		return false
 	}
 }
 
