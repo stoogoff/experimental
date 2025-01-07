@@ -13,7 +13,7 @@ export const directives = {
 	},
 
 	registerComponent(name, component) {
-		if(name in _components) throw new Error(`Component with name '${name}' already exists`)
+		if(name in _components) throw new Error(`Component with name '${ name }' already exists`)
 
 		_components[name] = component
 	},
