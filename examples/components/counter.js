@@ -29,17 +29,17 @@ export default {
 
 	watch: {
 		cssClass() {
-			console.log(this.data.cssClass)
+			//console.log(this.data.cssClass)
 		},
 	},
 
 	created() {
-		console.log(`created: ${this.data.count}`)
+		//console.log(`created: ${this.data.count}`)
 	},
 
 	mounted() {
 		this.node.style.backgroundColor = 'skyblue'
-		console.log(`mounted: ${this.data.count}`)
+		//console.log(`mounted: ${this.data.count}`)
 	},
 
 	increment() {

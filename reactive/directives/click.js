@@ -1,7 +1,12 @@
 
+import { isFunction } from '../../utils/assert.js'
+import { logger } from '../config.js'
+
 export const click = (node, property, scope) => {
-	node.onclick = (evt) => {
-		scope[property](scope, evt)
+	if(!isFunction(scope[property])) logger().error(`click (directive): ${ property } is not callable`, scope)
+
+	node.onclick = evt => {
+		if(isFunction(scope[property])) scope[property](evt)
 	}
 
 	return false

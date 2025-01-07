@@ -1,9 +1,15 @@
 
+import { logger } from '../config.js'
+
 const createNode = (node, parent, value, scope, directives) => {
+	logger().info(`each (directive): clone node with value`, value)
+
 	const clone = node.cloneNode(true)
 
 	if(clone.hasChildNodes()) {
 		const newScope = scope.clone(value)
+
+		logger().log(`each (directive): creating new scope`, newScope)
 
 		directives.loadDirectivesForNode(clone, newScope)
 	}
@@ -16,7 +22,9 @@ const createNode = (node, parent, value, scope, directives) => {
 
 export const each = (node, property, scope, directives) => {
 	const parent = node.parentNode
-	const values = scope.data[property]
+	const values = scope.data[property] ?? []
+
+	logger().info(`each (directive): '${ property }'`, scope, node, parent)
 
 	// clone the base node to maintain data-* attributes
 	const clone = node.cloneNode(true)

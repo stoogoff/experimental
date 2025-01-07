@@ -1,11 +1,11 @@
 
 import { Component } from './component.js'
+import { logger } from './config.js'
 import * as core from './directives/index.js'
+import { notIn } from '../utils/assert.js'
 
 const _directives = []
 const _components = {}
-
-let num = 0
 
 export const directives = {
 	register(attribute, callback) {
@@ -13,13 +13,15 @@ export const directives = {
 	},
 
 	registerComponent(name, component) {
-		if(name in _components) throw new Error(`Component with name '${ name }' already exists`)
+		logger().log(`Registering component: ${ name }`)
+
+		if(name in _components) logger().error(`Component with name '${ name }' already exists`)
 
 		_components[name] = component
 	},
 
 	getComponent(name) {
-		if(!(name in _components)) throw new Error(`Component '${ name }' not found.`)
+		if(!(name in _components)) logger().error(`Component '${ name }' not found.`)
 
 		return _components[name]
 	},
@@ -31,10 +33,16 @@ export const directives = {
 
 		const scope = new Component(root, input)
 
+		logger().info('directives.load', root, input)
+
 		this.loadDirectivesForNode(root, scope)
+
+		logger().info('directives.load COMPLETE')
 	},
 
 	loadDirectivesForNode(root, scope) {
+		logger().info('directives.loadDirectivesForNode', root, scope)
+
 		const childNodes = Array.from(root.childNodes)
 		let complete = false
 
@@ -43,6 +51,8 @@ export const directives = {
 
 			_directives.forEach(({ attribute, callback }) => {
 				if(!(attribute in node.dataset)) return
+
+				logger().info(`directives: apply attribute '${ attribute }'`, node, scope)
 
 				const result = callback(node, node.dataset[attribute], scope, this)
 

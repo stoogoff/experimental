@@ -20,3 +20,5 @@ export const isEmptyString = value => isNull(value) || value === ''
 export const isEmptyArray = value => isNull(value) || Array.isArray(value) && value.length === 0
 
 export const notEmptyArray = value => notNull(value) && Array.isArray(value) && value.length !== 0
+
+export const isFunction = value => notNull(value) && typeof value === 'function'

@@ -1,10 +1,14 @@
 
 import { directives } from '/reactive/directives.js'
+import { DIRECTIVES_LOG_KEY } from '/reactive/config.js'
 import Timer from '/examples/components/timer.js'
 import Todo from '/examples/components/todo.js'
 import TodoWatcher from '/examples/components/todo-watcher.js'
 import Counter from '/examples/components/counter.js'
 import Input from '/examples/components/input.js'
+import { setLogger, ConsoleLogger } from '/utils/logger.js'
+
+setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, 4)
 
 const CounterWrapper = {
 	data: {
