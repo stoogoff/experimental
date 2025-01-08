@@ -25,8 +25,8 @@ export default {
 	},
 
 	completeTodo(evt, scope) {
-		console.log(this.data)
 		todoStore.remove(scope.data)
+		this.emit('change') // somewhat hacky but this forces all computed getters to be re-called
 	}
 }
 
