@@ -1,23 +1,16 @@
 
 import { Emitter } from '../reactive/emitter.js'
-import { notNull } from '../utils/assert.js'
-import { max } from '../utils/list.js'
 
 export class CollectionStore extends Emitter {
 	#data = []
+	#mapFrom = item => item
 
-	constructor(data, nextId) {
+	constructor(data, map) {
 		super()
 
-		this.#data = data
+		if(map) this.#mapFrom = map
 
-		if(notNull(nextId)) {
-			this.nextId = nextId
-		}
-	}
-
-	nextId() {
-		return this.#data.map(({ id }) => id).reduce(max, 0) + 1
+		this.#data = data.map(clock => this.#mapFrom(clock))
 	}
 
 	all() {
@@ -25,23 +18,41 @@ export class CollectionStore extends Emitter {
 	}
 
 	add(item) {
-		const nextId = this.nextId()
-		const newItem = { ...item, id: nextId }
+		const converted = this.#mapFrom(item)
 
-		this.#data = [ ...this.#data, newItem ]
+		this.#data = [ ...this.#data, converted ]
 
-		this.emit('add', newItem)
+		this.emit('add', converted)
 		this.emit('change', this.#data)
 
-		return newItem
+		return converted
+	}
+
+	update(item) {
+		const converted = this.#mapFrom(item)
+		const index = this.#data.map(({ id }) => id).indexOf(converted.id)
+
+		if(index > -1) {
+			this.#data[index] = converted
+
+			this.emit('update', converted)
+			this.emit('change', this.#data)
+		}
+		else {
+			this.add(item)
+		}
+
+		return converted
 	}
 
 	remove(item) {
-		this.#data = this.#data.filter(({ id }) => id !== item.id)
+		const converted = this.#mapFrom(item)
 
-		this.emit('remove', item)
+		this.#data = this.#data.filter(({ id }) => id !== converted.id)
+
+		this.emit('remove', converted)
 		this.emit('change', this.#data)
 
-		return item
+		return converted
 	}
 }

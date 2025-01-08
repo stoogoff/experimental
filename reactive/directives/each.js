@@ -39,6 +39,8 @@ export const each = (node, property, scope, directives) => {
 
 	scope.on(`change:${property}`, (key, values, old) => {
 		// remove existing nodes
+		// TODO this should only remove nodes that are part of the each
+		// and not all child nodes of the parent
 		while(parent.firstChild) {
 			parent.removeChild(parent.lastChild)
 		}

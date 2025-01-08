@@ -24,7 +24,8 @@ export default {
 		this.data.newTodo = ''
 	},
 
-	completeTodo(scope, evt) {
+	completeTodo(evt, scope) {
+		console.log(this.data)
 		todoStore.remove(scope.data)
 	}
 }
