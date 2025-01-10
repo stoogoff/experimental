@@ -22,7 +22,8 @@ const createNode = (node, parent, value, scope, directives) => {
 
 export const each = (node, property, scope, directives) => {
 	const parent = node.parentNode
-	const values = scope.data[property] ?? []
+	const initialValues = scope.data[property] ?? []
+	let cachedValue = JSON.stringify(initialValues)
 
 	logger().info(`each (directive): '${ property }'`, scope, node, parent)
 
@@ -33,11 +34,17 @@ export const each = (node, property, scope, directives) => {
 	node.remove()
 
 	// clone nodes
-	values.forEach(value => {
+	initialValues.forEach(value => {
 		createNode(clone, parent, value, scope, directives)
 	})
 
 	scope.on(`change:${property}`, (key, values, old) => {
+		const matchValue = JSON.stringify(values)
+
+		logger().info('each (directive):', { cachedValue, matchValue, match: cachedValue === matchValue })
+
+		if(cachedValue === matchValue) return
+
 		// remove existing nodes
 		while(parent.firstChild) {
 			parent.removeChild(parent.lastChild)
@@ -47,6 +54,8 @@ export const each = (node, property, scope, directives) => {
 		values.forEach(value => {
 			createNode(clone, parent, value, scope, directives)
 		})
+
+		cachedValue = matchValue
 	})
 
 	return true

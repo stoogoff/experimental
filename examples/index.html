@@ -170,7 +170,7 @@ div div {
 	</ul>
 </div>
 
-<iv data-component="input">
+<div data-component="input">
 	<div data-value="text"></div>
 	<ul>
 		<li data-each="list2">
@@ -178,6 +178,16 @@ div div {
 			<span data-value="text"></span>
 		</li>
 	</ul>
+</div>
+
+<div data-component="colours">
+	<input type="text" data-input="title" />
+	<div data-value="title"></div>
+	<div class="flex gap-1 justify-center">
+		<div data-each="colours">
+			<div data-value="colour" data-colour="colour" data-click="setColour" style="color: white; padding: 0.5rem"></div>
+		</div>
+	</div>
 </div>
 
 <script type="module" src="main.js"></script>

@@ -6,6 +6,7 @@ import Todo from '/examples/components/todo.js'
 import TodoWatcher from '/examples/components/todo-watcher.js'
 import Counter from '/examples/components/counter.js'
 import Input from '/examples/components/input.js'
+import Colours from '/examples/components/colours.js'
 import { setLogger, ConsoleLogger } from '/utils/logger.js'
 
 setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, 4)
@@ -34,6 +35,13 @@ const Scope = {
 	}
 }
 
+directives.register('colour', (node, property, scope) => {
+	node.style.backgroundColor = scope.data[property]
+
+	return false
+})
+
+directives.registerComponent('colours', Colours)
 directives.registerComponent('timer', Timer)
 directives.registerComponent('todo', Todo)
 directives.registerComponent('todo-watcher', TodoWatcher)

@@ -1,5 +1,5 @@
 
-export { click } from './click.js'
+export { blur, click } from './event.js'
 export { component } from './component.js'
 export { disabled, _if } from './boolean.js'
 export { each } from './each.js'

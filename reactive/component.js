@@ -1,5 +1,7 @@
 
+import { logger } from './config.js'
 import { Emitter } from './emitter.js'
+import { isFunction } from '../utils/assert.js'
 
 export class Component extends Emitter {
 	#computed = {};
@@ -91,8 +93,14 @@ export class Component extends Emitter {
 				return
 			}
 
-			newScope[key] = this[key].bind(this)
+			logger().info('component.clone :: binding function', key, this[key])
+
+			if(isFunction(this[key])) {
+				newScope[key] = this[key].bind(this)
+			}
 		})
+
+		logger().info('component.clone :: new scope', newScope)
 
 		return newScope
 	}
