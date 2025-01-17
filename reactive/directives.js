@@ -12,6 +12,10 @@ export const directives = {
 		_directives.push({ attribute, callback })
 	},
 
+	registerComponents(kvp) {
+		Object.keys(kvp).forEach(key => this.registerComponent(key, kvp[key]))
+	},
+
 	registerComponent(name, component) {
 		logger().log(`Registering component: ${ name }`)
 
