@@ -34,107 +34,107 @@ div div {
 <p>Hello world</p>
 
 
-<p data-value="scope"></p>
-<p data-value="test1"></p>
+<p data-q-value="scope"></p>
+<p data-q-value="test1"></p>
 
-<div data-value="test2"></div>
+<div data-q-value="test2"></div>
 
 <div>
-	<strong data-value="test1"></strong>
+	<strong data-q-value="test1"></strong>
 
 	<ul>
 		<li>Before</li>
-		<li data-value="test2"></li>
-		<li data-click="clicky" style="cursor: pointer; text-decoration: underline">After</li>
+		<li data-q-value="test2"></li>
+		<li data-q-click="clicky" style="cursor: pointer; text-decoration: underline">After</li>
 	</ul>
 </div>
 
-<p data-value="test1"></p>
+<p data-q-value="test1"></p>
 
 <div id="count-wrapper">
-	<div data-component="counter" id="counter">
-		<p data-value="scope" id="counter-scope"></p>
-		<span data-value="count" data-class="cssClass" id='counter-count'></span>
+	<div data-q-component="counter" id="counter">
+		<p data-q-value="scope" id="counter-scope"></p>
+		<span data-q-value="count" data-q-class="cssClass" id='counter-count'></span>
 		<div id="counter-div">
-			<button id="counter-increment" data-click="increment">Add</button>
-			<button id="counter-decrement" data-click="decrement">Subtract</button>
+			<button id="counter-increment" data-q-click="increment">Add</button>
+			<button id="counter-decrement" data-q-click="decrement">Subtract</button>
 		</div>
 	</div>
 </div>
 
 <div>
-	<div data-component="todo">
+	<div data-q-component="todo">
 		<ul>
-			<li data-each="todos">
-				<strong data-value="text"></strong>
-				<button data-click="completeTodo">Complete</button>
+			<li data-q-each="todos">
+				<strong data-q-value="text"></strong>
+				<button data-q-click="completeTodo">Complete</button>
 			</li>
 		</ul>
-		<div data-if="!hasTodos"><em>Nothing todo</em></div>
-		<input type="text" data-input="newTodo" />
-		<button data-click="addTodo" data-disabled="!canAdd">Add</button>
+		<div data-q-if="!hasTodos"><em>Nothing todo</em></div>
+		<input type="text" data-q-input="newTodo" />
+		<button data-q-click="addTodo" data-q-disabled="!canAdd">Add</button>
 	</div>
 </div>
 
-<ul data-component="todo-watcher">
-	<li data-each="todos">
-		<span data-value="text" data-if="!done"></span>
-		<em data-value="text" data-if="done" style="text-decoration: line-through;"></em>
+<ul data-q-component="todo-watcher">
+	<li data-q-each="todos">
+		<span data-q-value="text" data-q-if="!done"></span>
+		<em data-q-value="text" data-q-if="done" style="text-decoration: line-through;"></em>
 	</li>
 </ul>
 
-<div data-component="todo-watcher">
-	<strong data-value="completeTodos"></strong> of <strong data-value="totalTodos"></strong>
+<div data-q-component="todo-watcher">
+	<strong data-q-value="completeTodos"></strong> of <strong data-q-value="totalTodos"></strong>
 </div>
 
-<div data-component="counter">
-	<span data-value="count" data-class="cssClass"></span>
+<div data-q-component="counter">
+	<span data-q-value="count" data-q-class="cssClass"></span>
 	<div>
-		<button data-click="increment">Add</button>
-		<button data-click="decrement">Subtract</button>
+		<button data-q-click="increment">Add</button>
+		<button data-q-click="decrement">Subtract</button>
 	</div>
 </div>
 
-<div data-component="counter" data-attributes="{&quot;count&quot;:10}">
-	<span data-value="count"></span>
+<div data-q-component="counter" data-q-attributes="{&quot;count&quot;:10}">
+	<span data-q-value="count"></span>
 	<div>
-		<button data-click="increment">Add</button>
-		<button data-click="decrement">Subtract</button>
+		<button data-q-click="increment">Add</button>
+		<button data-q-click="decrement">Subtract</button>
 	</div>
 </div>
 
-<div data-component="counterWrapper">
-	<div data-each="counters">
-		<div data-component="counter">
-			<span data-value="count" data-class="cssClass"></span>
+<div data-q-component="counterWrapper">
+	<div data-q-each="counters">
+		<div data-q-component="counter">
+			<span data-q-value="count" data-q-class="cssClass"></span>
 			<div>
-				<button data-click="increment">Add</button>
-				<button data-click="decrement">Subtract</button>
+				<button data-q-click="increment">Add</button>
+				<button data-q-click="decrement">Subtract</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 
-<div data-component="timer">
-	Counting <strong data-value="count"></strong>
-	<button data-click="start" data-disabled="active">Start</button>
-	<button data-click="stop" data-disabled="!active">Stop</button>
+<div data-q-component="timer">
+	Counting <strong data-q-value="count"></strong>
+	<button data-q-click="start" data-q-disabled="active">Start</button>
+	<button data-q-click="stop" data-q-disabled="!active">Stop</button>
 </div>
 
-<div data-component="timer" data-attributes='{"count":10}'>
-	Counting <strong data-value="count"></strong>
-	<button data-click="start" data-if="!active">Start</button>
-	<button data-click="stop" data-if="active">Stop</button>
-	<button data-click="reset">Reset</button>
+<div data-q-component="timer" data-q-attributes='{"count":10}'>
+	Counting <strong data-q-value="count"></strong>
+	<button data-q-click="start" data-q-if="!active">Start</button>
+	<button data-q-click="stop" data-q-if="active">Stop</button>
+	<button data-q-click="reset">Reset</button>
 </div>
 
 
-<div data-component="input">
+<div data-q-component="input">
 	<div>
 		<label>
 			First Name
-			<select type="text" data-input="firstName">
+			<select type="text" data-q-input="firstName">
 				<option>Perry</option>
 				<option>Stoo</option>
 				<option>Daniel</option>
@@ -145,60 +145,61 @@ div div {
 	<div>
 		<label>
 			Last Name
-			<input type="text" data-input="lastName" />
+			<input type="text" data-q-input="lastName" />
 		</label>
 	</div>
 	<div>
 		<label>
 			Age
-			<input type="text" data-input="age" />
+			<input type="text" data-q-input="age" />
 		</label>
 	</div>
 	<p>
-		<strong data-value="firstName"></strong>
-		<strong data-value="lastName"></strong> is
-		<strong data-value="age"></strong> years old
+		<strong data-q-value="firstName"></strong>
+		<strong data-q-value="lastName"></strong> is
+		<strong data-q-value="age"></strong> years old
 	</p>
-	<div>fullName = <span data-value="fullName"></span></div>
+	<div>fullName = <span data-q-value="fullName"></span></div>
 </div>
 
-<div data-component="input">
-	<div>firstName = <span data-value="firstName"></span></div>
-	<div>lastName = <span data-value="lastName"></span></div>
-	<div>fullName = <span data-value="fullName"></span></div>
+<div data-q-component="input">
+	<div>firstName = <span data-q-value="firstName"></span></div>
+	<div>lastName = <span data-q-value="lastName"></span></div>
+	<div>fullName = <span data-q-value="fullName"></span></div>
 	<ul>
-		<li data-each="list1" id="test"></li>
+		<li data-q-each="list1" id="test"></li>
 	</ul>
 </div>
 
-<div data-component="input">
-	<div data-value="text"></div>
+<div data-q-component="input">
+	<div data-q-value="text"></div>
 	<ul>
-		<li data-each="list2">
-			<span data-value="id"></span>:
-			<span data-value="text"></span>
+		<li data-q-each="list2">
+			<span data-q-value="id"></span>:
+			<span data-q-value="text"></span>
 		</li>
 	</ul>
 </div>
 
-<div data-component="colours">
-	<input type="text" data-input="title" />
-	<div data-value="title"></div>
+<div data-q-component="colours">
+	<input type="text" data-q-input="title" />
+	<div data-q-value="title"></div>
 	<div class="flex gap-1 justify-center">
-		<div data-each="colours">
-			<div data-template="colours"></div>
+		<div data-q-each="colours">
+			<div data-q-template="colours"></div>
 		</div>
 	</div>
 </div>
 
-<div data-include="file"></div>
+<div data-q-include="file"></div>
 <div id="wrapper">
-	<div id="inner">Current file = <code id="code" data-value="file"></code></div>
-	<button id="button" data-click="changeFile">Change Import</button>
+	<div id="inner">Current file = <code id="code" data-q-value="file"></code></div>
+	<button id="button" data-q-click="changeFile">Change Import</button>
+	<button id="button" data-q-click="errorFile">Error</button>
 </div>
 
 <template id="colours">
-	<div data-value="colour" data-colour="colour" data-click="setColour" style="color: white; padding: 0.5rem"></div>
+	<div data-q-value="colour" data-q-colour="colour" data-q-click="setColour" style="color: white; padding: 0.5rem"></div>
 </template>
 
 <script type="module" src="main.js"></script>

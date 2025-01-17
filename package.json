@@ -1,5 +1,5 @@
 {
-  "name": "exp",
+  "name": "quick",
   "version": "1.0.0",
   "description": "An experiment in a lightweight reactive framework.",
   "author": "Stoo Goff",
@@ -17,6 +17,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "vite": "^6.0.4"
+  },
+  "peerDependencies": {
     "vite": "^6.0.4"
   }
 }

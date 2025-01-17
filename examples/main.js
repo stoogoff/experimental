@@ -9,7 +9,7 @@ import Input from '/examples/components/input.js'
 import Colours from '/examples/components/colours.js'
 import { setLogger, ConsoleLogger } from '/utils/logger.js'
 
-setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, 2)
+setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, 4)
 
 const CounterWrapper = {
 	data: {
@@ -37,6 +37,10 @@ const Scope = {
 
 	changeFile() {
 		this.data.file = this.data.file === 'earth.html' ? 'mars.html' : 'earth.html'
+	},
+
+	errorFile() {
+		this.data.file = 'error.html'
 	},
 }
 

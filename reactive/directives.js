@@ -6,8 +6,15 @@ import { notIn } from '../utils/assert.js'
 
 const _directives = []
 const _components = {}
+let _prefix = 'q'
 
 export const directives = {
+	setPrefix(prefix) {
+		logger().log(`Setting prefix: ${ prefix }`)
+
+		_prefix = prefix
+	},
+
 	register(attribute, callback) {
 		_directives.push({ attribute, callback })
 	},
@@ -55,13 +62,15 @@ export const directives = {
 			let complete = false
 
 			_directives.forEach(({ attribute, callback }) => {
-				if(!(attribute in node.dataset)) return
+				const prefixedAttribute = `data-${ _prefix }-${ attribute}`
+
+				if(!(node.hasAttribute(prefixedAttribute))) return
 
 				logger().info(`directives: apply attribute '${ attribute }'`, node, scope)
 
-				const result = callback(node, node.dataset[attribute], scope, this)
+				const result = callback(node, node.getAttribute(prefixedAttribute), scope, this)
 
-				node.removeAttribute(`data-${ attribute }`)
+				node.removeAttribute(prefixedAttribute)
 
 				if(!complete) complete = result
 			})
