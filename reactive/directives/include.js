@@ -9,8 +9,8 @@ const load = async url => {
 	return await response.text()
 }
 
-export const input = async (node, property, scope) => {
-	node.innerHTML = await load(scope.data[property])
+export const include = (node, property, scope) => {
+	load(scope.data[property]).then(html => node.innerHTML = html)
 
 	scope.on(`change:${property}`, async (key, value, old) => {
 		node.innerHTML = await load(value)

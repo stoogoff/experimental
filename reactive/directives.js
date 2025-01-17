@@ -45,13 +45,14 @@ export const directives = {
 	},
 
 	loadDirectivesForNode(root, scope) {
-		logger().info('directives.loadDirectivesForNode', root, scope)
+		logger().info('BEGIN directives.loadDirectivesForNode', root, scope)
 
 		const childNodes = Array.from(root.childNodes)
-		let complete = false
 
 		childNodes.forEach(node => {
 			if(node.nodeType !== 1) return
+
+			let complete = false
 
 			_directives.forEach(({ attribute, callback }) => {
 				if(!(attribute in node.dataset)) return
@@ -66,9 +67,12 @@ export const directives = {
 			})
 
 			if(!complete && node.hasChildNodes()) {
+				logger().info('RECURSE directives.loadDirectivesForNode', node)
 				this.loadDirectivesForNode(node, scope)
 			}
 		})
+
+		logger().info('END directives.loadDirectivesForNode', root)
 	},
 }
 

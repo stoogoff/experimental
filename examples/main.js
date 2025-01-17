@@ -9,7 +9,7 @@ import Input from '/examples/components/input.js'
 import Colours from '/examples/components/colours.js'
 import { setLogger, ConsoleLogger } from '/utils/logger.js'
 
-setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, 4)
+setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, 2)
 
 const CounterWrapper = {
 	data: {
@@ -28,11 +28,16 @@ const Scope = {
 		scope: 'root',
 		test1: 'Hello there!',
 		test2: 'Yes, hello!',
+		file: 'earth.html',
 	},
 
 	clicky() {
 		alert(`Click: ${ this.data.test1 }`)
-	}
+	},
+
+	changeFile() {
+		this.data.file = this.data.file === 'earth.html' ? 'mars.html' : 'earth.html'
+	},
 }
 
 directives.register('colour', (node, property, scope) => {

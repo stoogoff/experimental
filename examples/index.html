@@ -33,6 +33,7 @@ div div {
 <body>
 <p>Hello world</p>
 
+
 <p data-value="scope"></p>
 <p data-value="test1"></p>
 
@@ -185,10 +186,20 @@ div div {
 	<div data-value="title"></div>
 	<div class="flex gap-1 justify-center">
 		<div data-each="colours">
-			<div data-value="colour" data-colour="colour" data-click="setColour" style="color: white; padding: 0.5rem"></div>
+			<div data-template="colours"></div>
 		</div>
 	</div>
 </div>
+
+<div data-include="file"></div>
+<div id="wrapper">
+	<div id="inner">Current file = <code id="code" data-value="file"></code></div>
+	<button id="button" data-click="changeFile">Change Import</button>
+</div>
+
+<template id="colours">
+	<div data-value="colour" data-colour="colour" data-click="setColour" style="color: white; padding: 0.5rem"></div>
+</template>
 
 <script type="module" src="main.js"></script>
 
