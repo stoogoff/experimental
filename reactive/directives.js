@@ -1,11 +1,13 @@
 
 import { Component } from './component.js'
 import { logger } from './config.js'
+import { Context } from './context.js'
 import * as core from './directives/index.js'
 import { notIn } from '../utils/assert.js'
 
 const _directives = []
 const _components = {}
+const _stores = {}
 let _prefix = 'q'
 
 export const directives = {
@@ -15,10 +17,12 @@ export const directives = {
 		_prefix = prefix
 	},
 
+	// register directives
 	register(attribute, callback) {
 		_directives.push({ attribute, callback })
 	},
 
+	// register and retrieve components
 	registerComponents(kvp) {
 		Object.keys(kvp).forEach(key => this.registerComponent(key, kvp[key]))
 	},
@@ -35,6 +39,21 @@ export const directives = {
 		if(!(name in _components)) logger().error(`Component '${ name }' not found.`)
 
 		return _components[name]
+	},
+
+	// register and retrieve stores
+	registerStore(name, store) {
+		logger().log(`Registering store: ${ name }`)
+
+		if(name in _stores) logger().error(`Store with name '${ name }' already exists`)
+
+		_stores[name] = store
+	},
+
+	getStore(name) {
+		if(!(name in _stores)) logger().error(`Store '${ name }' not found.`)
+
+		return _stores[name]
 	},
 
 	load(domNodeOrId, input = {}) {
@@ -54,21 +73,26 @@ export const directives = {
 	loadDirectivesForNode(root, scope) {
 		logger().info('BEGIN directives.loadDirectivesForNode', root, scope)
 
-		const childNodes = Array.from(root.childNodes)
+		const children = Array.from(root.children)
 
-		childNodes.forEach(node => {
-			if(node.nodeType !== 1) return
-
+		children.forEach(node => {
 			let complete = false
 
 			_directives.forEach(({ attribute, callback }) => {
 				const prefixedAttribute = `data-${ _prefix }-${ attribute}`
 
-				if(!(node.hasAttribute(prefixedAttribute))) return
+				if(!node.hasAttribute(prefixedAttribute)) return
 
 				logger().info(`directives: apply attribute '${ attribute }'`, node, scope)
 
-				const result = callback(node, node.getAttribute(prefixedAttribute), scope, this)
+				const context = new Context(
+					node,
+					node.getAttribute(prefixedAttribute),
+					scope,
+					callback,
+					this
+				)
+				const result = context.render()
 
 				node.removeAttribute(prefixedAttribute)
 

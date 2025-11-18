@@ -18,10 +18,10 @@ const load = async url => {
 	return await response.text()
 }
 
-export const include = (node, property, scope) => {
-	load(scope.data[property]).then(html => node.innerHTML = html)
+export const include = (context) => {
+	load(context.value).then(html => context.node.innerHTML = html)
 
-	scope.on(`change:${property}`, async (key, value, old) => {
+	context.scope.on(`change:${context.property}`, async (key, value, old) => {
 		try {
 			node.innerHTML = await load(value)
 		}

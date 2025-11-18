@@ -1,16 +1,15 @@
 
 export function booleanDirective(type, updateNode) {
-	return (node, property, scope) => {
-		const invert = property.startsWith('!')
+	return (context) => {
+		const invert = context.property.startsWith('!')
+		const property = context.property.replace(/^!/, '')
 
-		property = property.replace(/^!/, '')
+		const initialValue = context.value
 
-		const initialValue = scope.data[property]
+		updateNode(context.node, invert ? !initialValue : initialValue)
 
-		updateNode(node, invert ? !initialValue : initialValue)
-
-		scope.on(`change:${property}`, (key, value, old) => {
-			updateNode(node, invert ? !value : value)
+		context.scope.on(`change:${context.property}`, (key, value, old) => {
+			updateNode(context.node, invert ? !value : value)
 		})
 
 		return false

@@ -1,21 +1,21 @@
 
-export const input = (node, property, scope) => {
-	const currentValue = scope.data[property]
-	const checkbox = node.type === 'checkbox'
+export const input = (context) => {
+	const currentValue = context.value
+	const checkbox = context.node.type === 'checkbox'
 
 	if(checkbox) {
-		node.checked = currentValue
+		context.node.checked = currentValue
 	}
 	else {
-		node.value = currentValue
+		context.node.value = currentValue
 	}
 
-	node.onchange = (evt) => {
-		scope.data[property] = checkbox ? evt.target.checked : evt.target.value
+	context.node.onchange = (evt) => {
+		context.value = checkbox ? evt.target.checked : evt.target.value
 	}
 
-	scope.on(`change:${property}`, (key, value, old) => {
-		node.value = value
+	context.scope.on(`change:${context.property}`, (key, value, old) => {
+		context.node.value = value
 	})
 
 	return false

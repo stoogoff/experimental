@@ -3,11 +3,11 @@ import { isFunction } from '../../utils/assert.js'
 import { logger } from '../config.js'
 
 export function eventHandlerDirective(name) {
-	return (node, property, scope) => {
-		if(!isFunction(scope[property])) logger().error(`${ name } (directive): ${ property } is not callable`, scope)
+	return (context) => {
+		if(!isFunction(context.value)) logger().error(`${ name } (directive): ${ context.property } is not callable`)
 
-		node['on' + name] = evt => {
-			if(isFunction(scope[property])) scope[property](evt, scope)
+		context.node['on' + name] = evt => {
+			if(isFunction(context.value)) context.value(evt, context)
 		}
 
 		return false

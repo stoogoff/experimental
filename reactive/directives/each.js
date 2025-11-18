@@ -1,13 +1,14 @@
 
 import { logger } from '../config.js'
+import { directives } from "../directives.js"
 
-const createNode = (node, parent, value, scope, directives) => {
+const createNode = (context, parent, value) => {
 	logger().info(`each (directive): clone node with value`, value)
 
-	const clone = node.cloneNode(true)
+	const clone = context.node.cloneNode(true)
 
 	if(clone.hasChildNodes()) {
-		const newScope = scope.clone(value)
+		const newScope = clone in context.scope ? context.scope.clone(value) : value
 
 		logger().log(`each (directive): creating new scope`, newScope)
 
@@ -20,25 +21,25 @@ const createNode = (node, parent, value, scope, directives) => {
 	parent.appendChild(clone)
 }
 
-export const each = (node, property, scope, directives) => {
-	const parent = node.parentNode
-	const initialValues = scope.data[property] ?? []
+export const each = (context) => {
+	const parent = context.node.parentNode
+	const initialValues = context.value ?? []
 	let cachedValue = JSON.stringify(initialValues)
 
-	logger().info(`each (directive): '${ property }'`, scope, node, parent)
+	logger().info(`each (directive): '${ context.value }'`, context)
 
 	// clone the base node to maintain data-* attributes
-	const clone = node.cloneNode(true)
+	const clone = context.node.cloneNode(true)
 
 	// remove base node
-	node.remove()
+	context.node.remove()
 
 	// clone nodes
 	initialValues.forEach(value => {
-		createNode(clone, parent, value, scope, directives)
+		createNode(context, parent, value)
 	})
 
-	scope.on(`change:${property}`, (key, values, old) => {
+	context.scope.on(`change:${context.property}`, (key, values, old) => {
 		const matchValue = JSON.stringify(values)
 
 		logger().info('each (directive):', { cachedValue, matchValue, match: cachedValue === matchValue })
@@ -52,7 +53,7 @@ export const each = (node, property, scope, directives) => {
 
 		// clone nodes
 		values.forEach(value => {
-			createNode(clone, parent, value, scope, directives)
+			createNode(context, parent, value)
 		})
 
 		cachedValue = matchValue

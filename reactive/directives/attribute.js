@@ -1,10 +1,10 @@
 
 export function attributeDirective(attr) {
-	return (node, property, scope) => {
-		node.setAttribute(attr, scope.data[property])
+	return (context) => {
+		context.node.setAttribute(attr, context.value)
 
-		scope.on(`change:${property}`, (key, value, old) => {
-			node.setAttribute(attr, value)
+		context.scope.on(`change:${context.property}`, (key, value, old) => {
+			context.node.setAttribute(attr, value)
 		})
 
 		return false
