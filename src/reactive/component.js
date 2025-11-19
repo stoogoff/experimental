@@ -1,6 +1,6 @@
 
 import { logger } from './config.js'
-import { Emitter } from './emitter.js'
+import { Emitter } from '../utils/emitter.js'
 import { isFunction } from '../utils/assert.js'
 
 export class Component extends Emitter {

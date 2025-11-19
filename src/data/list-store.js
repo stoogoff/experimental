@@ -1,5 +1,5 @@
 
-import { Emitter } from '../reactive/emitter.js'
+import { Emitter } from '../utils/emitter.js'
 import { getProxy } from './proxy.js'
 
 export class ListStore extends Emitter {
