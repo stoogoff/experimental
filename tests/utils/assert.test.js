@@ -164,6 +164,7 @@ describe('assert: throwIfNull', test => {
 	test('throws for a null value', () => {
 		try {
 			throwIfNull(null)
+			test.fail('Unreachable code point')
 		}
 		catch(error) {
 			assert(error).isError()
@@ -173,6 +174,7 @@ describe('assert: throwIfNull', test => {
 	test("doesn't throw for a value", () => {
 		try {
 			throwIfNull(6)
+			test.success()
 		}
 		catch(error) {
 			assert(error).isError()

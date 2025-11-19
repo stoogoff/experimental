@@ -26,6 +26,7 @@ describe('list: sortByProperty', test => {
 	test('throws an error if no property is set', () => {
 		try {
 			sortByProperty()
+			test.fail('Unreachable code point')
 		}
 		catch(error) {
 			assert(error).isError()
@@ -74,6 +75,7 @@ describe('list: unique', test => {
 	test('throws an error if no input provided', () => {
 		try {
 			unique()
+			test.fail('Unreachable code point')
 		}
 		catch(error) {
 			assert(error).isError()

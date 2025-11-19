@@ -78,7 +78,7 @@ class TestRunner {
 export const describe = (description, tests) => {
 	const runner = new TestRunner(description)
 
-	tests((description, test) => {
+	function testHandler(description, test) {
 		try {
 			test()
 
@@ -87,7 +87,12 @@ export const describe = (description, tests) => {
 		catch(error) {
 			runner.failure(description, error)
 		}
-	})
+	}
+
+	testHandler.success = () => runner.success('Test passed')
+	testHandler.fail = (error) => runner.failure('Test called fail', error)
+
+	tests(testHandler)
 
 	runner.render()	
 }
@@ -142,5 +147,5 @@ export const assert = target => ({
 		if(!(target instanceof Error)) {
 			throw new Error(`Not an error object: ${target}`)
 		}
-	}
+	},
 })
