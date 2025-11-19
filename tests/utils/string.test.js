@@ -43,6 +43,36 @@ describe('string: slugify', test => {
 
 		assert(output).isEqual('hello1-world2-34')
 	})
+
+	test('returns an empty string if no value is provided', () => {
+		const output = slugify()
+
+		assert(output).isEqual('')
+	})
+
+	test('returns an empty string if a number is provided', () => {
+		const output = slugify(6)
+
+		assert(output).isEqual('6')
+	})
+
+	test('returns an empty string if a boolean is provided', () => {
+		const output = slugify(true)
+
+		assert(output).isEqual('')
+	})
+
+	test('returns an empty string if an array is provided', () => {
+		const output = slugify([5, 6])
+
+		assert(output).isEqual('')
+	})
+
+	test('returns an empty string if an object is provided', () => {
+		const output = slugify({ prop: 'Test' })
+
+		assert(output).isEqual('')
+	})
 })
 
 describe('string: toTitleCase', test => {
@@ -56,5 +86,35 @@ describe('string: toTitleCase', test => {
 		const output = toTitleCase('HELLO WORLD')
 
 		assert(output).isEqual('Hello world')
+	})
+
+	test('returns an empty string if no value is provided', () => {
+		const output = toTitleCase()
+
+		assert(output).isEqual('')
+	})
+
+	test('returns an empty string if a number is provided', () => {
+		const output = toTitleCase(6)
+
+		assert(output).isEqual('')
+	})
+
+	test('returns an empty string if a boolean is provided', () => {
+		const output = toTitleCase(true)
+
+		assert(output).isEqual('')
+	})
+
+	test('returns an empty string if an array is provided', () => {
+		const output = toTitleCase([5, 6])
+
+		assert(output).isEqual('')
+	})
+
+	test('returns an empty string if an object is provided', () => {
+		const output = toTitleCase({ prop: 'Test' })
+
+		assert(output).isEqual('')
 	})
 })

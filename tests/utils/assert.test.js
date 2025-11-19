@@ -8,6 +8,10 @@ import {
 	notEmptyString,
 	isEmptyString,
 	isEmptyArray,
+	isString,
+	notString,
+	isNumber,
+	notNumber,
 	notEmptyArray,
 	isFunction,
 } from '../../src/utils/assert.js'
@@ -285,6 +289,156 @@ describe('assert: isEmptyString', test => {
 
 	test('value is number', () => {
 		const output = isEmptyString(6)
+
+		assert(output).isFalse()
+	})
+})
+
+describe('assert: isString', test => {
+	test('non-empty string', () => {
+		const output = isString('hello world')
+
+		assert(output).isTrue()
+	})
+
+	test('empty string', () => {
+		const output = isString('')
+
+		assert(output).isTrue()
+	})
+
+	test('value is null', () => {
+		const output = isString(null)
+
+		assert(output).isFalse()
+	})
+
+	test('value is boolean', () => {
+		const output = isString(false)
+
+		assert(output).isFalse()
+	})
+
+	test('value is array', () => {
+		const output = isString([])
+
+		assert(output).isFalse()
+	})
+
+	test('value is number', () => {
+		const output = isString(6)
+
+		assert(output).isFalse()
+	})
+})
+
+describe('assert: notString', test => {
+	test('non-empty string', () => {
+		const output = notString('hello world')
+
+		assert(output).isFalse()
+	})
+
+	test('empty string', () => {
+		const output = notString('')
+
+		assert(output).isFalse()
+	})
+
+	test('value is null', () => {
+		const output = notString(null)
+
+		assert(output).isTrue()
+	})
+
+	test('value is boolean', () => {
+		const output = notString(false)
+
+		assert(output).isTrue()
+	})
+
+	test('value is array', () => {
+		const output = notString([])
+
+		assert(output).isTrue()
+	})
+
+	test('value is number', () => {
+		const output = notString(6)
+
+		assert(output).isTrue()
+	})
+})
+
+describe('assert: isNumber', test => {
+	test('an integer', () => {
+		const output = isNumber(36)
+
+		assert(output).isTrue()
+	})
+
+	test('a negative integer', () => {
+		const output = isNumber(-64)
+
+		assert(output).isTrue()
+	})
+
+	test('a float', () => {
+		const output = isNumber(6.45)
+
+		assert(output).isTrue()
+	})
+
+	test('a negative float', () => {
+		const output = isNumber(-54.6)
+
+		assert(output).isTrue()
+	})
+
+	test('array with values', () => {
+		const output = isNumber([4, 5, 6])
+
+		assert(output).isFalse()
+	})
+
+	test('value is null', () => {
+		const output = isNumber(null)
+
+		assert(output).isFalse()
+	})
+
+	test('value is boolean', () => {
+		const output = isNumber(true)
+
+		assert(output).isFalse()
+	})
+
+	test('value is non-numeric string', () => {
+		const output = isNumber('hello world')
+
+		assert(output).isFalse()
+	})
+
+	test('value is an integer as a string', () => {
+		const output = isNumber('302')
+
+		assert(output).isFalse()
+	})
+
+	test('value is a float as a string', () => {
+		const output = isNumber('14.64')
+
+		assert(output).isFalse()
+	})
+
+	test('value is object', () => {
+		const output = isNumber({ prop: 'Test' })
+
+		assert(output).isFalse()
+	})
+
+	test('value is function', () => {
+		const output = isNumber(function() {})
 
 		assert(output).isFalse()
 	})

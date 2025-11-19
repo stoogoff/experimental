@@ -1,4 +1,6 @@
 
+import { isNumber, isString } from './assert.js'
+
 export const id = (input) =>
 	input.trim().normalize('NFD').replace(/[^a-z0-9\-\s]/gi, '').replace(/\s{1,}/g, "-").toLowerCase()
 
@@ -13,13 +15,33 @@ export const createId = (length = 6) => {
 	return output.join('')
 }
 
-export const toTitleCase = text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+/**
+ * Converts a string to lower case with a first letter upper case and
+ * returns it. Returns an empty string if the provided text is not a string.
+ * @param {string} text - The string to convert.
+ * @return {string} The converted string or an empty string.
+ */
+export const toTitleCase = text =>
+	isString(text) ? text.charAt(0).toUpperCase() + text.substring(1).toLowerCase() : ''
 
-export const slugify = text => text
-	.toLowerCase()
-	.trim()
-	.replace(/[^a-z0-9\s]+/, '')
-	.replace(/\s+/g, '-')
+/**
+ * Converts a string to a URL slug and returns it. This converts the text to
+ * lower case and trims any leading or trailing whitespace. It then removes any
+ * non-alphanumeric characters and replaces multiple spaces with a hyphen.
+ * @example
+ * slugify('Hello  world! 24')
+ * // returns "hello-world-24"
+ * @param {string} text - The string to convert.
+ * @returnn {string} The converted string.
+ */
+export const slugify = text => 
+	isString(text) || isNumber(text) ?
+		text.toString()
+			.toLowerCase()
+			.trim()
+			.replace(/[^a-z0-9\s]+/, '')
+			.replace(/\s+/g, '-')
+	: ''
 
 export const normalise = text => 
 	text.toString()

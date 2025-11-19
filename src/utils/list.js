@@ -1,5 +1,15 @@
 import { throwIfNull } from "./assert.js"
 
+/**
+ * Return a sorting function which will sort an array of objects
+ * by the provided property.
+ * @example
+ * const people = [{name: 'Cedric'}, {name: 'Brenda'}, {name: 'Adam'}]
+ * const sorted = people.sort(sortByPropery('name'))
+ * // sorted === [{name: 'Adam'}, {name: 'Brenda'}, {name: 'Cedric'}]
+ * @param {string} prop - The property to use to sort the array.
+ * @return {function} The sorting function.
+ */
 export const sortByProperty = prop => {
 	throwIfNull(prop, 'prop')
 
@@ -43,6 +53,11 @@ export const map = (arr, key, value) => {
 	return output
 }
 
+/**
+ * Returns an array with any duplicate values removed.
+ * @params {Array} arr - The array to deduplicate.
+ * @return {Array} A new array containing only unique values.
+ */
 export const unique = (arr) => {
 	throwIfNull(arr, 'arr')
 
