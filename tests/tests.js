@@ -39,58 +39,57 @@ class TestRunner {
 		this.#runs.push(new Failure(description, error))
 	}
 
-	render() {
-		const total = this.#runs.length
-		const successes = this.#runs.filter(run => run instanceof Success).length
-		const failures = this.#runs.filter(run => run instanceof Failure)
+	get totalRuns() {
+		return this.#runs.length
+	}
 
+	get totalSuccesses() {
+		return this.successes.length
+	}
+
+	get totalFailures() {
+		return this.failures.length
+	}
+
+	get successes() {
+		return this.#runs.filter(run => run instanceof Success)
+	}
+
+	get failures() {
+		return this.#runs.filter(run => run instanceof Failure)
+	}
+
+	render() {
 		const summary = [`${this.#description}:`]
 
-		if(failures.length > 0) {
-			summary.push(` \x1b[31m Passed ${successes} of ${total}\x1b[0m`)
+		if(this.totalFailures > 0) {
+			summary.push(` \x1b[31m Passed ${this.totalSuccesses} of ${this.totalRuns}\x1b[0m`)
 		}
 		else {
-			summary.push(` \x1b[1m\x1b[33mPassed ${successes} of ${total}\x1b[0m`)
+			summary.push(` \x1b[1m\x1b[33mPassed ${this.totalSuccesses} of ${this.totalRuns}\x1b[0m`)
 		}
 
 		console.log(summary.join(''))
 
-		failures.forEach(run => run.render())
+		this.failures.forEach(run => run.render())
 	}
 }
-
-const runners = []
-
-const getCurrentRunner = () => {
-	if(runners.length === 0) {
-		throw new Error('No runners set')
-	}
-
-	return runners[runners.length - 1]
-}
-
 
 export const describe = (description, tests) => {
 	const runner = new TestRunner(description)
 
-	runners.push(runner)
+	tests((description, test) => {
+		try {
+			test()
 
-	tests()
+			runner.success(description)
+		}
+		catch(error) {
+			runner.failure(description, error)
+		}
+	})
 
 	runner.render()	
-}
-
-export const test = (description, test) => {
-	const runner = getCurrentRunner()
-
-	try {
-		test()
-		
-		runner.success(description)
-	}
-	catch(error) {
-		runner.failure(description, error)
-	}
 }
 
 export const assert = target => ({

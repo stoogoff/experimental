@@ -1,7 +1,7 @@
-import { describe, test, assert } from '../tests.js'
+import { describe, assert } from '../tests.js'
 import { slugify, toTitleCase } from '../../src/utils/string.js'
 
-describe('string: slugify', () => {
+describe('string: slugify', test => {
 	test('convert space to hyphen', () => {
 		const output = slugify('hello world')
 
@@ -45,7 +45,7 @@ describe('string: slugify', () => {
 	})
 })
 
-describe('string: toTitleCase', () => {
+describe('string: toTitleCase', test => {
 	test('converts lower case to title case', () => {
 		const output = toTitleCase('hello world')
 

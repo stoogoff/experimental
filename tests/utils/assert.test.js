@@ -1,4 +1,4 @@
-import { describe, test, assert } from '../tests.js'
+import { describe, assert } from '../tests.js'
 import { 
 	notNull,
 	isNull,
@@ -12,7 +12,7 @@ import {
 	isFunction,
 } from '../../src/utils/assert.js'
 
-describe('assert: notNull', () => {
+describe('assert: notNull', test => {
 	test('object', () => {
 		const output = notNull({})
 
@@ -86,7 +86,7 @@ describe('assert: notNull', () => {
 	})
 })
 
-describe('assert: isNull', () => {
+describe('assert: isNull', test => {
 	test('object', () => {
 		const output = isNull({})
 
@@ -160,7 +160,7 @@ describe('assert: isNull', () => {
 	})
 })
 
-describe('assert: throwIfNull', () => {
+describe('assert: throwIfNull', test => {
 	test('throws for a null value', () => {
 		try {
 			throwIfNull(null)
@@ -180,7 +180,7 @@ describe('assert: throwIfNull', () => {
 	})
 })
 
-describe('assert: isIn', () => {
+describe('assert: isIn', test => {
 	test('object contains property', () => {
 		const input = { name: 'Stoo' }
 		const output = isIn('name', input)
@@ -196,7 +196,7 @@ describe('assert: isIn', () => {
 	})
 })
 
-describe('assert: notIn', () => {
+describe('assert: notIn', test => {
 	test('object contains property', () => {
 		const input = { name: 'Stoo' }
 		const output = notIn('name', input)
@@ -212,7 +212,7 @@ describe('assert: notIn', () => {
 	})
 })
 
-describe('assert: notEmptyString', () => {
+describe('assert: notEmptyString', test => {
 	test('string has content', () => {
 		const output = notEmptyString('hello world')
 
@@ -250,7 +250,7 @@ describe('assert: notEmptyString', () => {
 	})
 })
 
-describe('assert: isEmptyString', () => {
+describe('assert: isEmptyString', test => {
 	test('string has content', () => {
 		const output = isEmptyString('hello world')
 
@@ -288,7 +288,7 @@ describe('assert: isEmptyString', () => {
 	})
 })
 
-describe('assert: isEmptyArray', () => {
+describe('assert: isEmptyArray', test => {
 	test('empty array', () => {
 		const output = isEmptyArray([])
 
@@ -332,7 +332,7 @@ describe('assert: isEmptyArray', () => {
 	})
 })
 
-describe('assert: notEmptyArray', () => {
+describe('assert: notEmptyArray', test => {
 	test('empty array', () => {
 		const output = notEmptyArray([])
 
@@ -376,7 +376,7 @@ describe('assert: notEmptyArray', () => {
 	})
 })
 
-describe('assert: isFunction', () => {
+describe('assert: isFunction', test => {
 	test('with a function', () => {
 		const output = isFunction(function() {})
 
