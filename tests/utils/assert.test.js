@@ -1,0 +1,415 @@
+import { describe, test, assert } from '../tests.js'
+import { 
+	notNull,
+	isNull,
+	throwIfNull,
+	notIn,
+	isIn,
+	notEmptyString,
+	isEmptyString,
+	isEmptyArray,
+	notEmptyArray,
+	isFunction,
+} from '../../src/utils/assert.js'
+
+describe('assert: notNull', () => {
+	test('object', () => {
+		const output = notNull({})
+
+		assert(output).isTrue()
+	})
+
+	test('array', () => {
+		const output = notNull([])
+
+		assert(output).isTrue()
+	})
+
+	test('string', () => {
+		const output = notNull('hello')
+
+		assert(output).isTrue()
+	})
+
+	test('empty string', () => {
+		const output = notNull('')
+
+		assert(output).isTrue()
+	})
+
+	test('positive number', () => {
+		const output = notNull(7)
+
+		assert(output).isTrue()
+	})
+
+	test('negative number', () => {
+		const output = notNull(-23)
+
+		assert(output).isTrue()
+	})
+
+	test('zero', () => {
+		const output = notNull(0)
+
+		assert(output).isTrue()
+	})
+
+	test('true', () => {
+		const output = notNull(true)
+
+		assert(output).isTrue()
+	})
+
+	test('false', () => {
+		const output = notNull(false)
+
+		assert(output).isTrue()
+	})
+
+	test('function', () => {
+		const output = notNull(function() {})
+
+		assert(output).isTrue()
+	})
+
+	test('null', () => {
+		const output = notNull(null)
+
+		assert(output).isFalse()
+	})
+
+	test('undefined', () => {
+		const output = notNull(undefined)
+
+		assert(output).isFalse()
+	})
+})
+
+describe('assert: isNull', () => {
+	test('object', () => {
+		const output = isNull({})
+
+		assert(output).isFalse()
+	})
+
+	test('array', () => {
+		const output = isNull([])
+
+		assert(output).isFalse()
+	})
+
+	test('string', () => {
+		const output = isNull('hello')
+
+		assert(output).isFalse()
+	})
+
+	test('empty string', () => {
+		const output = isNull('')
+
+		assert(output).isFalse()
+	})
+
+	test('positive number', () => {
+		const output = isNull(7)
+
+		assert(output).isFalse()
+	})
+
+	test('negative number', () => {
+		const output = isNull(-23)
+
+		assert(output).isFalse()
+	})
+
+	test('zero', () => {
+		const output = isNull(0)
+
+		assert(output).isFalse()
+	})
+
+	test('true', () => {
+		const output = isNull(true)
+
+		assert(output).isFalse()
+	})
+
+	test('false', () => {
+		const output = isNull(false)
+
+		assert(output).isFalse()
+	})
+
+	test('function', () => {
+		const output = isNull(function() {})
+
+		assert(output).isFalse()
+	})
+
+	test('null', () => {
+		const output = isNull(null)
+
+		assert(output).isTrue()
+	})
+
+	test('undefined', () => {
+		const output = isNull(undefined)
+
+		assert(output).isTrue()
+	})
+})
+
+describe('assert: throwIfNull', () => {
+	test('throws for a null value', () => {
+		try {
+			throwIfNull(null)
+		}
+		catch(error) {
+			assert(error).isError()
+		}
+	})
+
+	test("doesn't throw for a value", () => {
+		try {
+			throwIfNull(6)
+		}
+		catch(error) {
+			assert(error).isError()
+		}
+	})
+})
+
+describe('assert: isIn', () => {
+	test('object contains property', () => {
+		const input = { name: 'Stoo' }
+		const output = isIn('name', input)
+
+		assert(output).isTrue()
+	})
+
+	test("object doesn't contains property", () => {
+		const input = { name: 'Stoo' }
+		const output = isIn('age', input)
+
+		assert(output).isFalse()
+	})
+})
+
+describe('assert: notIn', () => {
+	test('object contains property', () => {
+		const input = { name: 'Stoo' }
+		const output = notIn('name', input)
+
+		assert(output).isFalse()
+	})
+
+	test("object doesn't contains property", () => {
+		const input = { name: 'Stoo' }
+		const output = notIn('age', input)
+
+		assert(output).isTrue()
+	})
+})
+
+describe('assert: notEmptyString', () => {
+	test('string has content', () => {
+		const output = notEmptyString('hello world')
+
+		assert(output).isTrue()
+	})
+
+	test('string is empty', () => {
+		const output = notEmptyString('')
+
+		assert(output).isFalse()
+	})
+
+	test('value is null', () => {
+		const output = notEmptyString(null)
+
+		assert(output).isFalse()
+	})
+
+	test('value is boolean', () => {
+		const output = notEmptyString(false)
+
+		assert(output).isTrue()
+	})
+
+	test('value is array', () => {
+		const output = notEmptyString([])
+
+		assert(output).isTrue()
+	})
+
+	test('value is number', () => {
+		const output = notEmptyString(6)
+
+		assert(output).isTrue()
+	})
+})
+
+describe('assert: isEmptyString', () => {
+	test('string has content', () => {
+		const output = isEmptyString('hello world')
+
+		assert(output).isFalse()
+	})
+
+	test('string is empty', () => {
+		const output = isEmptyString('')
+
+		assert(output).isTrue()
+	})
+
+	test('value is null', () => {
+		const output = isEmptyString(null)
+
+		assert(output).isTrue()
+	})
+
+	test('value is boolean', () => {
+		const output = isEmptyString(false)
+
+		assert(output).isFalse()
+	})
+
+	test('value is array', () => {
+		const output = isEmptyString([])
+
+		assert(output).isFalse()
+	})
+
+	test('value is number', () => {
+		const output = isEmptyString(6)
+
+		assert(output).isFalse()
+	})
+})
+
+describe('assert: isEmptyArray', () => {
+	test('empty array', () => {
+		const output = isEmptyArray([])
+
+		assert(output).isTrue()
+	})
+
+	test('array with values', () => {
+		const output = isEmptyArray([4, 5, 6])
+
+		assert(output).isFalse()
+	})
+
+	test('value is null', () => {
+		const output = isEmptyArray(null)
+
+		assert(output).isTrue()
+	})
+
+	test('value is boolean', () => {
+		const output = isEmptyArray(true)
+
+		assert(output).isFalse()
+	})
+
+	test('value is string', () => {
+		const output = isEmptyArray('hello world')
+
+		assert(output).isFalse()
+	})
+
+	test('value is number', () => {
+		const output = isEmptyArray(6)
+
+		assert(output).isFalse()
+	})
+
+	test('value is function', () => {
+		const output = isEmptyArray(function() {})
+
+		assert(output).isFalse()
+	})
+})
+
+describe('assert: notEmptyArray', () => {
+	test('empty array', () => {
+		const output = notEmptyArray([])
+
+		assert(output).isFalse()
+	})
+
+	test('array with values', () => {
+		const output = notEmptyArray([4, 5, 6])
+
+		assert(output).isTrue()
+	})
+
+	test('value is null', () => {
+		const output = notEmptyArray(null)
+
+		assert(output).isFalse()
+	})
+
+	test('value is boolean', () => {
+		const output = notEmptyArray(true)
+
+		assert(output).isFalse()
+	})
+
+	test('value is string', () => {
+		const output = notEmptyArray('hello world')
+
+		assert(output).isFalse()
+	})
+
+	test('value is number', () => {
+		const output = notEmptyArray(6)
+
+		assert(output).isFalse()
+	})
+
+	test('value is function', () => {
+		const output = notEmptyArray(function() {})
+
+		assert(output).isFalse()
+	})
+})
+
+describe('assert: isFunction', () => {
+	test('with a function', () => {
+		const output = isFunction(function() {})
+
+		assert(output).isTrue()
+	})
+
+	test('value is array', () => {
+		const output = isFunction([4, 5, 6])
+
+		assert(output).isFalse()
+	})
+
+	test('value is null', () => {
+		const output = isFunction(null)
+
+		assert(output).isFalse()
+	})
+
+	test('value is boolean', () => {
+		const output = isFunction(true)
+
+		assert(output).isFalse()
+	})
+
+	test('value is string', () => {
+		const output = isFunction('hello world')
+
+		assert(output).isFalse()
+	})
+
+	test('value is number', () => {
+		const output = isFunction(6)
+
+		assert(output).isFalse()
+	})
+})

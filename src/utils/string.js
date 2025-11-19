@@ -18,7 +18,7 @@ export const toTitleCase = text => text.charAt(0).toUpperCase() + text.substring
 export const slugify = text => text
 	.toLowerCase()
 	.trim()
-	.replace(/^\W+/, '')
+	.replace(/[^a-z0-9\s]+/, '')
 	.replace(/\s+/g, '-')
 
 export const normalise = text => 

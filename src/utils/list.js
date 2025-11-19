@@ -1,11 +1,15 @@
+import { throwIfNull } from "./assert.js"
 
-export const sortByProperty = prop =>
-	(a, b) => {
+export const sortByProperty = prop => {
+	throwIfNull(prop, 'prop')
+
+	return (a, b) => {
 		a = a[prop]
 		b = b[prop]
 
 		return a == b ? 0 : (a < b ? -1 : 1)
 	}
+}
 
 export const sortByProperties = (prop1, prop2) => {
 	const sort1 = sortByProperty(prop1)
@@ -39,8 +43,11 @@ export const map = (arr, key, value) => {
 	return output
 }
 
-export const unique = (arr) =>
-	arr.filter((a, i) => arr.indexOf(a) == i)
+export const unique = (arr) => {
+	throwIfNull(arr, 'arr')
+
+	return arr.filter((a, i) => arr.indexOf(a) === i)
+}
 
 // reducers
 export const max = (a, c) => Math.max(a, c)
