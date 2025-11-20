@@ -16,7 +16,7 @@ import {
 	isFunction,
 } from '../../src/utils/assert.js'
 
-describe('assert: notNull', test => {
+describe('utils/assert: notNull', test => {
 	test('object', () => {
 		const output = notNull({})
 
@@ -90,7 +90,7 @@ describe('assert: notNull', test => {
 	})
 })
 
-describe('assert: isNull', test => {
+describe('utils/assert: isNull', test => {
 	test('object', () => {
 		const output = isNull({})
 
@@ -164,29 +164,18 @@ describe('assert: isNull', test => {
 	})
 })
 
-describe('assert: throwIfNull', test => {
+describe('utils/assert: throwIfNull', test => {
 	test('throws for a null value', () => {
-		try {
-			throwIfNull(null)
-			test.fail('Unreachable code point')
-		}
-		catch(error) {
-			assert(error).isError()
-		}
+		assert(() => throwIfNull(null)).throwsError()
 	})
 
 	test("doesn't throw for a value", () => {
-		try {
-			throwIfNull(6)
-			test.success()
-		}
-		catch(error) {
-			assert(error).isError()
-		}
+		throwIfNull(6)
+		test.success()
 	})
 })
 
-describe('assert: isIn', test => {
+describe('utils/assert: isIn', test => {
 	test('object contains property', () => {
 		const input = { name: 'Stoo' }
 		const output = isIn('name', input)
@@ -202,7 +191,7 @@ describe('assert: isIn', test => {
 	})
 })
 
-describe('assert: notIn', test => {
+describe('utils/assert: notIn', test => {
 	test('object contains property', () => {
 		const input = { name: 'Stoo' }
 		const output = notIn('name', input)
@@ -218,7 +207,7 @@ describe('assert: notIn', test => {
 	})
 })
 
-describe('assert: notEmptyString', test => {
+describe('utils/assert: notEmptyString', test => {
 	test('string has content', () => {
 		const output = notEmptyString('hello world')
 
@@ -256,7 +245,7 @@ describe('assert: notEmptyString', test => {
 	})
 })
 
-describe('assert: isEmptyString', test => {
+describe('utils/assert: isEmptyString', test => {
 	test('string has content', () => {
 		const output = isEmptyString('hello world')
 
@@ -294,7 +283,7 @@ describe('assert: isEmptyString', test => {
 	})
 })
 
-describe('assert: isString', test => {
+describe('utils/assert: isString', test => {
 	test('non-empty string', () => {
 		const output = isString('hello world')
 
@@ -332,7 +321,7 @@ describe('assert: isString', test => {
 	})
 })
 
-describe('assert: notString', test => {
+describe('utils/assert: notString', test => {
 	test('non-empty string', () => {
 		const output = notString('hello world')
 
@@ -370,7 +359,7 @@ describe('assert: notString', test => {
 	})
 })
 
-describe('assert: isNumber', test => {
+describe('utils/assert: isNumber', test => {
 	test('an integer', () => {
 		const output = isNumber(36)
 
@@ -444,7 +433,7 @@ describe('assert: isNumber', test => {
 	})
 })
 
-describe('assert: isEmptyArray', test => {
+describe('utils/assert: isEmptyArray', test => {
 	test('empty array', () => {
 		const output = isEmptyArray([])
 
@@ -488,7 +477,7 @@ describe('assert: isEmptyArray', test => {
 	})
 })
 
-describe('assert: notEmptyArray', test => {
+describe('utils/assert: notEmptyArray', test => {
 	test('empty array', () => {
 		const output = notEmptyArray([])
 
@@ -532,7 +521,7 @@ describe('assert: notEmptyArray', test => {
 	})
 })
 
-describe('assert: isFunction', test => {
+describe('utils/assert: isFunction', test => {
 	test('with a function', () => {
 		const output = isFunction(function() {})
 

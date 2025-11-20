@@ -1,7 +1,7 @@
 import { describe, assert } from '../tests.js'
 import { sortByProperty, unique, max, min, sum, subtract } from '../../src/utils/list.js'
 
-describe('list: sortByProperty', test => {
+describe('utils/list: sortByProperty', test => {
 	test('returns a function for a property', () => {
 		const output = sortByProperty('name')
 
@@ -24,13 +24,7 @@ describe('list: sortByProperty', test => {
 	})
 
 	test('throws an error if no property is set', () => {
-		try {
-			sortByProperty()
-			test.fail('Unreachable code point')
-		}
-		catch(error) {
-			assert(error).isError()
-		}
+		assert(() => sortByProperty()).throwsError()
 	})
 
 	test("doesn't sort if the property doesn't exist", () => {
@@ -49,7 +43,7 @@ describe('list: sortByProperty', test => {
 	})
 })
 
-describe('list: unique', test => {
+describe('utils/list: unique', test => {
 	test('removes duplicated string values', () => {
 		const input = ['aa', 'bb', 'aa', 'cc']
 		const output = unique(input)
@@ -73,17 +67,11 @@ describe('list: unique', test => {
 	})
 
 	test('throws an error if no input provided', () => {
-		try {
-			unique()
-			test.fail('Unreachable code point')
-		}
-		catch(error) {
-			assert(error).isError()
-		}
+		assert(() => unique()).throwsError()
 	})
 })
 
-describe('list: reducers', test => {
+describe('utils/list: reducers', test => {
 	test('sums two numbers', () => {
 		const output = sum(1, 2)
 

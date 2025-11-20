@@ -1,7 +1,7 @@
 import { describe, assert } from '../tests.js'
 import { isoDate } from '../../src/utils/date.js'
 
-describe('date: isoDate', test => {
+describe('utils/date: isoDate', test => {
 	test('converts the date to ISO date format without milliseconds', () => {
 		const input = new Date(1975, 1, 9, 19, 38, 12, 345)
 		const output = isoDate(input)
