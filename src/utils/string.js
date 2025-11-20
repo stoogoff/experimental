@@ -1,9 +1,11 @@
 
 import { isNumber, isString } from './assert.js'
 
-export const id = (input) =>
-	input.trim().normalize('NFD').replace(/[^a-z0-9\-\s]/gi, '').replace(/\s{1,}/g, "-").toLowerCase()
-
+/**
+ * Create a new randomly generate alphanumeric string of the given length.
+ * @param {number} length - The length of the string to generate. Defaults to 6.
+ * @return {string} The created string.
+ */
 export const createId = (length = 6) => {
 	let output = []
 	const characters = '0123456789abcdefghijklmnopqrstuvwxyz'

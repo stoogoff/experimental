@@ -1,5 +1,5 @@
 import { describe, assert } from '../tests.js'
-import { slugify, toTitleCase } from '../../src/utils/string.js'
+import { createId, slugify, toTitleCase } from '../../src/utils/string.js'
 
 describe('utils/string: slugify', test => {
 	test('convert space to hyphen', () => {
@@ -116,5 +116,28 @@ describe('utils/string: toTitleCase', test => {
 		const output = toTitleCase({ prop: 'Test' })
 
 		assert(output).isEqual('')
+	})
+})
+
+describe('utils/string: createId', test => {
+	test('creates a random string 6 characters long', () => {
+		const output = createId()
+
+		assert(output).notNull()
+		assert(output.length).isEqual(6)
+	})
+
+	test('creates a random string of the given length', () => {
+		const output = createId(10)
+
+		assert(output).notNull()
+		assert(output.length).isEqual(10)
+	})
+
+	test('the string contains only alphanumeric characters', () => {
+		const output = createId()
+
+		assert(output).notNull()
+		assert(/^[a-z0-9]{6}$/.test(output)).isTrue()
 	})
 })

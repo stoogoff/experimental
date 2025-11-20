@@ -141,6 +141,12 @@ export const assert = target => ({
 		}
 	},
 
+	isNull() {
+		if(target !== null && target !== undefined) {
+			throw new Error(`Expected null or undefined: ${target}`)
+		}
+	},
+
 	isFunction() {
 		this.notNull()
 

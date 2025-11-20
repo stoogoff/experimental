@@ -21,7 +21,16 @@ export const sortByProperty = prop => {
 	}
 }
 
+/**
+ * Sorts an array of objects by the first property then the second.
+ * @param {string} prop1
+ * @param {string} prop1
+ * @return {function}
+ */
 export const sortByProperties = (prop1, prop2) => {
+	throwIfNull(prop1, 'prop1')
+	throwIfNull(prop2, 'prop2')
+
 	const sort1 = sortByProperty(prop1)
 	const sort2 = sortByProperty(prop2)
 
