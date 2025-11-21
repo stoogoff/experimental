@@ -1,4 +1,5 @@
-import { throwIfNull } from "./assert.js"
+
+import { throwIfNull } from './assert.js'
 
 /**
  * Return a sorting function which will sort an array of objects
@@ -23,9 +24,9 @@ export const sortByProperty = prop => {
 
 /**
  * Sorts an array of objects by the first property then the second.
- * @param {string} prop1
- * @param {string} prop1
- * @return {function}
+ * @param {string} prop1 - The first property to sort by.
+ * @param {string} prop2 - The second property to sort by.
+ * @return {function} The sorting function.
  */
 export const sortByProperties = (prop1, prop2) => {
 	throwIfNull(prop1, 'prop1')
@@ -37,10 +38,34 @@ export const sortByProperties = (prop1, prop2) => {
 	return (a, b) => sort1(a, b) || sort2(a, b)
 }
 
-export const findByProperty = (property, value) =>
-	(item) => property in item && item[property] == value
+/**
+ * Returns a function suitable for passing to find or filter which
+ * checks an object for a property loosely equal to the value.
+ * @example
+ * const people = [{name: 'Cedric', age: 27}, {name: 'Brenda', age: 32}, {name: 'Adam', age: 32}]
+ * const cedric = people.filter(findByProperty('name', 'Cedric'))
+ * // cedric === {name: 'Cedric', age: 27}
+ * @example
+ * const people = [{name: 'Cedric', age: 27}, {name: 'Brenda', age: 32}, {name: 'Adam', age: 32}]
+ * const age32 = people.filter(findByProperty('age', 32))
+ * // age32 === [{name: 'Brenda', age: 32}, {name: 'Adam', age: 32}]
+ * @param {string} property
+ * @param {any} value
+ * @return {function} The filtering or find function.
+ */
+export const findByProperty = (property, value) => {
+	throwIfNull(property, 'property')
 
+	return (item) => property in item && item[property] == value
+}
+
+/**
+ * 
+ */
 export const indexOfByProperty = (list, property, value) => {
+	throwIfNull(list, 'list')
+	throwIfNull(property, 'property')
+
 	for(let i = 0; i < list.length; ++i) {
 		let item = list[i]
 
@@ -50,16 +75,6 @@ export const indexOfByProperty = (list, property, value) => {
 	}
 
 	return -1
-}
-
-export const map = (arr, key, value) => {
-	arr = arr || []
-
-	const output = {}
-
-	arr.forEach(item => output[item[key]] = value ? item[value] : item)
-
-	return output
 }
 
 /**

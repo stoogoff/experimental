@@ -1,6 +1,7 @@
 import { describe, assert } from '../tests.js'
 import {
 	findByProperty,
+	indexOfByProperty,
 	sortByProperty,
 	sortByProperties,
 	unique,
@@ -108,7 +109,7 @@ describe('utils/list: sortByProperties', test => {
 	})
 
 	test('throws an error if property one is not set', () => {
-		assert(() => sortByProperties()).throwsError()
+		assert(() => sortByProperties(null, 'property')).throwsError()
 	})
 
 	test('throws an error if property two is not set', () => {
@@ -118,13 +119,13 @@ describe('utils/list: sortByProperties', test => {
 
 describe('utils/list: findByProperty', test => {
 	const data = [
-		{ 'string': 'ac', number: 1 },
-		{ 'string': 'ad', number: 0 },
-		{ 'string': 'ab', number: 2 },
-		{ 'string': 'aa', number: 3 },
-		{ 'string': 'ac', number: 5 },
-		{ 'string': 'ab', number: 4 },
-		{ 'string': 'aa', number: 1 },
+		{ 'string': 'ac', 0: 10, number: 1 },
+		{ 'string': 'ad', 0: 20, number: null },
+		{ 'string': 'ab', 0: 30, number: 2 },
+		{ 'string': 'aa', 0: 40, number: 3 },
+		{ 'string': 'ac', 0: 50, number: 5 },
+		{ 'string': 'ab', 0: 60, number: 4 },
+		{ 'string': 'aa', 0: 70, number: 1 },
 	]
 
 	test('returns a function for the property', () => {
@@ -139,6 +140,31 @@ describe('utils/list: findByProperty', test => {
 		assert(output).notNull()
 		assert(output.string).isEqual('ab')
 		assert(output.number).isEqual(2)
+	})
+
+	test('returns the first object with a matching null property', () => {
+		const output = data.find(findByProperty('number', null))
+
+		assert(output).notNull()
+		assert(output.string).isEqual('ad')
+		assert(output.number).isNull()
+	})
+
+	test('returns the first object with a matching undefined property', () => {
+		const output = data.find(findByProperty('number', undefined))
+
+		assert(output).notNull()
+		assert(output.string).isEqual('ad')
+		assert(output.number).isNull()
+	})
+
+	test('returns the first object with a numeric key', () => {
+		const output = data.find(findByProperty(0, 50))
+
+		assert(output).notNull()
+		assert(output.string).isEqual('ac')
+		assert(output.number).isEqual(5)
+		assert(output[0]).isEqual(50)
 	})
 
 	test("returns undefined if a property doesn't match", () => {
@@ -161,29 +187,65 @@ describe('utils/list: findByProperty', test => {
 		assert(output[0]).isEqual(data[3])
 		assert(output[1]).isEqual(data[6])
 	})
+
+	test('throws an error if property is not set', () => {
+		assert(() => findByProperty(null, 'zz')).throwsError()
+	})
 })
 
 describe('utils/list: indexOfByProperty', test => {
 	const data = [
-		{ 'string': 'ac' },
-		{ 'string': 'ad' },
-		{ 'string': 'ab' },
-		{ 'string': 'aa' },
-		{ 'string': 'ac' },
-		{ 'string': 'ab' },
-		{ 'string': 'aa' },
+		{ 'string': 'ac', 0: 10, number: 1 },
+		{ 'string': 'ad', 0: 20, number: null },
+		{ 'string': 'ab', 0: 30, number: 2 },
+		{ 'string': 'aa', 0: 40, number: 3 },
+		{ 'string': 'ac', 0: 50, number: 5 },
+		{ 'string': 'ab', 0: 60, number: 4 },
+		{ 'string': 'aa', 0: 70, number: 1 },
 	]
 
-	test('returns the first index', () => {
+	test('returns the first index for a string value', () => {
 		const output = indexOfByProperty(data, 'string', 'aa')
 
 		assert(output).isEqual(3)
+	})
+
+	test('returns the first index for a numeric value', () => {
+		const output = indexOfByProperty(data, 'number', 1)
+
+		assert(output).isEqual(0)
+	})
+
+	test('returns the first index for a null value', () => {
+		const output = indexOfByProperty(data, 'number', null)
+
+		assert(output).isEqual(1)
+	})
+
+	test('returns the first index for an undefined value', () => {
+		const output = indexOfByProperty(data, 'number', undefined)
+
+		assert(output).isEqual(1)
+	})
+
+	test('returns the first index for a numeric key', () => {
+		const output = indexOfByProperty(data, 0, 50)
+
+		assert(output).isEqual(4)
 	})
 
 	test('returns -1 if not found', () => {
 		const output = indexOfByProperty(data, 'string', 'ZZ')
 
 		assert(output).isEqual(-1)
+	})
+
+	test('throws an error if list is not set', () => {
+		assert(() => indexOfByProperty(null, 'string', 'aa')).throwsError()
+	})
+
+	test('throws an error if property is not set', () => {
+		assert(() => indexOfByProperty(data, null, 'aa')).throwsError()
 	})
 })
 

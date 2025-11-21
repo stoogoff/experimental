@@ -1,4 +1,6 @@
 
+import { throwIfNull } from './assert.js'
+
 export const LOG_LEVEL_INFO = 1
 export const LOG_LEVEL_LOG = 2
 export const LOG_LEVEL_WARN = 3
@@ -55,7 +57,11 @@ class WrappedLogger {
 
 const _loggers = {}
 
-export const setLogger = (key, logger, level = LOG_LEVEL_WARN) =>
+export const setLogger = (key, logger, level = LOG_LEVEL_WARN) => {
+	throwIfNull(key, 'key')
+	throwIfNull(logger, 'logger')
+
 	_loggers[key] = new WrappedLogger(key, logger, level)
+}
 
 export const getLogger = key => _loggers[key] ?? NoOpLogger

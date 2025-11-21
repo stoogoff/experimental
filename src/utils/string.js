@@ -34,7 +34,7 @@ export const toTitleCase = text =>
  * slugify('Hello  world! 24')
  * // returns "hello-world-24"
  * @param {string} text - The string to convert.
- * @returnn {string} The converted string.
+ * @return {string} The converted string.
  */
 export const slugify = text => 
 	isString(text) || isNumber(text) ?
