@@ -14,5 +14,11 @@ describe('utils/date: isoDate', test => {
 		const output = isoDate()
 
 		assert(output).notNull()
+
+		const [year, month, day, hour, minute, ...rest] = output.split(/[-T:]/)
+
+		assert(parseInt(year)).isEqual(now.getFullYear())
+		assert(parseInt(month)).isEqual(now.getMonth() + 1) // Javascript months are zero based
+		assert(parseInt(day)).isEqual(now.getDate())
 	})
 })
