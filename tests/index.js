@@ -1,5 +1,6 @@
-// daata
+// data
 import * as proxy from './data/proxy.test.js'
+import * as proxiedModel from './data/model.test.js'
 
 
 // utils

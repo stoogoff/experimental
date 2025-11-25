@@ -104,7 +104,7 @@ export const assert = target => ({
 				typeof target === 'object' &&
 				typeof value === 'object' &&
 				target.length === value.length &&
-				target.every((element, index) => element === value[index])
+				(target.every && target.every((element, index) => element === value[index]))
 			)
 		) {
 			return
@@ -120,7 +120,7 @@ export const assert = target => ({
 				typeof target === 'object' &&
 				typeof value === 'object' &&
 				target.length === value.length &&
-				target.every((element, index) => element === value[index])
+				(target.every && target.every((element, index) => element === value[index]))
 			)
 		) {
 			throw new Error(`${target} === ${value}`)
