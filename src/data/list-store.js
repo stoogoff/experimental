@@ -2,13 +2,13 @@
 import { Emitter } from '../utils/emitter.js'
 import { getProxy } from './proxy.js'
 
-export class ListStore extends Emitter {
+export class ListStore {
 	#data = []
 	#key
+	#emitter
 
 	constructor(data = [], key = 'id') {
-		super()
-
+		this.#emitter = new Emitter()
 		this.#key = key
 		this.#data = data.map(item => getProxy(item, key))
 	}
@@ -22,8 +22,8 @@ export class ListStore extends Emitter {
 
 		this.#data.push(proxied)
 
-		this.emit('add', proxied)
-		this.emit('change:all', 'all', this.#data)
+		this.#emitter.emit('add', proxied)
+		this.#emitter.emit('change:all', 'all', this.#data)
 
 		return item
 	}
@@ -33,9 +33,23 @@ export class ListStore extends Emitter {
 
 		this.#data = this.#data.filter(toRemove => toRemove[this.#key] !== item[this.#key])
 
-		this.emit('remove', proxied)
-		this.emit('change:all', 'all', this.#data)
+		this.#emitter.emit('remove', proxied)
+		this.#emitter.emit('change:all', 'all', this.#data)
 
 		return proxied
+	}
+
+	// Emitter methods
+
+	on(event, callback) {
+		return this.#emitter.on(event, callback)
+	}
+
+	off(event, reference) {
+		return this.#emitter.off(event, reference)
+	}
+
+	clear() {
+		this.#emitter.clear()
 	}
 }

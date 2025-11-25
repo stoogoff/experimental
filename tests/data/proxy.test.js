@@ -1,8 +1,10 @@
 import { describe, assert } from '../tests.js'
-import { getProxy } from '../../src/data/proxy.js'
+import { getProxy, getProxyByKey, clearAllProxies } from '../../src/data/proxy.js'
 import { ProxiedModel } from '../../src/data/model.js'
 
 describe('data/proxy: getProxy', test => {
+	test.after(clearAllProxies)
+
 	test('throws an error if no model is set', () => {
 		assert(() => getProxy()).throwsError()
 	})
@@ -58,3 +60,48 @@ describe('data/proxy: getProxy', test => {
 		assert(model.clear).isFunction()
 	})
 })
+
+describe('data/proxy: getProxyByKey', test => {
+	test.after(clearAllProxies)
+
+	test('throws an error if no id is set', () => {
+		assert(() => getProxyByKey()).throwsError()
+	})
+
+	test("returns null if the object doesn't exist", () => {
+		const model = getProxyByKey('nothing')
+
+		assert(model).isNull()
+	})
+
+	test('returns a previously set model with a numeric key', () => {
+		getProxy({ id: 1, hello: 'World' })
+
+		const model = getProxyByKey(1)
+
+		assert(model).notNull()
+		assert(model.id).isEqual(1)
+		assert(model.hello).isEqual('World')
+	})
+
+	test('returns a previously set model with a string key', () => {
+		getProxy({ id: 'test-4', hello: 'World' })
+
+		const model = getProxyByKey('test-4')
+
+		assert(model).notNull()
+		assert(model.id).isEqual('test-4')
+		assert(model.hello).isEqual('World')
+	})
+
+	test('returns a previously set model with a custom key property', () => {
+		getProxy({ uniqueId: 'test-5', hello: 'World' }, 'uniqueId')
+
+		const model = getProxyByKey('test-5')
+
+		assert(model).notNull()
+		assert(model.uniqueId).isEqual('test-5')
+		assert(model.hello).isEqual('World')
+	})
+})
+

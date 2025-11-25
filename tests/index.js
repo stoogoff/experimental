@@ -1,6 +1,8 @@
 // data
 import * as proxy from './data/proxy.test.js'
 import * as proxiedModel from './data/model.test.js'
+import * as listStore from './data/list-store.test.js'
+import * as setStore from './data/set-store.test.js'
 
 
 // utils

@@ -25,6 +25,13 @@ describe('data/model: basic proxy behavior', test => {
 		assert(model.a).isEqual(99)
 	})
 
+	test("does not overwrite 'model' property value", () => {
+		const model = { a: 1 }
+		const proxied = new ProxiedModel(model)
+
+		assert(() => proxied.model = { b: 1 }).throwsError()
+	})
+
 	test("does not emit when value hasn't changed", () => {
 		const model = { x: 10 }
 		const proxied = new ProxiedModel(model)

@@ -2,13 +2,13 @@
 import { Emitter } from '../utils/emitter.js'
 import { getProxy } from './proxy.js'
 
-export class SetStore extends Emitter {
+export class SetStore {
 	#data
 	#key
+	#emitter
 
 	constructor(data = [], key = 'id') {
-		super()
-
+		this.#emitter = new Emitter()
 		this.#key = key
 		this.#data = new Set(data.map(item => getProxy(item, key)))
 	}
@@ -22,8 +22,8 @@ export class SetStore extends Emitter {
 
 		this.#data.add(proxied)
 
-		this.emit('add', proxied)
-		this.emit('change:all', 'all', this.#data)
+		this.#emitter.emit('add', proxied)
+		this.#emitter.emit('change:all', 'all', this.all)
 
 		return item
 	}
@@ -31,11 +31,25 @@ export class SetStore extends Emitter {
 	remove(item) {
 		const proxied = getProxy(item, this.#key)
 
-		this.#data = this.#data.delete(proxied)
+		this.#data.delete(proxied)
 
-		this.emit('remove', proxied)
-		this.emit('change:all', 'all', this.#data)
+		this.#emitter.emit('remove', proxied)
+		this.#emitter.emit('change:all', 'all', this.all)
 
 		return proxied
+	}
+
+	// Emitter methods
+
+	on(event, callback) {
+		return this.#emitter.on(event, callback)
+	}
+
+	off(event, reference) {
+		return this.#emitter.off(event, reference)
+	}
+
+	clear() {
+		this.#emitter.clear()
 	}
 }

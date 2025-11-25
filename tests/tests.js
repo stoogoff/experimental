@@ -23,9 +23,23 @@ class Failure {
 	}
 }
 
+class CallableStack {
+	#stack = []
+
+	add(item) {
+		this.#stack.push(item)
+	}
+
+	call() {
+		this.#stack.forEach(item => item())
+	}
+}
+
 class TestRunner {
 	#description
 	#runs = []
+	#before = new CallableStack()
+	#after = new CallableStack()
 
 	constructor(description) {
 		this.#description = description
@@ -59,6 +73,14 @@ class TestRunner {
 		return this.#runs.filter(run => run instanceof Failure)
 	}
 
+	get before() {
+		return this.#before
+	}
+
+	get after() {
+		return this.#after
+	}
+
 	render() {
 		const summary = [`${this.#description}:`]
 
@@ -80,17 +102,24 @@ export const describe = (description, tests) => {
 
 	function testHandler(description, test) {
 		try {
+			runner.before.call()
 			test()
 
 			runner.success(description)
+			runner.after.call()
 		}
 		catch(error) {
 			runner.failure(description, error)
 		}
 	}
 
+	// automatic success and failure handlers
 	testHandler.success = () => runner.success('Test passed')
 	testHandler.fail = (error) => runner.failure('Test called fail', error)
+
+	// before and after handlers
+	testHandler.before = item => runner.before.add(item)
+	testHandler.after = item => runner.after.add(item)
 
 	tests(testHandler)
 
