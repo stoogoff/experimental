@@ -2,7 +2,7 @@
 import { ProxiedModel } from './model.js'
 import { throwIfNull } from '../utils/assert.js'
 
-const proxied = new Map()
+const _proxied = new Map()
 
 /**
  * Supply a model a receive a proxied version. If a proxied version
@@ -15,11 +15,11 @@ const proxied = new Map()
 export const getProxy = (model, key = 'id') => {
 	throwIfNull(model, 'model')
 
-	if(proxied.has(model[key])) return proxied.get(model[key])
+	if(_proxied.has(model[key])) return _proxied.get(model[key])
 
 	const proxiedModel = new ProxiedModel(model)
 
-	proxied.set(model[key], proxiedModel)
+	_proxied.set(model[key], proxiedModel)
 
 	return proxiedModel
 }
@@ -32,7 +32,7 @@ export const getProxy = (model, key = 'id') => {
 export const getProxyByKey = key => {
 	throwIfNull(key, 'key')
 
-	return proxied.get(key) ?? null
+	return _proxied.get(key) ?? null
 }
 
 /**
@@ -43,9 +43,9 @@ export const getProxyByKey = key => {
 export const deleteProxy = key => {
 	throwIfNull(key, 'key')
 
-	let model = proxied.has(key) ? proxied.get(key) : null
+	let model = _proxied.has(key) ? _proxied.get(key) : null
 
-	proxied.delete(key)
+	_proxied.delete(key)
 
 	return model
 }
@@ -53,4 +53,4 @@ export const deleteProxy = key => {
 /**
  * Remove all proxied models.
  */
-export const clearAllProxies = () => proxied.clear()
+export const clearAllProxies = () => _proxied.clear()
