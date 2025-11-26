@@ -45,11 +45,11 @@ class TestRunner {
 		this.#description = description
 	}
 
-	success(description) {
+	pass(description) {
 		this.#runs.push(new Success(description))
 	}
 
-	failure(description, error) {
+	fail(description, error) {
 		this.#runs.push(new Failure(description, error))
 	}
 
@@ -105,17 +105,17 @@ export const describe = (description, tests) => {
 			runner.before.call()
 			test()
 
-			runner.success(description)
+			runner.pass(description)
 			runner.after.call()
 		}
 		catch(error) {
-			runner.failure(description, error)
+			runner.fail(description, error)
 		}
 	}
 
 	// automatic success and failure handlers
-	testHandler.success = () => runner.success('Test passed')
-	testHandler.fail = (error) => runner.failure('Test called fail', error)
+	testHandler.pass = () => runner.pass('Test passed')
+	testHandler.fail = (error) => runner.fail('Test called fail', error)
 
 	// before and after handlers
 	testHandler.before = item => runner.before.add(item)

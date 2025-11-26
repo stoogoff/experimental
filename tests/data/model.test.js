@@ -143,6 +143,6 @@ describe('data/model: clear', test => {
 		proxied.clear()
 
 		proxied.a = 2
-		test.success()
+		test.pass()
 	})
 })

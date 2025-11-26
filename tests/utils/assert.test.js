@@ -171,7 +171,7 @@ describe('utils/assert: throwIfNull', test => {
 
 	test("doesn't throw for a value", () => {
 		throwIfNull(6)
-		test.success()
+		test.pass()
 	})
 })
 

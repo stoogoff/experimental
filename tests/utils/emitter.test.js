@@ -101,7 +101,7 @@ describe('utils/emitter: off', test => {
 		emitter.off('event', ref)
 		emitter.emit('event', 10, 20)
 
-		test.success()
+		test.pass()
 	})
 
 	test('throws an error if no event provided', () => {
@@ -132,6 +132,6 @@ describe('utils/emitter: clear', test => {
 		emitter.clear()
 		emitter.emit('event')
 		emitter.emit('click')
-		test.success()
+		test.pass()
 	})
 })
