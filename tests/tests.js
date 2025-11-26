@@ -95,34 +95,39 @@ class TestRunner {
 
 		this.failures.forEach(run => run.render())
 	}
+
+	run() {
+		const runner = this
+
+		function testHandler(description, test) {
+			try {
+				runner.before.call()
+				test()
+
+				runner.pass(description)
+				runner.after.call()
+			}
+			catch(error) {
+				runner.fail(description, error)
+			}
+		}
+
+		// automatic success and failure handlers
+		testHandler.pass = () => runner.pass('Test passed')
+		testHandler.fail = (error) => runner.fail('Test called fail', error)
+
+		// before and after handlers
+		testHandler.before = item => runner.before.add(item)
+		testHandler.after = item => runner.after.add(item)
+
+		tests(testHandler)
+	}
 }
 
 export const describe = (description, tests) => {
 	const runner = new TestRunner(description)
 
-	function testHandler(description, test) {
-		try {
-			runner.before.call()
-			test()
-
-			runner.pass(description)
-			runner.after.call()
-		}
-		catch(error) {
-			runner.fail(description, error)
-		}
-	}
-
-	// automatic success and failure handlers
-	testHandler.pass = () => runner.pass('Test passed')
-	testHandler.fail = (error) => runner.fail('Test called fail', error)
-
-	// before and after handlers
-	testHandler.before = item => runner.before.add(item)
-	testHandler.after = item => runner.after.add(item)
-
-	tests(testHandler)
-
+	runner.run()
 	runner.render()	
 }
 
