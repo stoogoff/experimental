@@ -6,8 +6,8 @@ class Success {
 		this.#description = `  ✔ ${description}`
 	}
 
-	render() {
-		console.log(this.#description)
+	toString() {
+		return this.#description
 	}
 }
 
@@ -15,11 +15,11 @@ class Failure {
 	#description
 
 	constructor(description, error) {
-		this.#description = `\x1b[31m✘ ${description}\n  ${error}\x1b[0m`
+		this.#description = `  ✘ ${description}\n  ${error}`
 	}
 
-	render() {
-		console.log(this.#description)
+	toString() {
+		return this.#description
 	}
 }
 
@@ -37,12 +37,14 @@ class CallableStack {
 
 class TestRunner {
 	#description
+	#tests
 	#runs = []
 	#before = new CallableStack()
 	#after = new CallableStack()
 
-	constructor(description) {
+	constructor(description, tests) {
 		this.#description = description
+		this.#tests = tests
 	}
 
 	pass(description) {
@@ -51,6 +53,10 @@ class TestRunner {
 
 	fail(description, error) {
 		this.#runs.push(new Failure(description, error))
+	}
+
+	get description() {
+		return this.#description
 	}
 
 	get totalRuns() {
@@ -73,62 +79,86 @@ class TestRunner {
 		return this.#runs.filter(run => run instanceof Failure)
 	}
 
-	get before() {
-		return this.#before
-	}
+	summarise() {
 
-	get after() {
-		return this.#after
-	}
-
-	render() {
-		const summary = [`${this.#description}:`]
-
-		if(this.totalFailures > 0) {
-			summary.push(` \x1b[31m Passed ${this.totalSuccesses} of ${this.totalRuns}\x1b[0m`)
-		}
-		else {
-			summary.push(` \x1b[1m\x1b[33mPassed ${this.totalSuccesses} of ${this.totalRuns}\x1b[0m`)
-		}
-
-		console.log(summary.join(''))
-
-		this.failures.forEach(run => run.render())
 	}
 
 	run() {
-		const runner = this
-
+		console.log(this, 'run')
 		function testHandler(description, test) {
 			try {
-				runner.before.call()
+				this.#before.call()
 				test()
 
-				runner.pass(description)
-				runner.after.call()
+				this.pass(description)
+				this.#after.call()
 			}
 			catch(error) {
-				runner.fail(description, error)
+				this.fail(description, error)
 			}
 		}
 
+		testHandler = testHandler.bind(this)
+
 		// automatic success and failure handlers
-		testHandler.pass = () => runner.pass('Test passed')
-		testHandler.fail = (error) => runner.fail('Test called fail', error)
+		testHandler.pass = () => this.pass('Test passed')
+		testHandler.fail = (error) => this.fail('Test called fail', error)
 
 		// before and after handlers
-		testHandler.before = item => runner.before.add(item)
-		testHandler.after = item => runner.after.add(item)
+		testHandler.before = item => this.#before.add(item)
+		testHandler.after = item => this.#after.add(item)
 
-		tests(testHandler)
+		this.#tests(testHandler)
 	}
 }
 
-export const describe = (description, tests) => {
-	const runner = new TestRunner(description)
+const _runners = []
 
-	runner.run()
-	runner.render()	
+export const run = renderer => {
+	_runners.forEach(runner => {
+		runner.run()
+	})
+
+	renderer(_runners)
+}
+
+export const describe = (description, tests) => {
+	const runner = new TestRunner(description, tests)
+
+	_runners.push(runner)
+}
+
+export const consoleRunner = runners => {
+	const results = {
+		passed: 0,
+		failed: 0,
+		suites: runners.length,
+	}
+
+	runners.forEach(runner => {
+		results.passed += runner.totalSuccesses
+		results.failed += runner.totalFailures
+
+		const summary = [`${runner.description}`]
+
+		if(runner.totalFailures > 0) {
+			summary.push(`\x1b[31mPassed ${runner.totalSuccesses} of ${runner.totalRuns}\x1b[0m`)
+		}
+		else {
+			summary.push(`\x1b[1m\x1b[33mPassed ${runner.totalSuccesses} of ${runner.totalRuns}\x1b[0m`)
+		}
+
+		console.log(summary.join(' '))
+
+		runner.failures.forEach(run => console.log(`\x1b[31m${run}\x1b[0m`))
+	})
+
+	const summary = `Suites: ${results.suites}. Passed: ${results.passed}. Failed: ${results.failed}.`
+	const bar = [...new Array(summary.length) ].map(_ => '-').join('')
+
+	console.log(bar)
+	console.log(summary)
+	console.log(bar)
 }
 
 export const assert = target => ({
