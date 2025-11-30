@@ -11,45 +11,114 @@ const _stores = {}
 let _prefix = 'q'
 
 export const directives = {
+	/**
+	 * Set the prefix to use in all data attributes. The dedault is q.
+	 * @example
+	 * directives.setPrefix('hello')
+	 * // <div data-hello-value="property"></div>
+	 * @param {string} prefix - The prefix to use.
+	 */
 	setPrefix(prefix) {
 		logger().log(`Setting prefix: ${ prefix }`)
 
 		_prefix = prefix
 	},
 
-	// register directives
+	/**
+	 * Return the current prefix.
+	 * @return {string} The prefix.
+	 */
+	getPrefix() {
+		return _prefix
+	},
+
+	/**
+	 * Register directives with the system.
+	 * @example
+	 * directives.register('hello', (ctx) => {})
+	 * // <div data-q-hello="property"></div>
+	 * @param {string} attribute - The HTML attribute name to use in HTML.
+	 * @param {Function} callback - The callback function used to render the HTML.
+	 */
 	register(attribute, callback) {
 		_directives.push({ attribute, callback })
 	},
 
 	// register and retrieve components
+
+	/**
+	 * Register a group of components with the system.
+	 * @example
+	 * const components = {
+	 * 	'hello': {},
+	 * 	'world': {},
+	 * }
+	 * directives.registerComponents(components)
+	 * // <div data-q-component="hello"></div>
+	 * @param {Object} kvp - The key value set of components.
+	 */
 	registerComponents(kvp) {
 		Object.keys(kvp).forEach(key => this.registerComponent(key, kvp[key]))
 	},
 
+	/**
+	 * Register a single component by name with the system. Ignores the new
+	 * component if the name already exists.
+	 * @example
+	 * directives.registerComponent('hello', {})
+	 * // <div data-q-component="hello"></div>
+	 * @paran {string} name - The name of the component.
+	 * @param {Object} component - The component definition.
+	 */
 	registerComponent(name, component) {
 		logger().log(`Registering component: ${ name }`)
 
-		if(name in _components) logger().error(`Component with name '${ name }' already exists`)
+		if(name in _components) {
+			logger().error(`Component with name '${ name }' already exists`)
+			return
+		}
 
 		_components[name] = component
 	},
 
+	/**
+	 * Return a registered component by its name.
+	 * @param {string} name - The name of the component.
+	 * @return {Object} The component.
+	 */
 	getComponent(name) {
 		if(!(name in _components)) logger().error(`Component '${ name }' not found.`)
 
-		return _components[name]
+		return _components[name] ?? {}
 	},
 
 	// register and retrieve stores
+
+	/**
+	 * Register a store by its name. Ignores the new store if the name
+	 * already exists.
+	 * @example
+	 * directives.registerStore('store', new ListStore())
+	 * // <div data-q-store="store"></div>
+	 * @param {string} name - The name of the store.
+	 * @param {ListStore | SetStore} store - The store to register.
+	 */
 	registerStore(name, store) {
 		logger().log(`Registering store: ${ name }`)
 
-		if(name in _stores) logger().error(`Store with name '${ name }' already exists`)
+		if(name in _stores) {
+			logger().error(`Store with name '${ name }' already exists`)
+			return
+		}
 
 		_stores[name] = store
 	},
 
+	/**
+	 * Return a store by its name.
+	 * @param {string} name - The name of the store.
+	 * @return {ListStore | SetStore}
+	 */
 	getStore(name) {
 		if(!(name in _stores)) logger().error(`Store '${ name }' not found.`)
 
