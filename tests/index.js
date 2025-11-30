@@ -14,6 +14,6 @@ import * as logger from './utils/logger.test.js'
 import * as string from './utils/string.test.js'
 import * as storage from './utils/storage.test.js'
 
-import { run, consoleRunner } from './tests.js'
+import { run, consoleRenderer } from './tests.js'
 
-run(consoleRunner)
+run(consoleRenderer)

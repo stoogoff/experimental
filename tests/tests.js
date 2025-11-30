@@ -128,7 +128,7 @@ export const describe = (description, tests) => {
 	_runners.push(runner)
 }
 
-export const consoleRunner = runners => {
+export const consoleRenderer = runners => {
 	const results = {
 		passed: 0,
 		failed: 0,
