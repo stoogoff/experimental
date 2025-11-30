@@ -14,6 +14,7 @@ import {
 	notNumber,
 	notEmptyArray,
 	isFunction,
+	notFunction,
 } from '../../src/utils/assert.js'
 
 describe('utils/assert: notNull', test => {
@@ -630,5 +631,43 @@ describe('utils/assert: isFunction', test => {
 		const output = isFunction(6)
 
 		assert(output).isFalse()
+	})
+})
+
+describe('utils/assert: notFunction', test => {
+	test('with a function', () => {
+		const output = notFunction(function() {})
+
+		assert(output).isFalse()
+	})
+
+	test('value is array', () => {
+		const output = notFunction([4, 5, 6])
+
+		assert(output).isTrue()
+	})
+
+	test('value is null', () => {
+		const output = notFunction(null)
+
+		assert(output).isTrue()
+	})
+
+	test('value is boolean', () => {
+		const output = notFunction(true)
+
+		assert(output).isTrue()
+	})
+
+	test('value is string', () => {
+		const output = notFunction('hello world')
+
+		assert(output).isTrue()
+	})
+
+	test('value is number', () => {
+		const output = notFunction(6)
+
+		assert(output).isTrue()
 	})
 })

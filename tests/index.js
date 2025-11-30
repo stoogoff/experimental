@@ -4,6 +4,8 @@ import * as proxiedModel from './data/model.test.js'
 import * as listStore from './data/list-store.test.js'
 import * as setStore from './data/set-store.test.js'
 
+// reactive
+import * as context from './reactive/context.test.js'
 
 // utils
 import * as assert from './utils/assert.test.js'

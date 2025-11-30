@@ -79,12 +79,7 @@ class TestRunner {
 		return this.#runs.filter(run => run instanceof Failure)
 	}
 
-	summarise() {
-
-	}
-
 	run() {
-		console.log(this, 'run')
 		function testHandler(description, test) {
 			try {
 				this.#before.call()
@@ -153,11 +148,12 @@ export const consoleRenderer = runners => {
 		runner.failures.forEach(run => console.log(`\x1b[31m${run}\x1b[0m`))
 	})
 
-	const summary = `Suites: ${results.suites}. Passed: ${results.passed}. Failed: ${results.failed}.`
-	const bar = [...new Array(summary.length) ].map(_ => '-').join('')
+	const summary = `Suites: ${results.suites}. Passed: ${results.passed}. `
+	const failed = `Failed: ${results.failed}.`
+	const bar = [...new Array((summary + failed).length) ].map(_ => '-').join('')
 
 	console.log(bar)
-	console.log(summary)
+	console.log(summary + (results.failed > 0 ? `\x1b[1m\x1b[31m${failed}\x1b[0m` : failed))
 	console.log(bar)
 }
 

@@ -110,3 +110,10 @@ export const notEmptyArray = value => notNull(value) && Array.isArray(value) && 
  * @return {boolean}
  */
 export const isFunction = value => notNull(value) && typeof value === 'function'
+
+/**
+ * Returns false if the given value is null or is a function.
+ * @param {any} value - The value to verify.
+ * @return {boolean}
+ */
+export const notFunction = value => isNull(value) || typeof value !== 'function'
