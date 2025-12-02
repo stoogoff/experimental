@@ -8,7 +8,7 @@ describe('reactive/directives/event', test => {
 	const PROPERTY = 'handler'
 	const event = eventHandlerDirective(PROPERTY)
 
-	let mockNode, mockScope, callableContext, nonCallableContext, callValue = null
+	let mockNode, mockScope, callValue = null
 
 	test.before(() => {
 		callValue = null
@@ -19,22 +19,26 @@ describe('reactive/directives/event', test => {
 			},
 			noncallable: 'Hello World'
 		})
-		callableContext = new Context(mockNode, 'callable', mockScope, event)
-		nonCallableContext = new Context(mockNode, 'noncallable', mockScope, event)
 	})
 
 	test('function is called', () => {
-		callableContext.render()
+		const context = new Context(mockNode, 'callable', mockScope, event)
 
+		context.render()
 		mockNode.callEvent(PROPERTY)
 
 		assert(callValue).notNull()
 		assert(callValue.evt).notNull()
 		assert(callValue.context).notNull
-		assert(callValue.context).isEqual(callableContext)
+		assert(callValue.context).isEqual(context)
 	})
 
 	test('non-function properties are ignored', () => {
+		const context = new Context(mockNode, 'noncallable', mockScope, event)
+
+		context.render()
+		mockNode.callEvent(PROPERTY)
+
 		assert(callValue).isNull()
 	})
 })
