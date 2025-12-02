@@ -1,13 +1,13 @@
 
-import { directives } from '/reactive/directives.js'
-import { DIRECTIVES_LOG_KEY } from '/reactive/config.js'
-import Timer from '/examples/components/timer.js'
-import Todo from '/examples/components/todo.js'
-import TodoWatcher from '/examples/components/todo-watcher.js'
-import Counter from '/examples/components/counter.js'
-import Input from '/examples/components/input.js'
-import Colours from '/examples/components/colours.js'
-import { setLogger, ConsoleLogger } from '/utils/logger.js'
+import { directives } from '../src/reactive/directives.js'
+import { DIRECTIVES_LOG_KEY } from '../src/reactive/config.js'
+import Timer from './components/timer.js'
+import Todo from './components/todo.js'
+import TodoWatcher from './components/todo-watcher.js'
+import Counter from './components/counter.js'
+import Input from './components/input.js'
+import Colours from './components/colours.js'
+import { setLogger, ConsoleLogger } from '../src/utils/logger.js'
 
 setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, 4)
 

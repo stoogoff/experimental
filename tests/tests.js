@@ -1,9 +1,34 @@
 
+export class MockNode {
+	#attributes
+
+	constructor() {
+		this.innerText = ''
+		this.#attributes = new Map()
+	}
+
+	setAttribute(attr, value) {
+		this.#attributes.set(attr, value)
+	}
+
+	getAttribute(attr) {
+		return this.#attributes.has(attr) ? this.#attributes.get(attr) : null
+	}
+
+	hasAttribute(attr) {
+		return this.#attributes.has(attr)
+	}
+
+	removeAttribute(attr) {
+		this.#attributes.delete(attr)
+	}
+}
+
 class Success {
 	#description
 
-	constructor(description) {
-		this.#description = `  ✔ ${description}`
+	constructor(description, time) {
+		this.#description = `  ✔ ${description} (${time}ms)`
 	}
 
 	toString() {
@@ -14,8 +39,8 @@ class Success {
 class Failure {
 	#description
 
-	constructor(description, error) {
-		this.#description = `  ✘ ${description}\n  ${error}`
+	constructor(description, error, time) {
+		this.#description = `  ✘ ${description}\n  ${error} (${time}ms)`
 	}
 
 	toString() {
@@ -47,12 +72,12 @@ class TestRunner {
 		this.#tests = tests
 	}
 
-	pass(description) {
-		this.#runs.push(new Success(description))
+	pass(description, time) {
+		this.#runs.push(new Success(description, time))
 	}
 
-	fail(description, error) {
-		this.#runs.push(new Failure(description, error))
+	fail(description, error, time) {
+		this.#runs.push(new Failure(description, error, time))
 	}
 
 	get description() {
@@ -81,15 +106,18 @@ class TestRunner {
 
 	run() {
 		function testHandler(description, test) {
+			const now = Date.now()
+
 			try {
 				this.#before.call()
+
 				test()
 
-				this.pass(description)
+				this.pass(description, Date.now() - now)
 				this.#after.call()
 			}
 			catch(error) {
-				this.fail(description, error)
+				this.fail(description, error, Date.now() - now)
 			}
 		}
 
@@ -145,10 +173,11 @@ export const consoleRenderer = runners => {
 
 		console.log(summary.join(' '))
 
+		//runner.successes.forEach(run => console.log(run.toString()))
 		runner.failures.forEach(run => console.log(`\x1b[31m${run}\x1b[0m`))
 	})
 
-	const summary = `Suites: ${results.suites}. Passed: ${results.passed}. `
+	const summary = `Suites: ${results.suites}. Tests: ${results.passed}. `
 	const failed = `Failed: ${results.failed}.`
 	const bar = [...new Array((summary + failed).length) ].map(_ => '-').join('')
 

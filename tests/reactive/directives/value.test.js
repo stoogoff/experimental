@@ -1,32 +1,20 @@
-import { describe, assert } from '../../tests.js'
+import { describe, assert, MockNode } from '../../tests.js'
 import { ProxiedModel } from '../../../src/data/model.js'
-import { directives } from '../../../src/reactive/directives.js'
 import { Context } from '../../../src/reactive/context.js'
 import { value } from '../../../src/reactive/directives/value.js'
 
 describe('reactive/directives/value', test => {
-	class MockNode {
-		constructor() {
-			this.innerText = ''
-		}
-	}
+	let mockNode, mockScope, context
 
-//node
-//property
-//scope
-//callback
-
-	const mockNode = {
-		innerText: ''
-	}
-
-	test('sets the initial value', () => {
-		const mockNode = new MockNode()
-		const mockScope = new ProxiedModel({
+	test.before(() => {
+		mockNode = new MockNode()
+		mockScope = new ProxiedModel({
 			property: 'Hello World'
 		})
-		const context = new Context(mockNode, 'property', mockScope, value)
+		context = new Context(mockNode, 'property', mockScope, value)
+	})
 
+	test('sets the initial value', () => {
 		context.render()
 
 		assert(mockNode.innerText).isEqual(context.value)
@@ -34,12 +22,6 @@ describe('reactive/directives/value', test => {
 	})
 
 	test('updates when the context value changes', () => {
-		const mockNode = new MockNode()
-		const mockScope = new ProxiedModel({
-			property: 'Hello World'
-		})
-		const context = new Context(mockNode, 'property', mockScope, value)
-
 		context.render()
 
 		assert(mockNode.innerText).isEqual(context.value)
@@ -52,12 +34,6 @@ describe('reactive/directives/value', test => {
 	})
 
 	test('updates when the model value changes', () => {
-		const mockNode = new MockNode()
-		const mockScope = new ProxiedModel({
-			property: 'Hello World'
-		})
-		const context = new Context(mockNode, 'property', mockScope, value)
-
 		context.render()
 
 		assert(mockNode.innerText).isEqual(context.value)

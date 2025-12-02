@@ -60,18 +60,6 @@ export class Context {
 		return this.#property
 	}
 
-	// TODO value needs to handle the slight differences between
-	// component (has a data property for some things) and stores
-	// probably component should be changed to match stores
-	// this also needs to be aware of parent scopes so something like
-	//
-	// <div data-q-component="comp">
-	// 	<div data-q-store="store">
-	// 		<span data-q-click="clickHandler"></span> <-- comp.clickHandler
-	// 	</div>
-	// </div>
-	// will have access to component's methods
-
 	/**
 	 * Return the value of the watched property within the scope. This checks
 	 * for the existance of the property on the scope object directly and
