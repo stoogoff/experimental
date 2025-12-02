@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Basics</title>
+<style>
+
+pre {
+	tab-size: 4;
+}
+
+</style>
+</head>
+<body>
+
+<h1 data-q-text="hello"></h1>
+
+<p>Your name is <strong data-q-text="name"></strong>. This text will change when focus leaves the field.</p>
+
+<input type="text" data-q-input="name" />
+
+<h2>Javascript</h2>
+
+<pre>import { directives } from '../src/reactive/index.js'
+
+directives.load(document.body, {
+	data: {
+		hello: 'Hello World',
+		name: 'Stoo',
+	},
+})
+</pre>
+
+<h2>HTML</h2>
+
+<pre>&lt;h1 data-q-text="hello">&lt;/h1>
+
+&lt;p>Your name is &lt;strong data-q-text="name">&lt;/strong>. This text will change when focus leaves the field.&lt;/p>
+
+&lt;input type="text" data-q-input="name" /></pre>
+
+<script type="module">
+
+import {
+	setLogger,
+	ConsoleLogger,
+	LOG_LEVEL_INFO,
+} from '../src/utils/logger.js'
+import { directives, DIRECTIVES_LOG_KEY } from '../src/reactive/index.js'
+
+setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
+
+directives.load(document.body, {
+	data: {
+		hello: 'Hello World',
+		name: 'Stoo',
+	},
+})
+
+</script>
+
+</body>
+</html>
