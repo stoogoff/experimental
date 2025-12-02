@@ -1,4 +1,4 @@
-import { describe, assert } from '../tests.js'
+import { describe, assert } from '../../src/test/index.js'
 import { Context } from '../../src/reactive/context.js'
 
 describe('reactive/context: constructor', test => {

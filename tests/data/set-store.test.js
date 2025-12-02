@@ -1,4 +1,5 @@
-import { describe, assert } from '../tests.js'
+
+import { describe, assert } from '../../src/test/index.js'
 import { SetStore } from '../../src/data/set-store.js'
 import { getProxy, clearAllProxies } from '../../src/data/proxy.js'
 

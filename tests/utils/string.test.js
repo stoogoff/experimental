@@ -1,4 +1,5 @@
-import { describe, assert } from '../tests.js'
+
+import { describe, assert } from '../../src/test/index.js'
 import { createId, slugify, toTitleCase } from '../../src/utils/string.js'
 
 describe('utils/string: slugify', test => {

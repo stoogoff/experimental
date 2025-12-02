@@ -1,4 +1,5 @@
-import { describe, assert } from '../tests.js'
+
+import { describe, assert } from '../../src/test/index.js'
 import { Emitter } from '../../src/utils/emitter.js'
 
 describe('utils/emitter: emit', test => {

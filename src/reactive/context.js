@@ -1,6 +1,6 @@
 
 import { logger } from './config.js'
-import { isIn, notFunction, throwIfNull } from '../utils/assert.js'
+import { isIn, isFunction, notFunction, throwIfNull } from '../utils/assert.js'
 
 /**
  * Context stores the current scope information, the HTML node which is being
@@ -107,5 +107,13 @@ export class Context {
 	 */
 	render() {
 		return this.#callback(this)
+	}
+
+	/**
+	 * Implement handleEvent for passing a Context instance directly
+	 * to `addEventListener`.
+	 */
+	handleEvent(evt) {
+		if(isFunction(this.value)) this.value(evt, this)
 	}
 }

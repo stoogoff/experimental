@@ -1,5 +1,5 @@
 
-import { describe, assert } from '../tests.js'
+import { describe, assert } from '../../src/test/index.js'
 import {
 	LOG_LEVEL_INFO,
 	LOG_LEVEL_LOG,

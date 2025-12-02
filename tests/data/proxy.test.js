@@ -1,4 +1,5 @@
-import { describe, assert } from '../tests.js'
+
+import { describe, assert } from '../../src/test/index.js'
 import { getProxy, getProxyByKey, clearAllProxies } from '../../src/data/proxy.js'
 import { ProxiedModel } from '../../src/data/model.js'
 

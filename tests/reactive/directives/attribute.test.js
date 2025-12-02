@@ -1,4 +1,5 @@
-import { describe, assert, MockNode } from '../../tests.js'
+
+import { describe, assert, MockNode } from '../../../src/test/index.js'
 import { ProxiedModel } from '../../../src/data/model.js'
 import { Context } from '../../../src/reactive/context.js'
 import { attributeDirective } from '../../../src/reactive/directives/attribute.js'

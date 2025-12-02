@@ -1,4 +1,4 @@
-import { describe, assert } from '../tests.js'
+import { describe, assert } from '../../src/test/index.js'
 import { directives } from '../../src/reactive/directives.js'
 
 describe('reactive/directives: prefix', test => {

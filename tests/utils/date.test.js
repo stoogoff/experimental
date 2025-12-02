@@ -1,4 +1,5 @@
-import { describe, assert } from '../tests.js'
+
+import { describe, assert } from '../../src/test/index.js'
 import { isoDate } from '../../src/utils/date.js'
 
 describe('utils/date: isoDate', test => {
