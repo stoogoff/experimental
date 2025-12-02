@@ -12,6 +12,7 @@ import * as directives from './reactive/directives.test.js'
 import * as attribute from './reactive/directives/attribute.test.js'
 import * as bool from './reactive/directives/boolean.test.js'
 import * as event from './reactive/directives/event.test.js'
+import * as input from './reactive/directives/input.test.js'
 import * as value from './reactive/directives/value.test.js'
 
 // utils

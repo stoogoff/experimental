@@ -2,11 +2,43 @@
 export class MockNode {
 	#attributes
 	#events
+	#checked
+	#value = ''
 
 	constructor() {
 		this.innerText = ''
+		this.type = ''
+
 		this.#attributes = new Map()
 		this.#events = new Map()
+	}
+
+	// properties
+
+	get value() {
+		return this.#value
+	}
+
+	set value(value) {
+		this.#value = value
+		this.dispatchEvent('change', {
+			target: {
+				value
+			}
+		})
+	}
+
+	get checked() {
+		return this.#checked === true
+	}
+
+	set checked(checked) {
+		this.#checked = checked
+		this.dispatchEvent('change', {
+			target: {
+				checked
+			}
+		})
 	}
 
 	// attributes
@@ -33,16 +65,16 @@ export class MockNode {
 		this.#events.set(event, handler)
 	}
 
-	dispatchEvent(event) {
+	dispatchEvent(event, args = {}) {
 		if(!this.#events.has(event)) return
 
 		const handler = this.#events.get(event)
 
 		if('handleEvent' in handler) {
-			handler.handleEvent({})
+			handler.handleEvent(args)
 		}
 		else {
-			handler({})
+			handler(args)
 		}
 	}
 }

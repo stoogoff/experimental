@@ -34,6 +34,7 @@ describe('reactive/directives/attribute', test => {
 		context.value = 'Hello Mars'
 
 		assert(mockNode.getAttribute(PROPERTY)).isEqual(context.value)
+		assert(mockNode.getAttribute(PROPERTY)).isEqual(mockScope.property)
 		assert(mockNode.getAttribute(PROPERTY)).isEqual('Hello Mars')
 	})
 
@@ -46,6 +47,7 @@ describe('reactive/directives/attribute', test => {
 		mockScope.property = 'Hello Mars'
 
 		assert(mockNode.getAttribute(PROPERTY)).isEqual(context.value)
+		assert(mockNode.getAttribute(PROPERTY)).isEqual(mockScope.property)
 		assert(mockNode.getAttribute(PROPERTY)).isEqual('Hello Mars')
 	})
 

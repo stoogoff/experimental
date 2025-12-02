@@ -4,18 +4,23 @@ export const input = (context) => {
 	const checkbox = context.node.type === 'checkbox'
 
 	if(checkbox) {
-		context.node.checked = currentValue
+		context.node.checked = !!currentValue
 	}
 	else {
 		context.node.value = currentValue
 	}
 
-	context.node.onchange = (evt) => {
+	context.node.addEventListener('change', (evt) => {
 		context.value = checkbox ? evt.target.checked : evt.target.value
-	}
+	})
 
 	context.scope.on(`change:${context.property}`, (key, value, old) => {
-		context.node.value = value
+		if(checkbox) {
+			context.node.checked = value === true
+		}
+		else {
+			context.node.value = value
+		}
 	})
 
 	return false

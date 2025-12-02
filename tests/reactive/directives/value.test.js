@@ -31,6 +31,7 @@ describe('reactive/directives/value', test => {
 		context.value = 'Hello Mars'
 
 		assert(mockNode.innerText).isEqual(context.value)
+		assert(mockNode.innerText).isEqual(mockScope.property)
 		assert(mockNode.innerText).isEqual('Hello Mars')
 	})
 
@@ -43,6 +44,7 @@ describe('reactive/directives/value', test => {
 		mockScope.property = 'Hello Mars'
 
 		assert(mockNode.innerText).isEqual(context.value)
+		assert(mockNode.innerText).isEqual(mockScope.property)
 		assert(mockNode.innerText).isEqual('Hello Mars')
 	})
 

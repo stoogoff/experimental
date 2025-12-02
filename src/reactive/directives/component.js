@@ -1,14 +1,15 @@
 
 import { Component } from '../component.js'
+import { directives } from '../directives.js'
 import { logger } from '../config.js'
 
-export const component = (node, property, scope, directives) => {
-	logger().info(`component (directive): loading component '${ property }'`, scope)
+export const component = (context) => {
+	logger().info(`component (directive): loading component '${ context.property }'`, context.scope)
 
-	const component = directives.getComponent(property)
-	const newComponent = new Component(node, component, scope.data)
+	const component = directives.getComponent(context.property)
+	const newComponent = new Component(context.node, component, context.scope.data)
 
-	directives.loadDirectivesForNode(node, newComponent)
+	directives.loadDirectivesForNode(context.node, newComponent)
 
 	newComponent.mounted()
 
