@@ -2,9 +2,9 @@
 import { describe, assert, MockNode } from '../../../src/test/index.js'
 import { ProxiedModel } from '../../../src/data/model.js'
 import { Context } from '../../../src/reactive/context.js'
-import { value } from '../../../src/reactive/directives/value.js'
+import { text } from '../../../src/reactive/directives/text.js'
 
-describe('reactive/directives/value', test => {
+describe('reactive/directives/text', test => {
 	let mockNode, mockScope, context
 
 	test.before(() => {
@@ -12,7 +12,7 @@ describe('reactive/directives/value', test => {
 		mockScope = new ProxiedModel({
 			property: 'Hello World'
 		})
-		context = new Context(mockNode, 'property', mockScope, value)
+		context = new Context(mockNode, 'property', mockScope, text)
 	})
 
 	test('sets the initial value', () => {
@@ -54,7 +54,7 @@ describe('reactive/directives/value', test => {
 			property1: 'Hello World',
 			property2: 'Hello Venus',
 		})
-		const context = new Context(mockNode, 'property1', mockScope, value)
+		const context = new Context(mockNode, 'property1', mockScope, text)
 
 		context.render()
 

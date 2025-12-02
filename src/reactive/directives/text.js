@@ -1,5 +1,5 @@
 
-export const value = (context) => {
+export const text = (context) => {
 	context.node.innerText = context.value
 
 	context.scope.on(`change:${context.property}`, (key, value, old) => {
