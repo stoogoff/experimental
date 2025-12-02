@@ -25,7 +25,7 @@ describe('reactive/directives/event', test => {
 		const context = new Context(mockNode, 'callable', mockScope, event)
 
 		context.render()
-		mockNode.callEvent(PROPERTY)
+		mockNode.dispatchEvent(PROPERTY)
 
 		assert(callValue).notNull()
 		assert(callValue.evt).notNull()
@@ -37,7 +37,7 @@ describe('reactive/directives/event', test => {
 		const context = new Context(mockNode, 'noncallable', mockScope, event)
 
 		context.render()
-		mockNode.callEvent(PROPERTY)
+		mockNode.dispatchEvent(PROPERTY)
 
 		assert(callValue).isNull()
 	})

@@ -33,8 +33,8 @@ export class MockNode {
 		this.#events.set(event, handler)
 	}
 
-	callEvent(event) {
-		if(!this.#events.has(event)) throw new Error(`Event ${event} not set`)
+	dispatchEvent(event) {
+		if(!this.#events.has(event)) return
 
 		const handler = this.#events.get(event)
 
