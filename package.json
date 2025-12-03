@@ -12,14 +12,6 @@
     "url": "https://opensource.org/license/mit"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^6.0.4"
-  },
-  "peerDependencies": {
-    "vite": "^6.0.4"
+    "test": "node ./tests/index.js"
   }
 }
