@@ -12,6 +12,7 @@ export class Context {
 	#property
 	#scope
 	#callback
+	#isInvertedProperty = false
 
 	/**
 	 * Constructor.
@@ -30,10 +31,20 @@ export class Context {
 			throw new Error('callback must be a function', callback)
 		}
 
+		this.#isInvertedProperty = property.startsWith('!')
+
 		this.#node = node
-		this.#property = property
+		this.#property = property.replace(/^!/, '')
 		this.#scope = scope
 		this.#callback = callback
+	}
+
+	/**
+	 * Returns true if the property is boolean and should be treated as a negative value.
+	 * @return {boolean}
+	 */
+	get isInvertedProperty() {
+		return this.#isInvertedProperty
 	}
 
 	/**
@@ -114,6 +125,15 @@ export class Context {
 	 * to `addEventListener`.
 	 */
 	handleEvent(evt) {
-		if(isFunction(this.value)) this.value(evt, this)
+		let value = this.value
+
+		if(!isFunction(value)) {
+			logger().error(`Unable to call function '${ this.#property }'`)
+			return
+		}
+
+		// bind the value to the scope
+		value = value.bind(this.#scope)
+		value(evt, this)
 	}
 }

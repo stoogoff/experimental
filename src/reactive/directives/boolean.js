@@ -1,9 +1,7 @@
 
 export function booleanDirective(type, updateNode) {
 	return (context) => {
-		const invert = context.property.startsWith('!')
-		const property = context.property.replace(/^!/, '')
-
+		const invert = context.isInvertedProperty
 		const initialValue = context.value
 
 		updateNode(context.node, invert ? !initialValue : initialValue)

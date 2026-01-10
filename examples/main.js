@@ -50,11 +50,11 @@ directives.register('colour', (node, property, scope) => {
 	return false
 })
 
-directives.registerComponent('colours', Colours)
+//directives.registerComponent('colours', Colours)
 directives.registerComponent('timer', Timer)
-directives.registerComponent('todo', Todo)
-directives.registerComponent('todo-watcher', TodoWatcher)
+//directives.registerComponent('todo', Todo)
+//directives.registerComponent('todo-watcher', TodoWatcher)
 directives.registerComponent('counter', Counter)
-directives.registerComponent('counterWrapper', CounterWrapper)
-directives.registerComponent('input', Input)
+//directives.registerComponent('counterWrapper', CounterWrapper)
+//directives.registerComponent('input', Input)
 directives.load(document.body, Scope)

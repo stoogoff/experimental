@@ -12,6 +12,7 @@
     "url": "https://opensource.org/license/mit"
   },
   "scripts": {
-    "test": "node ./tests/index.js"
+    "test": "node ./tests/index.js",
+    "serve": "python3 -m http.server"
   }
 }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Experimental: Timer</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<h1>Timer</h1>
+
+<div data-q-component="timer">
+	<div>Counting: <strong data-q-text="count"></strong></div>
+	<button data-q-click="start" data-q-disabled="active">Start</button>
+	<button data-q-click="stop" data-q-disabled="!active">Stop</button>
+</div>
+
+<div data-q-component="timer" data-q-attributes='{"count":10}'>
+	<div>Counting: <strong data-q-text="count"></strong></div>
+	<button data-q-click="start" data-q-if="!active">Start</button>
+	<button data-q-click="stop" data-q-if="active">Stop</button>
+	<button data-q-click="reset">Reset</button>
+</div>
+
+<script type="module" src="main.js"></script>
+
+</body>
+</html>
