@@ -71,6 +71,54 @@ describe('data/set-store: add', test => {
 	})
 })
 
+describe('data/set-store: addRange', test => {
+	test.after(clearAllProxies)
+
+	test('adds multiple proxied items to internal array', () => {
+		const store = new SetStore()
+		const items = [{ id: 1 }, { id: 2 }]
+
+		const result = store.addRange(items)
+
+		assert(result).isEqual(items)
+		assert(store.all.length).isEqual(2)
+		assert(store.all[0].id).isEqual(1)
+		assert(store.all[1].id).isEqual(2)
+	})
+
+	test('emits "add" for each added item', () => {
+		const store = new SetStore()
+		const added = []
+
+		store.on('add', item => {
+			added.push(item)
+		})
+
+		store.addRange([{ id: 10 }, { id: 20 }])
+
+		assert(added.length).isEqual(2)
+		assert(added[0].id).isEqual(10)
+		assert(added[1].id).isEqual(20)
+	})
+
+	test('emits "change:all" once after adding range', () => {
+		const store = new SetStore()
+		let args = null
+		let callCount = 0
+
+		store.on('change:all', (field, value) => {
+			args = [field, value]
+			callCount++
+		})
+
+		store.addRange([{ id: 1 }, { id: 2 }, { id: 3 }])
+
+		assert(callCount).isEqual(1)
+		assert(args[0]).isEqual('all')
+		assert(args[1].length).isEqual(3)
+	})
+})
+
 describe('data/set-store: remove', test => {
 	test.after(clearAllProxies)
 
@@ -118,5 +166,64 @@ describe('data/set-store: remove', test => {
 		assert(args[0]).isEqual('all')
 		assert(args[1].length).isEqual(1)
 		assert(args[1][0].id).isEqual(1)
+	})
+})
+
+describe('data/set-store: empty', test => {
+	test.after(clearAllProxies)
+
+	test('removes all items from the store', () => {
+		const store = new SetStore([{ id: 1 }, { id: 2 }])
+
+		assert(store.all.length).isEqual(2)
+
+		store.empty()
+
+		assert(store.all.length).isEqual(0)
+	})
+
+	test('emits "remove" for each removed item', () => {
+		const store = new SetStore([{ id: 1 }, { id: 2 }])
+		const removed = []
+
+		store.on('remove', item => {
+			removed.push(item)
+		})
+
+		store.empty()
+
+		assert(removed.length).isEqual(2)
+		assert(removed[0].id).isEqual(1)
+		assert(removed[1].id).isEqual(2)
+	})
+
+	test('emits "change:all" after emptying the store', () => {
+		const store = new SetStore([{ id: 5 }])
+		let args = null
+		let callCount = 0
+
+		store.on('change:all', (field, value) => {
+			args = [field, value]
+			callCount++
+		})
+
+		store.empty()
+
+		assert(callCount).isEqual(1)
+		assert(args[0]).isEqual('all')
+		assert(args[1].length).isEqual(0)
+	})
+
+	test('does nothing when empty is called on an empty store', () => {
+		const store = new SetStore()
+		let called = false
+
+		store.on('change:all', () => {
+			called = true
+		})
+
+		store.empty()
+
+		assert(called).isEqual(false)
 	})
 })

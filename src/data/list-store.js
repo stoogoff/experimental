@@ -28,7 +28,7 @@ export class ListStore {
 		return item
 	}
 
-	addItems(items) {
+	addRange(items) {
 		items.forEach(item => {
 			const proxied = getProxy(item, this.#key)
 
@@ -53,6 +53,14 @@ export class ListStore {
 	}
 
 	empty() {
+		if(this.#data.length === 0) return
+
+		this.#data.forEach(item => {
+			const proxied = getProxy(item, this.#key)
+
+			this.#emitter.emit('remove', proxied)
+		})
+
 		this.#data = []
 		this.#emitter.emit('change:all', 'all', this.#data)
 	}
@@ -67,7 +75,7 @@ export class ListStore {
 		return this.#emitter.off(event, reference)
 	}
 
-	clearEvents() {
+	clear() {
 		this.#emitter.clear()
 	}
 }

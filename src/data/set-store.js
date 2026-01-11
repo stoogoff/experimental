@@ -28,6 +28,19 @@ export class SetStore {
 		return item
 	}
 
+	addRange(items) {
+		items.forEach(item => {
+			const proxied = getProxy(item, this.#key)
+
+			this.#data.add(proxied)
+			this.#emitter.emit('add', proxied)
+		})
+
+		this.#emitter.emit('change:all', 'all', this.all)
+
+		return items
+	}
+
 	remove(item) {
 		const proxied = getProxy(item, this.#key)
 
@@ -37,6 +50,19 @@ export class SetStore {
 		this.#emitter.emit('change:all', 'all', this.all)
 
 		return proxied
+	}
+
+	empty() {
+		if(this.#data.size === 0) return
+
+		this.#data.forEach(item => {
+			const proxied = getProxy(item, this.#key)
+
+			this.#emitter.emit('remove', proxied)
+		})
+
+		this.#data = new Set()
+		this.#emitter.emit('change:all', 'all', this.all)
 	}
 
 	// Emitter methods
