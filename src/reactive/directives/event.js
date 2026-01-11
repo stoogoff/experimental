@@ -17,3 +17,5 @@ export function eventHandlerDirective(name) {
 
 export const click = eventHandlerDirective('click')
 export const blur = eventHandlerDirective('blur')
+export const focus = eventHandlerDirective('focus')
+export const keyup = eventHandlerDirective('keyup')
