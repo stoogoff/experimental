@@ -87,7 +87,7 @@ export class Context {
 			return this.#scope[this.#property]
 		}
 
-		logger().info(`Unable to find property '${ this.#property }`, this.#scope)
+		logger().info(`Unable to find property '${ this.#property }'`, this.#scope)
 
 		return undefined
 	}
@@ -109,7 +109,7 @@ export class Context {
 			return
 		}
 
-		logger().error(`Unable to set property '${ this.#property }'' to value '${ value }'`, this.#scope)
+		logger().error(`Unable to set property '${ this.#property }' to value '${ value }'`, this.#scope)
 	}
 
 	/**

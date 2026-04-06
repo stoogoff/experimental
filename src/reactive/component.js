@@ -58,6 +58,10 @@ export class Component extends Emitter {
 		this.created()
 	}
 
+	has(target, prop) {
+		return prop in this.#computed || prop in target
+	}
+
 	get(target, prop, receiver) {
 		if(prop in this.#computed) {
 			return this.#computed[prop]()

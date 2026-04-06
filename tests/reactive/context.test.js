@@ -1,5 +1,6 @@
 import { describe, assert } from '../../src/test/index.js'
 import { Context } from '../../src/reactive/context.js'
+import { Component } from '../../src/reactive/component.js'
 
 describe('reactive/context: constructor', test => {
 	test('should throw if node is not provided', () => {
@@ -42,6 +43,19 @@ describe('reactive/context: get value', test => {
 		const context = new Context({}, 'property', mockScope, () => {})
 
 		assert(context.value).isEqual('Hello World')
+	})
+
+	test("returns the property value from the scope's computed", () => {
+		const mockScope = new Component(null, {
+			computed: {
+				property() {
+					return 'Hello world'
+				}
+			}
+		})
+		const context = new Context({}, 'property', mockScope, () => {})
+
+		assert(context.value).isEqual('Hello world')
 	})
 })
 
