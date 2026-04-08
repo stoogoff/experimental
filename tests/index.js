@@ -7,6 +7,7 @@ import * as setStore from './data/set-store.test.js'
 // reactive
 import * as context from './reactive/context.test.js'
 import * as directives from './reactive/directives.test.js'
+import * as component from './reactive/component.test.js'
 
 // reactive directives
 import * as attribute from './reactive/directives/attribute.test.js'
