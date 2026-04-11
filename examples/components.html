@@ -41,14 +41,19 @@
 		<li data-q-text="newTodo"></li>
 	</ul>
 
+	<ul>
+		<li data-q-each="todos" data-q-text="value"></li>
+	</ul>
+
 	<button data-q-click="shuffle">Shuffle</button>
+	<button data-q-click="remove">Remove</button>
 </div>
 
 <script type="module">
 
 import { directives, DIRECTIVES_LOG_KEY } from '../src/reactive/index.js'
 import { setLogger, ConsoleLogger, LOG_LEVEL_INFO } from '../src/utils/logger.js'
-import { shuffle } from '../src/utils/list.js'
+import { shuffle, tail } from '../src/utils/list.js'
 import Counter from './components/counter.js'
 
 setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
@@ -66,6 +71,10 @@ directives.load(document.getElementById('mount'), {
 
 	shuffle() {
 		this.data.todos = shuffle(this.data.todos)
+	},
+
+	remove() {
+		this.data.todos = tail(tail(this.data.todos))
 	},
 
 	addTodo() {
