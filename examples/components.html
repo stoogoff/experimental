@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Experimental: Components</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<h1>Components</h1>
+
+<p>Two instances of the same component.</p>
+
+<div id="mount">
+	<!-- div data-q-component="counter">
+		<h2>Counter 1</h2>
+		<span data-q-text="count" data-q-class="cssClass"></span>
+		<div>
+			<button data-q-click="increment">Add</button>
+			<button data-q-click="decrement">Subtract</button>
+		</div>
+	</div>
+	<div data-q-component="counter">
+		<h2>Counter 2</h2>
+		<span data-q-text="count" data-q-class="cssClass"></span>
+		<div>
+			<button data-q-click="increment">Add</button>
+			<button data-q-click="decrement">Subtract</button>
+		</div>
+	</div -->
+
+	<div>
+		<input type="text" data-q-input="newTodo"> <button data-q-click="addTodo">Add</button>
+	</div>
+
+	<ul>
+		<li><strong>Todos</strong></li>
+		<li data-q-each="todos" data-q-text="value"></li>
+		<li><strong>Footer</strong></li>
+		<li data-q-text="newTodo"></li>
+	</ul>
+
+	<button data-q-click="shuffle">Shuffle</button>
+</div>
+
+<script type="module">
+
+import { directives, DIRECTIVES_LOG_KEY } from '../src/reactive/index.js'
+import { setLogger, ConsoleLogger, LOG_LEVEL_INFO } from '../src/utils/logger.js'
+import { shuffle } from '../src/utils/list.js'
+import Counter from './components/counter.js'
+
+setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
+
+directives.registerComponent('counter', Counter)
+directives.load(document.getElementById('mount'), {
+	data: {
+		newTodo: '',
+		todos: [
+			{ value: 'One'},
+			{ value: 'Two'},
+			{ value: 'Three'},
+		],
+	},
+
+	shuffle() {
+		this.data.todos = shuffle(this.data.todos)
+	},
+
+	addTodo() {
+		console.log(this.data.todos)
+		this.data.todos = [...this.data.todos, { value: this.data.newTodo }]
+		this.data.newTodo = ''
+		console.log(this.data.todos)
+	}
+})
+
+</script>
+
+</body>
+</html>

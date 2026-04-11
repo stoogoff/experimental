@@ -5,7 +5,7 @@ import { throwIfNull } from '../utils/assert.js'
 const _proxied = new Map()
 
 /**
- * Supply a model a receive a proxied version. If a proxied version
+ * Supply a model and receive a proxied version. If a proxied version
  * already exists, based on its key, then that is returned instead.
  * @param {Object} model - the model
  * @param {string} key - the name of the property to use as a primary key.

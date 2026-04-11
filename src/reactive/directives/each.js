@@ -1,62 +1,78 @@
 
 import { logger } from '../config.js'
-import { directives } from "../directives.js"
+import { directives } from '../directives.js'
+import { createId } from '../../utils/string.js'
 
-const createNode = (context, parent, value) => {
-	logger().info(`each (directive): clone node with value`, value)
+const createNode = (context, base, value, index, ref) => {
+	logger().log(`each (directive): ${ ref } building index[${ index }]`, value, context)
 
-	const clone = context.node.cloneNode(true)
+	const clone = base.cloneNode(true)
 
-	if(clone.hasChildNodes()) {
-		const newScope = clone in context.scope ? context.scope.clone(value) : value
+	clone.setAttribute('data-current', JSON.stringify(value))
+	clone.setAttribute('data-ref', ref)
+	clone.setAttribute('data-index', index)
 
-		logger().log(`each (directive): creating new scope`, newScope)
+	// create scope from value or by cloning from the component
+	const newScope = 'clone' in context.scope ? context.scope.clone(value) : value
 
-		directives.loadDirectivesForNode(clone, newScope)
-	}
-	else {
-		clone.innerText = value
-	}
+	logger().log(`each (directive): ${ ref } creating new scope`, newScope)
 
-	parent.appendChild(clone)
+	directives.loadDirectivesForNode(clone, newScope)
+
+	return clone
 }
 
 export const each = (context) => {
-	const parent = context.node.parentNode
+	const ref = `each-${ createId(10) }`
 	const initialValues = context.value ?? []
-	let cachedValue = JSON.stringify(initialValues)
+	const parent = context.node.parentNode
+	const base = context.node.cloneNode(true)
 
-	logger().info(`each (directive): '${ context.value }'`, context)
+	logger().log(`each (directive): ${ ref } building`, context, parent, initialValues)
 
-	// clone the base node to maintain data-* attributes
-	const clone = context.node.cloneNode(true)
-
-	// remove base node
-	context.node.remove()
+	const nodeList = []
 
 	// clone nodes
-	initialValues.forEach(value => {
-		createNode(context, parent, value)
+	initialValues.forEach((value, index) => {
+		nodeList.push(createNode(context, base, value, index, ref))
 	})
 
+	context.node.replaceWith(...nodeList)
+
 	context.scope.on(`change:${context.property}`, (key, values, old) => {
-		const matchValue = JSON.stringify(values)
+		logger().log(`each (directive): ${ ref } rebuilding`, context, parent, values)
 
-		logger().info('each (directive):', { cachedValue, matchValue, match: cachedValue === matchValue })
+		// get a list of nodes which belong to this each
+		const affectedNodes = Array.from(parent.querySelectorAll(`*[data-ref=${ref}]`))
+		let lastNode = null
 
-		if(cachedValue === matchValue) return
+		values.forEach((value, index) => {
+			// ignore a node if it already exists
+			if(affectedNodes[index]) {
+				const currentValue = JSON.stringify(value)
+				const cachedValue = affectedNodes[index].getAttribute('data-current')
 
-		// remove existing nodes
-		while(parent.firstChild) {
-			parent.removeChild(parent.lastChild)
-		}
+				if(cachedValue === currentValue) {
+					logger().log(`each (directive): ${ ref } rebuilding ${ index } — matched value skipping`)
+					lastNode = affectedNodes[index]
+				}
+				else {
+					logger().log(`each (directive): ${ ref } rebuilding ${ index } — different value replacing`)
+					const clone = createNode(context, base, value, index, ref)
 
-		// clone nodes
-		values.forEach(value => {
-			createNode(context, parent, value)
+					affectedNodes[index].replaceWith(clone)
+					lastNode = clone
+				}
+			}
+			else {
+				logger().log(`each (directive): ${ ref } rebuilding ${ index } — new value creating`)
+				const clone = createNode(context, base, value, index, ref)
+
+				// insert the clone after the last affected node
+				lastNode.insertAdjacentElement('afterend', clone)
+				lastNode = clone
+			}
 		})
-
-		cachedValue = matchValue
 	})
 
 	return true

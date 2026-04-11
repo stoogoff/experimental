@@ -139,42 +139,40 @@ export const directives = {
 		logger().info('directives.load COMPLETE')
 	},
 
-	loadDirectivesForNode(root, scope) {
-		logger().info('BEGIN directives.loadDirectivesForNode', root, scope)
+	loadDirectivesForNode(node, scope) {
+		logger().info('BEGIN directives.loadDirectivesForNode', node, scope)
 
-		const children = Array.from(root.children)
+		let complete = false
 
-		children.forEach(node => {
-			let complete = false
+		_directives.forEach(({ attribute, callback }) => {
+			const prefixedAttribute = `data-${ _prefix }-${ attribute}`
 
-			_directives.forEach(({ attribute, callback }) => {
-				const prefixedAttribute = `data-${ _prefix }-${ attribute}`
+			if(!node.hasAttribute(prefixedAttribute)) return
 
-				if(!node.hasAttribute(prefixedAttribute)) return
+			logger().info(`directives: apply attribute '${ attribute }'`, node, scope)
 
-				logger().info(`directives: apply attribute '${ attribute }'`, node, scope)
+			const context = new Context(
+				node,
+				node.getAttribute(prefixedAttribute),
+				scope,
+				callback
+			)
+			node.removeAttribute(prefixedAttribute)
 
-				const context = new Context(
-					node,
-					node.getAttribute(prefixedAttribute),
-					scope,
-					callback,
-					this
-				)
-				const result = context.render()
+			const result = context.render()
 
-				node.removeAttribute(prefixedAttribute)
-
-				if(!complete) complete = result
-			})
-
-			if(!complete && node.hasChildNodes()) {
-				logger().info('RECURSE directives.loadDirectivesForNode', node)
-				this.loadDirectivesForNode(node, scope)
-			}
+			if(!complete) complete = result
 		})
 
-		logger().info('END directives.loadDirectivesForNode', root)
+		if(!complete && node.hasChildNodes()) {
+			logger().info('RECURSE directives.loadDirectivesForNode', node)
+
+			const children = Array.from(node.children)
+
+			children.forEach(child => this.loadDirectivesForNode(child, scope))
+		}
+
+		logger().info('END directives.loadDirectivesForNode', node)
 	},
 }
 

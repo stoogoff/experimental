@@ -1,182 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Experimental</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Experimental: Basics</title>
 <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-<p>Hello world</p>
 
+<h1>Basic example</h1>
 
-<p data-q-value="scope"></p>
-<p data-q-value="test1"></p>
+<p>A simple text input which updates a single property when the <code>onchange</code> event fires. The property is displayed in two places but both are updated correctly. None of the code for handling this needs to concern itself with DOM manipulation, it's all handled by the framework.</p>
 
-<div data-q-value="test2"></div>
-
-<div>
-	<strong data-q-value="test1"></strong>
-
-	<ul>
-		<li>Before</li>
-		<li data-q-value="test2"></li>
-		<li data-q-click="clicky" style="cursor: pointer; text-decoration: underline">After</li>
-	</ul>
+<div id="form">
+	<input type="text" data-q-input="textInput">
+	<button data-q-click="clear">Clear</button>
+	<p>The first rendering of <code>textInput</code> (<strong data-q-text="textInput"></strong>)</p>
+	<p>The second rendering of <code>textInput</code> (<em data-q-text="textInput"></em>)</p>
 </div>
 
-<p data-q-value="test1"></p>
+<p>HTML elements are marked with <code>data-q-*</code> attributes, where <strong>q</strong> is a handy namespace prefix that isn't too verbose. The framework looks for these attributes in the DOM and acts accordingly. The entire Javascript code for the above functionality looks like this:</p>
+<pre><code>import { directives } from '../src/reactive/index.js'
 
-<div id="count-wrapper">
-	<div data-q-component="counter" id="counter">
-		<p data-q-value="scope" id="counter-scope"></p>
-		<span data-q-value="count" data-q-class="cssClass" id='counter-count'></span>
-		<div id="counter-div">
-			<button id="counter-increment" data-q-click="increment">Add</button>
-			<button id="counter-decrement" data-q-click="decrement">Subtract</button>
-		</div>
-	</div>
-</div>
+directives.load(document.getElementById('form'), {
+	data: {
+		textInput: 'write something',
+	},
 
-<div>
-	<div data-q-component="todo">
-		<ul>
-			<li data-q-each="todos">
-				<strong data-q-value="text"></strong>
-				<button data-q-click="completeTodo">Complete</button>
-			</li>
-		</ul>
-		<div data-q-if="!hasTodos"><em>Nothing todo</em></div>
-		<input type="text" data-q-input="newTodo" />
-		<button data-q-click="addTodo" data-q-disabled="!canAdd">Add</button>
-	</div>
-</div>
+	clear() {
+		this.data.textInput = ''
+	},
+})</code></pre>
 
-<ul data-q-component="todo-watcher">
-	<li data-q-each="todos">
-		<span data-q-value="text" data-q-if="!done"></span>
-		<em data-q-value="text" data-q-if="done" style="text-decoration: line-through;"></em>
-	</li>
-</ul>
+<p>The HTML looks like this:</p>
+<pre><code>&lt;div>
+	&lt;input type="text" data-q-input="textInput">
+	&lt;button data-q-click="clear">Clear&lt;/button>
+	&lt;p>The first rendering of &lt;code>textInput&lt;/code> (&lt;strong data-q-text="textInput">&lt;/strong>)&lt;/p>
+	&lt;p>The second rendering of &lt;code>textInput&lt;/code> (&lt;em data-q-text="textInput">&lt;/em>)&lt;/p>
+&lt;/div></code></pre>
 
-<div data-q-component="todo-watcher">
-	<strong data-q-value="completeTodos"></strong> of <strong data-q-value="totalTodos"></strong>
-</div>
+<p>The <code>data-q-input</code> attribute looks for a <code>textInput</code> property within the <code>data</code> object and displays it as the input element's <code>value</code> property. When the <code>onchange</code> event fires it updates the value of the property with the current text of the input.</p>
+<p>The <code>data-q-text</code> attribute displays the value of the <code>textInput</code> property of the <code>data</code> object using the <code>innerText</code> property of the element. It watches for changes to <code>textInput</code> and when that happens it sets the <code>innerText</code> property again.</p>
+<p>The <code>data-q-click</code> attribute looks for a <code>clear</code> function on the root object and calls it when an <code>onclick</code> event is fired. In this case the <code>clear</code> function sets the <code>textInput</code> property to an empty string which updates the input element and the two display elements.</p>
 
-<div data-q-component="counter">
-	<span data-q-value="count" data-q-class="cssClass"></span>
-	<div>
-		<button data-q-click="increment">Add</button>
-		<button data-q-click="decrement">Subtract</button>
-	</div>
-</div>
+<script type="module">
 
-<div data-q-component="counter" data-q-attributes="{&quot;count&quot;:10}">
-	<span data-q-value="count"></span>
-	<div>
-		<button data-q-click="increment">Add</button>
-		<button data-q-click="decrement">Subtract</button>
-	</div>
-</div>
+import { directives } from '../src/reactive/index.js'
 
-<div data-q-component="counterWrapper">
-	<div data-q-each="counters">
-		<div data-q-component="counter">
-			<span data-q-value="count" data-q-class="cssClass"></span>
-			<div>
-				<button data-q-click="increment">Add</button>
-				<button data-q-click="decrement">Subtract</button>
-			</div>
-		</div>
-	</div>
-</div>
+directives.load(document.getElementById('form'), {
+	data: {
+		textInput: 'write something',
+	},
 
+	clear() {
+		this.data.textInput = ''
+	},
+})
 
-<div data-q-component="timer">
-	Counting <strong data-q-value="count"></strong>
-	<button data-q-click="start" data-q-disabled="active">Start</button>
-	<button data-q-click="stop" data-q-disabled="!active">Stop</button>
-</div>
-
-<div data-q-component="timer" data-q-attributes='{"count":10}'>
-	Counting <strong data-q-value="count"></strong>
-	<button data-q-click="start" data-q-if="!active">Start</button>
-	<button data-q-click="stop" data-q-if="active">Stop</button>
-	<button data-q-click="reset">Reset</button>
-</div>
-
-
-<div data-q-component="input">
-	<div>
-		<label>
-			First Name
-			<select type="text" data-q-input="firstName">
-				<option>Perry</option>
-				<option>Stoo</option>
-				<option>Daniel</option>
-				<option>Jebediah</option>
-			</select>
-		</label>
-	</div>
-	<div>
-		<label>
-			Last Name
-			<input type="text" data-q-input="lastName" />
-		</label>
-	</div>
-	<div>
-		<label>
-			Age
-			<input type="text" data-q-input="age" />
-		</label>
-	</div>
-	<p>
-		<strong data-q-value="firstName"></strong>
-		<strong data-q-value="lastName"></strong> is
-		<strong data-q-value="age"></strong> years old
-	</p>
-	<div>fullName = <span data-q-value="fullName"></span></div>
-</div>
-
-<div data-q-component="input">
-	<div>firstName = <span data-q-value="firstName"></span></div>
-	<div>lastName = <span data-q-value="lastName"></span></div>
-	<div>fullName = <span data-q-value="fullName"></span></div>
-	<ul>
-		<li data-q-each="list1" id="test"></li>
-	</ul>
-</div>
-
-<div data-q-component="input">
-	<div data-q-value="text"></div>
-	<ul>
-		<li data-q-each="list2">
-			<span data-q-value="id"></span>:
-			<span data-q-value="text"></span>
-		</li>
-	</ul>
-</div>
-
-<div data-q-component="colours">
-	<input type="text" data-q-input="title" />
-	<div data-q-value="title"></div>
-	<div class="flex gap-1 justify-center">
-		<div data-q-each="colours">
-			<div data-q-template="colours"></div>
-		</div>
-	</div>
-</div>
-
-<div data-q-include="file"></div>
-<div id="wrapper">
-	<div id="inner">Current file = <code id="code" data-q-value="file"></code></div>
-	<button id="button" data-q-click="changeFile">Change Import</button>
-	<button id="button" data-q-click="errorFile">Error</button>
-</div>
-
-<template id="colours">
-	<div data-q-value="colour" data-q-colour="colour" data-q-click="setColour" style="color: white; padding: 0.5rem"></div>
-</template>
-
-<script type="module" src="main.js"></script>
+</script>
 
 </body>
 </html>

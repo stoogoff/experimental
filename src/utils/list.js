@@ -2,6 +2,42 @@
 import { throwIfNull } from './assert.js'
 
 /**
+ * Return the first element of an array.
+ * @param {Array} array - The array.
+ * @return {*} The first item.
+ */
+export const head = (arr) => arr[0]
+
+/**
+ * Return all elements of the array after the first.
+ * @param {Array} array - The array.
+ * @return {Array} An array of all the elements excluding the first.
+ */
+export const tail = ([first, ...rest]) => rest
+
+/**
+ * Copy an array, shuffle its content and return the copy.
+ * @param {Array} array - The array to shuffle.
+ * @return {Array} The shuffled copy of the array.
+ */
+export const shuffle = array => {
+	const clone = [...array]
+	let current = array.length
+
+	while(current !== 0) {
+		let random = Math.floor(Math.random() * current)
+
+		current--
+
+		[clone[current], clone[random]] = [
+			clone[random], clone[current]
+		]
+	}
+
+	return clone
+}
+
+/**
  * Return a sorting function which will sort an array of objects
  * by the provided property.
  * @example

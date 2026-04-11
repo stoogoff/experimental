@@ -8,12 +8,8 @@ export default {
 		cssClass() {
 			if(this.data.count === 0) return 'blue'
 
-			return this.data.count < 0 ? 'red' : 'green'
-		},
-	},
-
-	mounted() {
-		this.node.style.backgroundColor = 'skyblue'
+			return this.data.count > 0 ? 'green' : 'red' 
+		}
 	},
 
 	increment() {
