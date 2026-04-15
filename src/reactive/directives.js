@@ -41,6 +41,10 @@ export const directives = {
 	 * @param {Function} callback - The callback function used to render the HTML.
 	 */
 	register(attribute, callback) {
+		if(_directives.map(({ attribute }) => attribute).includes(attribute)) {
+			return
+		}
+
 		_directives.push({ attribute, callback })
 	},
 
@@ -175,6 +179,11 @@ export const directives = {
 		logger().info('END directives.loadDirectivesForNode', node)
 	},
 }
+
+// register `each` first so it's parsed and removed from the node
+// before other directives are applied, so the correct scope is
+// used for the other directives on the looping node
+directives.register('each', core.each)
 
 // register core directives
 Object.keys(core).forEach(key => {

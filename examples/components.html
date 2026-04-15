@@ -42,7 +42,7 @@
 	</ul>
 
 	<ul>
-		<li data-q-each="todos" data-q-text="value"></li>
+		<li data-q-each="todos" data-q-click="clickTest" data-q-text="value"></li>
 	</ul>
 
 	<button data-q-click="shuffle">Shuffle</button>
@@ -56,7 +56,7 @@ import { setLogger, ConsoleLogger, LOG_LEVEL_INFO } from '../src/utils/logger.js
 import { shuffle, tail } from '../src/utils/list.js'
 import Counter from './components/counter.js'
 
-setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
+//setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
 
 directives.registerComponent('counter', Counter)
 directives.load(document.getElementById('mount'), {
@@ -67,6 +67,10 @@ directives.load(document.getElementById('mount'), {
 			{ value: 'Two'},
 			{ value: 'Three'},
 		],
+	},
+
+	clickTest(evt, context) {
+		console.log(context.scope.data.value)
 	},
 
 	shuffle() {
