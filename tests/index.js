@@ -11,6 +11,7 @@ import * as component from './reactive/component.test.js'
 
 // reactive directives
 import * as attribute from './reactive/directives/attribute.test.js'
+import * as each from './reactive/directives/each.test.js'
 import * as bool from './reactive/directives/boolean.test.js'
 import * as event from './reactive/directives/event.test.js'
 import * as input from './reactive/directives/input.test.js'
