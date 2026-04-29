@@ -76,18 +76,5 @@ export class Storage {
 	}
 }
 
-const noop = () => {}
-
-const emptyStorage = {
-	length: 0,
-	setItem: noop,
-	getItem: noop,
-	removeItem: noop,
-	clear: noop,
-	key: noop,
-}
-
-var window = window ?? null
-
-export const local = new Storage(window && window.localStorage ? window.localStorage : emptyStorage)
-export const session = new Storage(window && window.sessionStorage ? window.sessionStorage : emptyStorage)
+export const local = new Storage(window.localStorage)
+export const session = new Storage(window.sessionStorage)

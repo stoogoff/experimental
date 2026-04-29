@@ -19,7 +19,7 @@ export const disabled = booleanDirective('disabled', (node, bool) => {
 		node.setAttribute('disabled', 'disabled')
 	}
 	else {
-		node.removeAttribute('disabled')	
+		node.removeAttribute('disabled')
 	}
 })
 
