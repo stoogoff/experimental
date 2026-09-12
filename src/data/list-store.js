@@ -7,6 +7,7 @@ export class ListStore extends Emittable {
 	#key
 
 	constructor(data = [], key = 'id') {
+		super()
 		this.#key = key
 		this.#data = data.map(item => getProxy(item, key))
 	}

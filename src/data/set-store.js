@@ -7,6 +7,7 @@ export class SetStore extends Emittable {
 	#key
 
 	constructor(data = [], key = 'id') {
+		super()
 		this.#key = key
 		this.#data = new Set(data.map(item => getProxy(item, key)))
 	}

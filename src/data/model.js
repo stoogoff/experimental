@@ -15,6 +15,7 @@ export class ProxiedModel extends Emittable {
 	 * @return {Proxy} a Proxy instance
 	 */
 	constructor(model) {
+		super()
 		this.#model = model
 		
 		const proxy = new Proxy(model, this)

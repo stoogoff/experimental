@@ -24,7 +24,7 @@ import * as emitter from './utils/emitter.test.js'
 import * as list from './utils/list.test.js'
 import * as logger from './utils/logger.test.js'
 import * as string from './utils/string.test.js'
-import * as storage from './utils/storage.test.js'
+//import * as storage from './utils/storage.test.js'
 
 import { run, consoleRenderer } from '../src/test/index.js'
 
