@@ -1,14 +1,12 @@
 
-import { Emitter } from '../utils/emitter.js'
+import { Emittable } from '../utils/emittable.js'
 import { getProxy } from './proxy.js'
 
-export class SetStore {
+export class SetStore extends Emittable {
 	#data
 	#key
-	#emitter
 
 	constructor(data = [], key = 'id') {
-		this.#emitter = new Emitter()
 		this.#key = key
 		this.#data = new Set(data.map(item => getProxy(item, key)))
 	}
@@ -22,8 +20,8 @@ export class SetStore {
 
 		this.#data.add(proxied)
 
-		this.#emitter.emit('add', proxied)
-		this.#emitter.emit('change:all', 'all', this.all)
+		this._emitter.emit('add', proxied)
+		this._emitter.emit('change:all', 'all', this.all)
 
 		return item
 	}
@@ -33,10 +31,10 @@ export class SetStore {
 			const proxied = getProxy(item, this.#key)
 
 			this.#data.add(proxied)
-			this.#emitter.emit('add', proxied)
+			this._emitter.emit('add', proxied)
 		})
 
-		this.#emitter.emit('change:all', 'all', this.all)
+		this._emitter.emit('change:all', 'all', this.all)
 
 		return items
 	}
@@ -46,8 +44,8 @@ export class SetStore {
 
 		this.#data.delete(proxied)
 
-		this.#emitter.emit('remove', proxied)
-		this.#emitter.emit('change:all', 'all', this.all)
+		this._emitter.emit('remove', proxied)
+		this._emitter.emit('change:all', 'all', this.all)
 
 		return proxied
 	}
@@ -58,24 +56,10 @@ export class SetStore {
 		this.#data.forEach(item => {
 			const proxied = getProxy(item, this.#key)
 
-			this.#emitter.emit('remove', proxied)
+			this._emitter.emit('remove', proxied)
 		})
 
 		this.#data = new Set()
-		this.#emitter.emit('change:all', 'all', this.all)
-	}
-
-	// Emitter methods
-
-	on(event, callback) {
-		return this.#emitter.on(event, callback)
-	}
-
-	off(event, reference) {
-		return this.#emitter.off(event, reference)
-	}
-
-	clear() {
-		this.#emitter.clear()
+		this._emitter.emit('change:all', 'all', this.all)
 	}
 }

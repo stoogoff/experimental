@@ -1,14 +1,12 @@
 
-import { Emitter } from '../utils/emitter.js'
+import { Emittable } from '../utils/emittable.js'
 import { getProxy } from './proxy.js'
 
-export class ListStore {
+export class ListStore extends Emittable {
 	#data = []
 	#key
-	#emitter
 
 	constructor(data = [], key = 'id') {
-		this.#emitter = new Emitter()
 		this.#key = key
 		this.#data = data.map(item => getProxy(item, key))
 	}
@@ -22,8 +20,8 @@ export class ListStore {
 
 		this.#data.push(proxied)
 
-		this.#emitter.emit('add', proxied)
-		this.#emitter.emit('change:all', 'all', this.#data)
+		this._emitter.emit('add', proxied)
+		this._emitter.emit('change:all', 'all', this.#data)
 
 		return item
 	}
@@ -33,10 +31,10 @@ export class ListStore {
 			const proxied = getProxy(item, this.#key)
 
 			this.#data.push(proxied)
-			this.#emitter.emit('add', proxied)
+			this._emitter.emit('add', proxied)
 		})
 
-		this.#emitter.emit('change:all', 'all', this.#data)
+		this._emitter.emit('change:all', 'all', this.#data)
 
 		return items
 	}
@@ -46,8 +44,8 @@ export class ListStore {
 
 		this.#data = this.#data.filter(toRemove => toRemove[this.#key] !== item[this.#key])
 
-		this.#emitter.emit('remove', proxied)
-		this.#emitter.emit('change:all', 'all', this.#data)
+		this._emitter.emit('remove', proxied)
+		this._emitter.emit('change:all', 'all', this.#data)
 
 		return proxied
 	}
@@ -58,24 +56,10 @@ export class ListStore {
 		this.#data.forEach(item => {
 			const proxied = getProxy(item, this.#key)
 
-			this.#emitter.emit('remove', proxied)
+			this._emitter.emit('remove', proxied)
 		})
 
 		this.#data = []
-		this.#emitter.emit('change:all', 'all', this.#data)
-	}
-
-	// Emitter methods
-
-	on(event, callback) {
-		return this.#emitter.on(event, callback)
-	}
-
-	off(event, reference) {
-		return this.#emitter.off(event, reference)
-	}
-
-	clear() {
-		this.#emitter.clear()
+		this._emitter.emit('change:all', 'all', this.#data)
 	}
 }

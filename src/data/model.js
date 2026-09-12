@@ -1,14 +1,13 @@
 
-import { Emitter } from '../utils/emitter.js'
+import { Emittable } from '../utils/emittable.js'
 
 /**
  * Proxies any model by returning a Proxy of the target object. Adds
  * on / off handlers from the Emitter class and automatically emits
  * `change` and `change:<property>` events when a property is modified.
  */
-export class ProxiedModel {
+export class ProxiedModel extends Emittable {
 	#model
-	#emitter = new Emitter()
 
 	/**
 	 * Constructor.
@@ -75,23 +74,9 @@ export class ProxiedModel {
 
 		target[prop] = value
 
-		this.#emitter.emit('change', prop, value, oldValue)
-		this.#emitter.emit(`change:${prop}`, prop, value, oldValue)
+		this._emitter.emit('change', prop, value, oldValue)
+		this._emitter.emit(`change:${prop}`, prop, value, oldValue)
 
 		return true
-	}
-
-	// Emitter methods
-
-	on(event, callback) {
-		return this.#emitter.on(event, callback)
-	}
-
-	off(event, reference) {
-		return this.#emitter.off(event, reference)
-	}
-
-	clear() {
-		this.#emitter.clear()
 	}
 }
