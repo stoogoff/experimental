@@ -22,6 +22,8 @@ const createNode = (context, base, value, ref) => {
 	return clone
 }
 
+// TODO this needs to be able to handle lists of scalars as well as lists of objects
+// e.g. l = [1, 2, 3] <li data-q-each="l" data-q-text="."></li>
 export const each = (context) => {
 	const ref = `each-${ createId(10) }`
 	const initialValues = context.value ?? []

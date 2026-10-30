@@ -32,3 +32,9 @@ export const include = (context) => {
 
 	return false
 }
+
+export const url = (context) => {
+	load(context.property).then(html => context.node.innerHTML = html)
+
+	return false
+}
