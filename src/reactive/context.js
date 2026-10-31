@@ -1,6 +1,7 @@
 
 import { logger } from './config.js'
-import { isIn, isFunction, notFunction, throwIfNull } from '../utils/assert.js'
+import { isIn, isFunction, notFunction, isNull, throwIfNull } from '../utils/assert.js'
+import { valueFromPath } from '../utils/string.js'
 
 /**
  * Context stores the current scope information, the HTML node which is being
@@ -13,6 +14,7 @@ export class Context {
 	#scope
 	#callback
 	#isInvertedProperty = false
+	#stores
 
 	/**
 	 * Constructor.
@@ -20,8 +22,9 @@ export class Context {
 	 * @param {string} property
 	 * @param {} scope
 	 * @param {} callback
+	 * @param {} stores
 	 */
-	constructor(node, property, scope, callback) {
+	constructor(node, property, scope, callback, stores) {
 		throwIfNull(node, 'node')
 		throwIfNull(property, 'property')
 		throwIfNull(scope, 'scope')
@@ -37,6 +40,7 @@ export class Context {
 		this.#property = property.replace(/^!/, '')
 		this.#scope = scope
 		this.#callback = callback
+		this.#stores = stores
 	}
 
 	/**
@@ -78,7 +82,7 @@ export class Context {
 	 * @return {* | undefined} The value of the property, or undefined if it
 	 * can't be found.
 	 */
-	get value() {
+	get #rawValue() {
 		if(isIn('data', this.#scope) && isIn(this.#property, this.#scope.data)) {
 			return this.#scope.data[this.#property]
 		}
@@ -87,9 +91,35 @@ export class Context {
 			return this.#scope[this.#property]
 		}
 
+		if(this.#property.indexOf('.') !== -1) {
+			try {
+				const { value, stack } = this.#property.startsWith('stores.')
+					? valueFromPath(this.#property, { stores: this.#stores }, true)
+					: valueFromPath(this.#property, this.#scope, true)
+
+				return value
+			}
+			catch(ex) {
+				logger().error(ex.message)
+			}
+		}
+
 		logger().info(`Unable to find property '${ this.#property }'`, this.#scope)
 
 		return undefined
+	}
+
+	/**
+	 * Get the raw value and return it. If it's a function call it first.
+	 */
+	get value() {
+		const value = this.#rawValue
+
+		if(isFunction(value)) {
+			return value.call(this.#scope, this)
+		}
+
+		return value
 	}
 
 	/**
@@ -99,17 +129,39 @@ export class Context {
 	 * @param {*} value
 	 */
 	set value(value) {
+		let scope = null
+
 		if(isIn('data', this.#scope) && isIn(this.#property, this.#scope.data)) {
-			this.#scope.data[this.#property] = value
-			return
+			scope = this.#scope.data[this.#property]
+		}
+		else if(isIn(this.#property, this.#scope)) {
+			scope = this.#scope[this.#property]
+		}
+		else if(this.#property.indexOf('.') !== -1) {
+			try {
+				const { value: updatedValue, stack } = valueFromPath(this.#property, this.#scope, true)
+				const object = stack[stack.length - 2]
+				const path = stack[stack.length - 1].path
+
+				// TODO this has no way of updating the UI as it doesn't fire a change event
+				// TODO it could be that context is an emittable...
+				scope = object[path]
+			}
+			catch(ex) {
+				logger().error(ex.message)
+			}
 		}
 
-		if(isIn(this.#property, this.#scope)) {
-			this.#scope[this.#property] = value
-			return
+		if(isNull(scope)) {
+			logger().error(`Unable to set property '${ this.#property }' to value '${ value }'`, this.#scope)
 		}
-
-		logger().error(`Unable to set property '${ this.#property }' to value '${ value }'`, this.#scope)
+		else if(isFunction(scope)) {
+			// TODO this will also need to update somehow
+			scope.call(this.#scope, this, value)
+		}
+		else {
+			scope = value
+		}
 	}
 
 	/**
@@ -125,7 +177,7 @@ export class Context {
 	 * to `addEventListener`.
 	 */
 	handleEvent(evt) {
-		let value = this.value
+		let value = this.#rawValue
 
 		if(!isFunction(value)) {
 			logger().error(`Unable to call function '${ this.#property }'`)

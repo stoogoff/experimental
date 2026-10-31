@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Experimental: Components</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div id="mount">
+	<div>
+		<h3>Path properties</h3>
+		<p>Name (data.person.name): <strong data-q-text="data.person.name"></strong></p>
+		<p>Symbol (data.person.symbol): <strong data-q-text="data.person.symbol"></strong></p>
+		<div>
+			<input type="text" data-q-input="data.person.name" />
+		</div>
+	</div>
+	<hr />
+	<div>
+		<h3>Data properties</h3>
+		<p>Name (name): <strong data-q-text="name"></strong></p>
+		<p>Symbol (symbol): <strong data-q-text="symbol"></strong></p>
+		<div>
+			<input type="text" data-q-input="name" />
+		</div>
+	</div>
+	<hr />
+	<div>
+		<h3>Store path properties</h3>
+		<p>Name (stores.object.name): <strong data-q-text="stores.object.name"></strong></p>
+		<p>Symbol (stores.object.symbol): <strong data-q-text="stores.object.symbol"></strong></p>
+		<div>
+			<input type="text" data-q-input="stores.object.name" />
+		</div>
+	</div>
+	<ul>
+		<li data-q-each="stores.list.all" data-q-text="name"></li>
+	</ul>
+	<input type="text" data-q-input="updateName" />
+	<button data-q-click="addtoList">Add</button>
+	<hr />
+	<p data-q-text="fromFunction"></p>
+	<p data-q-html="fromFunction"></p>
+	<input type="text" data-q-input="fromFunction" />
+</div>
+
+<script type="module">
+
+import { directives, DIRECTIVES_LOG_KEY } from '../src/reactive/index.js'
+import { setLogger, ConsoleLogger, LOG_LEVEL_INFO } from '../src/utils/logger.js'
+import { notEmptyString, notNull } from '../src/utils/assert.js'
+import { Emittable } from '../src/utils/emittable.js'
+import { ListStore } from './components/list-store.js'
+
+//setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
+
+const listStore = new ListStore([
+	{ name: 'Zeus' },
+	{ name: 'Hera' },
+	{ name: 'Artemis' },
+	{ name: 'Apollo' },
+])
+
+const objectStore = {
+	name: 'Artemis',
+	symbol: 'Arrow',
+}
+
+let externalValue = 'Hello'
+
+directives.registerStore('list', listStore)
+directives.registerStore('object', objectStore)
+
+directives.load(document.getElementById('mount'), {
+	data: {
+		person: {
+			name: 'Demeter',
+			symbol: 'Corn',
+		},
+
+		name: 'Athena',
+		symbol: 'Owl',
+
+		updateName: ''
+	},
+
+	addtoList(context, value) {
+		if(notEmptyString(this.data.updateName)) {
+			listStore.add({ name: this.data.updateName })
+		}
+	},
+
+	fromFunction(context, value) {
+		if(notNull(value)) {
+			externalValue = value
+		}
+
+		return externalValue
+	},
+})
+
+</script>
+
+</body>
+</html>

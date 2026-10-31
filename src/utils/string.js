@@ -59,3 +59,32 @@ export const isVagueUrl = input => hasProtocol(input) || input.match(/\.[^.]+$/)
 
 export const hasProtocol = input =>
 	input.startsWith('http://') || input.startsWith('https://') 
+
+/**
+ * Take a string in dot notation (object.property) and a scope and
+ * return the value from the path within the scope.
+ */
+export const valueFromPath = (path, scope, debug = false) => {
+	const parts = path.trim().split(/\./g)
+	let value = scope
+	const stack = []
+
+	for(let i = 0, ilen = parts.length; i < ilen; ++i) {
+		value = value[parts[i]]
+
+		stack.push({ path: parts[i], value })
+
+		if(value === undefined) break
+	}
+
+	if(value === undefined && debug) {
+		throw new Error(`${ path } not found in scope`, scope)
+	}
+
+	if(value === undefined) {
+		value = ''
+	}
+
+	return { stack, value }
+}
+

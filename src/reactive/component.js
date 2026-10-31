@@ -4,7 +4,7 @@ import { Emitter } from '../utils/emitter.js'
 import { isFunction } from '../utils/assert.js'
 
 export class Component extends Emitter {
-	#computed = {};
+	#computed = {}
 
 	constructor(node, component = {}, attributes = {}) {
 		super()

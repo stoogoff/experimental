@@ -11,6 +11,7 @@ export const input = (context) => {
 	}
 
 	context.node.addEventListener('change', (evt) => {
+		console.log(evt.target.value)
 		context.value = checkbox ? evt.target.checked : evt.target.value
 	})
 

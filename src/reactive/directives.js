@@ -159,7 +159,8 @@ export const directives = {
 				node,
 				node.getAttribute(prefixedAttribute),
 				scope,
-				callback
+				callback,
+				_stores
 			)
 			node.removeAttribute(prefixedAttribute)
 
