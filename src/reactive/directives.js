@@ -10,6 +10,9 @@ const _components = {}
 const _stores = {}
 let _prefix = 'q'
 
+// TMP
+const _contexts = {}
+
 export const directives = {
 	/**
 	 * Set the prefix to use in all data attributes. The dedault is q.
@@ -141,6 +144,8 @@ export const directives = {
 		this.loadDirectivesForNode(root, scope)
 
 		logger().info('directives.load COMPLETE')
+
+		console.log(_contexts, Object.keys(_contexts).length)
 	},
 
 	loadDirectivesForNode(node, scope) {
@@ -162,6 +167,9 @@ export const directives = {
 				callback,
 				_stores
 			)
+
+			_contexts[context.ref] = context
+
 			node.removeAttribute(prefixedAttribute)
 
 			const result = context.render()

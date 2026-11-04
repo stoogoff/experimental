@@ -3,6 +3,8 @@ import { logger } from './config.js'
 import { isIn, isFunction, notFunction, isNull, throwIfNull } from '../utils/assert.js'
 import { valueFromPath } from '../utils/string.js'
 
+let contextRefs = 0
+
 /**
  * Context stores the current scope information, the HTML node which is being
  * operated on, and the render function which will be updated if the scope
@@ -15,6 +17,9 @@ export class Context {
 	#callback
 	#isInvertedProperty = false
 	#stores
+
+	// TMP
+	#ref
 
 	/**
 	 * Constructor.
@@ -41,6 +46,12 @@ export class Context {
 		this.#scope = scope
 		this.#callback = callback
 		this.#stores = stores
+
+		this.#ref = ++contextRefs
+	}
+
+	get ref() {
+		return this.#ref
 	}
 
 	/**
@@ -83,28 +94,18 @@ export class Context {
 	 * can't be found.
 	 */
 	get #rawValue() {
-		if(isIn('data', this.#scope) && isIn(this.#property, this.#scope.data)) {
-			return this.#scope.data[this.#property]
+		try {
+			const { value } = this.#property.startsWith('stores.')
+				? valueFromPath(this.#property, { stores: this.#stores }, true)
+				: valueFromPath(this.#property, this.#scope, true)
+
+			return value
+		}
+		catch(ex) {
+			logger().error(ex.message)
 		}
 
-		if(isIn(this.#property, this.#scope)) {
-			return this.#scope[this.#property]
-		}
-
-		if(this.#property.indexOf('.') !== -1) {
-			try {
-				const { value, stack } = this.#property.startsWith('stores.')
-					? valueFromPath(this.#property, { stores: this.#stores }, true)
-					: valueFromPath(this.#property, this.#scope, true)
-
-				return value
-			}
-			catch(ex) {
-				logger().error(ex.message)
-			}
-		}
-
-		logger().info(`Unable to find property '${ this.#property }'`, this.#scope)
+		logger().warn(`Unable to find property '${ this.#property }'`, this.#scope)
 
 		return undefined
 	}
@@ -131,25 +132,17 @@ export class Context {
 	set value(value) {
 		let scope = null
 
-		if(isIn('data', this.#scope) && isIn(this.#property, this.#scope.data)) {
-			scope = this.#scope.data[this.#property]
-		}
-		else if(isIn(this.#property, this.#scope)) {
-			scope = this.#scope[this.#property]
-		}
-		else if(this.#property.indexOf('.') !== -1) {
-			try {
-				const { value: updatedValue, stack } = valueFromPath(this.#property, this.#scope, true)
-				const object = stack[stack.length - 2]
-				const path = stack[stack.length - 1].path
+		try {
+			const { stack } = valueFromPath(this.#property, this.#scope, true)
+			const object = stack[stack.length - 2].value
+			const path = stack[stack.length - 1].path
 
-				// TODO this has no way of updating the UI as it doesn't fire a change event
-				// TODO it could be that context is an emittable...
-				scope = object[path]
-			}
-			catch(ex) {
-				logger().error(ex.message)
-			}
+			// TODO this has no way of updating the UI as it doesn't fire a change event
+			// TODO it could be that context is an emittable...
+			scope = object[path]
+		}
+		catch(ex) {
+			logger().error(ex.message)
 		}
 
 		if(isNull(scope)) {
@@ -160,6 +153,7 @@ export class Context {
 			scope.call(this.#scope, this, value)
 		}
 		else {
+			// TODO this needs to update
 			scope = value
 		}
 	}
@@ -185,7 +179,8 @@ export class Context {
 		}
 
 		// bind the value to the scope
-		value = value.bind(this.#scope)
-		value(evt, this)
+		//value = value.bind(this.#scope)
+		//value(evt, this)
+		value.call(this.#scope, evt, this)
 	}
 }

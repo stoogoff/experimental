@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Experimental: New</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div id="mount">
+	<div>
+		<h3>Path properties</h3>
+		<p>Name (deity.name): <strong data-q-text="deity.name"></strong></p>
+		<p>Symbol (deity.symbol): <strong data-q-text="deity.symbol"></strong></p>
+		<div>
+			<input type="text" data-q-input="deity.name" />
+		</div>
+	</div>
+	<button data-q-click="update">Update</button>
+</div>
+
+<script type="module">
+
+/*import { isFunction } from '../src/utils/assert.js'
+import { valueFromPath } from '../src/utils/string.js'
+import { ProxiedModel } from '../src/data/model.js'
+
+const text = (context) => {
+	context.node.innerText = context.value
+
+	console.log({ value: context.value, property: context.property, scope: context.scope })
+
+	context.scope.on(`change:${context.property}`, () => {
+		context.node.innerText = context.value
+	})
+
+	return false
+}
+
+
+const input = (context) => {
+	context.node.value = context.value
+
+	context.node.addEventListener('change', (evt) => {
+		context.value = evt.target.value
+	})
+
+	context.scope.on(`change:${context.property}`, () => {
+		context.node.value = context.value
+	})
+
+	return false
+}
+
+const click = (context) => {
+	console.log(context.property)
+	console.log(context.value)
+
+	if(!isFunction(context.value)) {
+		console.error(`click (directive): ${ context.property } is not callable`)
+		return
+	}
+
+	context.node.addEventListener('click', context)
+
+	return false
+}
+
+
+const directives = [
+	{ attr: 'data-q-text' , fn: text },
+	{ attr: 'data-q-input' , fn: input },
+	{ attr: 'data-q-click' , fn: click },
+]
+
+const contexts = []
+const root = document.getElementById("mount")
+
+const subscribable = (value) => {
+	const subscribers = []
+
+	return {
+		isSubscibrable: true,
+
+		get value() {
+			return value
+		},
+
+		set value(newValue) {
+			value = newValue
+
+			subscribers.forEach(fn => fn(newValue))
+		},
+	}
+}
+
+class Context {
+	constructor(node, property, scope, callback) {
+		this.node = node
+		this.property = property
+		this.scope = scope
+		this.callback = callback
+	}
+
+	get value() {
+		try {
+			const { stack, value } = valueFromPath(this.property, this.scope, true)
+			const object = stack[Math.max(stack.length - 2, 0)].value
+			const path = stack[stack.length - 1].path
+
+			console.log({ stack: [ ...stack ], object: { ...object }, path, value })
+
+			//return value
+			return stack[stack.length - 1].value
+		}
+		catch(ex) {
+			console.error(ex.message)
+		}
+
+		return undefined
+	}
+
+	set value(value) {
+		console.log(value)
+
+		try {
+			const { stack } = valueFromPath(this.property, this.scope, true)
+			const object = stack[stack.length - 2].value
+			const path = stack[stack.length - 1].path
+
+			console.log({ stack: [ ...stack ], object: { ...object }, path })
+
+			// TODO this has no way of updating the UI as it doesn't fire a change event
+			// TODO it could be that context is an emittable...
+			object[path] = value
+
+			console.log({ rootScope })
+		}
+		catch(ex) {
+			console.error(ex.message)
+		}
+	}
+
+	onChange(fn) {
+		this.subscribers.push(fn)
+	}
+
+	handleEvent(evt) {
+		let value = this.value
+
+		if(!isFunction(value)) {
+			console.error(`Unable to call function '${ this.property }'`)
+			return
+		}
+
+		// bind the value to the scope
+		//value = value.bind(this.#scope)
+		//value(evt, this)
+		value.call(this.scope, evt, this)
+	}
+
+	render() {
+		this.callback(this)
+	}
+}
+
+function recurse(node, scope) {
+	directives.forEach(({ attr, fn }) => {
+		if(node.hasAttribute(attr)) {
+			const context = new Context(
+				node,
+				node.getAttribute(attr),
+				scope,
+				fn
+			)
+
+			contexts.push(context)
+
+			node.removeAttribute(attr)
+
+			context.render()
+		}
+
+		const children = Array.from(node.children)
+
+		children.forEach(child => recurse(child, scope))
+	})
+}
+
+const ProxyHandler = {
+	get(target, prop, receiver) {
+		return target[prop]
+	},
+
+	has(target, prop) {
+		return prop in target
+	},
+
+	set(target, prop, value) {
+		const oldValue = target[prop]
+
+		if(oldValue === value) return true
+
+		target[prop] = value
+
+		console.log(`changing ${prop} from ${oldValue} to ${value}`)
+		//this._emitter.emit('change', prop, value, oldValue)
+		//this._emitter.emit(`change:${prop}`, prop, value, oldValue)
+
+		return true
+	}
+}
+
+const rootScope = {
+	deity: {
+		name: 'Athena',
+		symbol: 'Owl',
+	},
+
+	update() {
+		this.deity.name = 'Artemis'
+
+		console.log({ ...this })
+	},
+}
+
+recurse(root, rootScope)
+
+console.log(contexts)*/
+
+class Signal extends EventTarget {
+	#value
+
+	constructor(value) {
+		super()
+		this.#value = value
+	}
+
+	get value() {
+		return this.#value
+	}
+
+	set value(newValue) {
+		if(this.value === newValue) return
+
+		this.#value = newValue
+		this.dispatchEvent(new CustomEvent('change', {
+			detail: {
+				value: this.value,
+			},
+		}))
+	}
+
+	on(fn) {
+		this.addEventListener('change', fn)
+	}
+
+	off(fn) {
+		this.removeEventListener('change', fn)
+	}
+
+	valueOf() {
+		return this.value
+	}
+
+	toString() {
+		return this.valueOf().toString()
+	}
+}
+
+class Computed extends EventTarget {
+	#signal
+
+	constructor(fn, dependencies = []) {
+		super()
+
+		this.#signal = new Signal(fn())
+		this.#signal.on((evt) => {
+			this.dispatchEvent(new CustomEvent('change', {
+				detail: { ...evt.detail }
+			}))
+		})
+
+		for(const dependency of dependencies) {
+			dependency.on(() => {
+				this.#signal.value = fn()
+			})
+		}
+	}
+
+	get value() {
+		return this.#signal.value
+	}
+
+	on(fn) {
+		this.addEventListener('change', fn)
+	}
+
+	off(fn) {
+		this.removeEventListener('change', fn)
+	}	
+}
+
+class Model extends EventTarget {
+	constructor(data) {
+		super()
+
+		const proxy = new Proxy(data, this)
+
+		proxy.on = this.on.bind(this)
+		proxy.off = this.off.bind(this)
+
+		return proxy
+	}
+
+	get(target, prop, receiver) {
+		return target[prop]
+	}
+
+	has(target, prop) {
+		return prop in target
+	}
+
+	set(target, prop, value) {
+		const oldValue = target[prop]
+
+		if(oldValue === value) return true
+
+		target[prop] = value
+
+		this.dispatchEvent(new CustomEvent('change', {
+			detail: {
+				model: target
+			}
+		}))
+		this.dispatchEvent(new CustomEvent(`change:${prop}`, {
+			detail: {
+				value
+			}
+		}))
+
+		return true
+	}
+
+	on(fn, property) {
+		this.addEventListener(property ? `change:${property}` : 'change', fn)
+	}
+
+	off(fn, property) {
+		this.removeEventListener(property ? `change:${property}` : 'change', fn)
+	}
+}
+
+
+const model = new Signal('mars')
+
+model.on((...args) => console.log(args))
+
+
+const computed = new Computed(() => {
+	return `Hello ${model.value}`
+}, [model])
+
+console.log({ model: model.value, computed: computed.value })
+
+model.value = 'earth'
+
+console.log(computed.value)
+
+const v1 = new Signal(2)
+const v2 = new Signal(2)
+const c1 = new Computed(() => v1.value + v2.value, [v1, v2])
+
+console.log(c1.value)
+
+v2.value = 6
+
+console.log(c1.value)
+
+v1.value = 10
+
+console.log(c1.value)
+
+class ObjectModel extends EventTarget {
+	constructor(data) {
+		super()
+
+		Object.keys(data).forEach(prop => {
+			this[prop] = new Signal(data[prop])
+			this[prop].on(({ detail }) => {
+				this.dispatchEvent(new CustomEvent('change', {
+					detail: {
+						model: this,
+					}
+				}))
+				this.dispatchEvent(new CustomEvent(`change:${prop}`, {
+					detail: {
+						value: detail.value,
+					}
+				}))
+			})
+		})
+	}
+
+	on(fn) {
+		this.addEventListener('change', fn)
+	}
+
+	off(fn) {
+		this.removeEventListener('change', fn)
+	}
+}
+
+const m1 = new ObjectModel({
+	salutation: 'Hello',
+	location: 'Earth',
+})
+
+const age = new Signal(51)
+
+console.log({ m1, salutation: m1.salutation, location:  m1.location, age })
+
+const c2 = new Computed(() => {
+	return `\t~ ${m1.salutation} ${m1.location} (${age}) ~`
+}, [m1.salutation, m1.location, age])
+
+c2.on(() => console.log('computed is updated', c2.value))
+
+const write = () => console.log(`${m1.salutation} ${m1.location}`)
+
+write()
+
+m1.salutation.on(() => 'changing salutation')
+
+m1.on(write)
+m1.on(({ detail }) => console.log(detail, `**${m1.salutation}**`), 'salutation')
+m1.salutation.value = 'Greetings'
+m1.location.value = 'Mars'
+
+age.value = 52
+
+console.log(c2.value)
+
+console.log(age + 2, age - 2, age.value)
+console.log(m1)
+
+
+</script>
+
+</body>
+</html>

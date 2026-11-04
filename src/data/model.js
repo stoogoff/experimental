@@ -75,6 +75,10 @@ export class ProxiedModel extends Emittable {
 
 		target[prop] = value
 
+		console.log({
+			value, oldValue, target, prop
+		})
+
 		this._emitter.emit('change', prop, value, oldValue)
 		this._emitter.emit(`change:${prop}`, prop, value, oldValue)
 

@@ -19,7 +19,7 @@
 	</div>
 	<hr />
 	<div>
-		<h3>Data properties</h3>
+		<h3>Natural properties</h3>
 		<p>Name (name): <strong data-q-text="name"></strong></p>
 		<p>Symbol (symbol): <strong data-q-text="symbol"></strong></p>
 		<div>
@@ -28,6 +28,15 @@
 	</div>
 	<hr />
 	<div>
+		<h3>Data properties</h3>
+		<p>Name (data.name): <strong data-q-text="data.name"></strong></p>
+		<p>Symbol (data.symbol): <strong data-q-text="data.symbol"></strong></p>
+		<div>
+			<input type="text" data-q-input="data.name" />
+		</div>
+	</div>
+	<hr />
+	<!--div>
 		<h3>Store path properties</h3>
 		<p>Name (stores.object.name): <strong data-q-text="stores.object.name"></strong></p>
 		<p>Symbol (stores.object.symbol): <strong data-q-text="stores.object.symbol"></strong></p>
@@ -43,18 +52,33 @@
 	<hr />
 	<p data-q-text="fromFunction"></p>
 	<p data-q-html="fromFunction"></p>
-	<input type="text" data-q-input="fromFunction" />
+	<input type="text" data-q-input="fromFunction" / -->
+
+	<!--div data-q-component="formField">
+		<label>
+			Label
+			<input type="text" data-q-input="value" />
+		</label>
+		<div style="color: red" data-q-if="hasError">Has error</div>
+	</div>
+	<div data-q-component="formField">
+		<label>
+			Label
+			<input type="text" data-q-input="value" />
+		</label>
+		<div style="color: red" data-q-if="hasError">Has error</div>
+	</div-->
 </div>
 
 <script type="module">
 
 import { directives, DIRECTIVES_LOG_KEY } from '../src/reactive/index.js'
 import { setLogger, ConsoleLogger, LOG_LEVEL_INFO } from '../src/utils/logger.js'
-import { notEmptyString, notNull } from '../src/utils/assert.js'
+import { isEmptyString, notEmptyString, notNull } from '../src/utils/assert.js'
 import { Emittable } from '../src/utils/emittable.js'
 import { ListStore } from './components/list-store.js'
 
-//setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
+setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
 
 const listStore = new ListStore([
 	{ name: 'Zeus' },
@@ -73,6 +97,20 @@ let externalValue = 'Hello'
 directives.registerStore('list', listStore)
 directives.registerStore('object', objectStore)
 
+const formField = {
+	data: {
+		value: '',
+	},
+
+	computed: {
+		hasError() {
+			console.log('hasError', this.data.value)
+			return isEmptyString(this.data.value)
+		},
+	},
+}
+
+directives.registerComponent('formField', formField)
 directives.load(document.getElementById('mount'), {
 	data: {
 		person: {
@@ -85,6 +123,9 @@ directives.load(document.getElementById('mount'), {
 
 		updateName: ''
 	},
+
+	name: 'Hera',
+	symbol: 'Sceptre',
 
 	addtoList(context, value) {
 		if(notEmptyString(this.data.updateName)) {
