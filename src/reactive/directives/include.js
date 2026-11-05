@@ -1,8 +1,12 @@
 
 import { logger } from '../config.js'
 
+const cache = new Map()
+
 const load = async url => {
 	logger().log(`include (directive): loading url`, url)
+
+	if(cache.has(url)) return cache.get(url)
 
 	const response = await fetch(url)
 
@@ -15,7 +19,9 @@ const load = async url => {
 		throw error
 	}
 
-	return await response.text()
+	cache.set(url, response.text())
+
+	return await cache.get(url)
 }
 
 export const include = (context) => {

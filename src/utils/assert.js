@@ -33,6 +33,31 @@ export const throwIfNull = (value, name, message) => {
 }
 
 /**
+ * Throws an error if the provided value is null, an empty string, or an empty array.
+ * @example
+ * const x = null
+ * throwIfNullOrEmpty(x, 'x')
+ * // throws an error with the message "Null or undefined value found for 'x'"
+ * @example
+ * const x = null
+ * throwIfNull(x, "Value not given")
+ * // throws an error with the message "Value not given"
+ * @example
+ * const x = []
+ * throwIfNullOrEmpty(x, 'x')
+ * // throws an error with the message "Empty value found for 'x'"
+ * @param {*} value -
+ * @param {string} name - the name of the variable.
+ * @param {string} message - an optional message for the error.
+ */
+export const throwIfNullOrEmpty = (value, name, message) => {
+	throwIfNull(value, name, message)
+
+	if(isEmptyString(value) || isEmptyArray(value))
+		throw new Error(message || `Empty value found for '${name}'`)
+}
+
+/**
  * Returns true if the given property doesn't exist in the object.
  * @param {string} property - The property to check for.
  * @param {Object} obj - The object the property might be in.
