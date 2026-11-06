@@ -3,44 +3,53 @@ import { logger } from '../config.js'
 
 const cache = new Map()
 
-const load = async url => {
-	logger().log(`include (directive): loading url`, url)
+const load = path => {
+	if(cache.has(path)) return cache.get(path)
 
-	if(cache.has(url)) return cache.get(url)
+	const promise = fetch(path).then(response => {
+		if(!response.ok) {
+			cache.delete(path)
+			throw new Error(`Failed to load ${path}: ${response.status}`)
+		}
+		return response.text()
+	}).catch(err => {
+		cache.delete(path)
+		throw err
+	})
 
-	const response = await fetch(url)
-
-	if(response.status >= 400) {
-		const error = new Error()
-
-		error.name = `Error loading '${ url }'`
-		error.message = `(${ response.status }) ${ response.statusText }`
-
-		throw error
-	}
-
-	cache.set(url, response.text())
-
-	return await cache.get(url)
+	cache.set(path, promise)
+	return promise
 }
 
 export const include = (context) => {
-	load(context.value).then(html => context.node.innerHTML = html)
+	let latestToken = 0
 
-	context.scope.on(`change:${context.property}`, async (key, value, old) => {
+	const render = async (value) => {
+		const token = ++latestToken
+
 		try {
-			node.innerHTML = await load(value)
+			const html = await load(value)
+
+			if(token === latestToken) {
+				context.node.innerHTML = html
+			}
 		}
 		catch(error) {
 			logger().error(error)
 		}
+	}
+
+	render(context.value)
+
+	context.scope.on(`change:${context.property}`, (_key, value, _old) => {
+		render(value)
 	})
 
 	return false
 }
 
 export const url = (context) => {
-	load(context.property).then(html => context.node.innerHTML = html)
+	load(context.property).then(html => context.node.innerHTML = html).catch(err => logger().error(err))
 
 	return false
 }
