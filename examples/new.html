@@ -229,80 +229,11 @@ recurse(root, rootScope)
 
 console.log(contexts)*/
 
-class Signal extends EventTarget {
-	#value
+import { computed, signal, Model } from '../../src/signals/index.js'
 
-	constructor(value) {
-		super()
-		this.#value = value
-	}
 
-	get value() {
-		return this.#value
-	}
 
-	set value(newValue) {
-		if(this.value === newValue) return
-
-		this.#value = newValue
-		this.dispatchEvent(new CustomEvent('change', {
-			detail: {
-				value: this.value,
-			},
-		}))
-	}
-
-	on(fn) {
-		this.addEventListener('change', fn)
-	}
-
-	off(fn) {
-		this.removeEventListener('change', fn)
-	}
-
-	valueOf() {
-		return this.value
-	}
-
-	toString() {
-		return this.valueOf().toString()
-	}
-}
-
-class Computed extends EventTarget {
-	#signal
-
-	constructor(fn, dependencies = []) {
-		super()
-
-		this.#signal = new Signal(fn())
-		this.#signal.on((evt) => {
-			this.dispatchEvent(new CustomEvent('change', {
-				detail: { ...evt.detail }
-			}))
-		})
-
-		for(const dependency of dependencies) {
-			dependency.on(() => {
-				this.#signal.value = fn()
-			})
-		}
-	}
-
-	get value() {
-		return this.#signal.value
-	}
-
-	on(fn) {
-		this.addEventListener('change', fn)
-	}
-
-	off(fn) {
-		this.removeEventListener('change', fn)
-	}	
-}
-
-class Model extends EventTarget {
+/*class Model extends EventTarget {
 	constructor(data) {
 		super()
 
@@ -350,27 +281,25 @@ class Model extends EventTarget {
 	off(fn, property) {
 		this.removeEventListener(property ? `change:${property}` : 'change', fn)
 	}
-}
+}*/
 
 
-const model = new Signal('mars')
+const model = signal('mars')
 
 model.on((...args) => console.log(args))
 
 
-const computed = new Computed(() => {
-	return `Hello ${model.value}`
-}, [model])
+const c0 = computed(() => `Hello ${model.value}`, [model])
 
-console.log({ model: model.value, computed: computed.value })
+console.log({ model: model.value, computed: c0.value })
 
 model.value = 'earth'
 
-console.log(computed.value)
+console.log(c0.value)
 
-const v1 = new Signal(2)
-const v2 = new Signal(2)
-const c1 = new Computed(() => v1.value + v2.value, [v1, v2])
+const v1 = signal(2)
+const v2 = signal(2)
+const c1 = computed(() => v1.value + v2.value, [v1, v2])
 
 console.log(c1.value)
 
@@ -382,46 +311,18 @@ v1.value = 10
 
 console.log(c1.value)
 
-class ObjectModel extends EventTarget {
-	constructor(data) {
-		super()
 
-		Object.keys(data).forEach(prop => {
-			this[prop] = new Signal(data[prop])
-			this[prop].on(({ detail }) => {
-				this.dispatchEvent(new CustomEvent('change', {
-					detail: {
-						model: this,
-					}
-				}))
-				this.dispatchEvent(new CustomEvent(`change:${prop}`, {
-					detail: {
-						value: detail.value,
-					}
-				}))
-			})
-		})
-	}
 
-	on(fn) {
-		this.addEventListener('change', fn)
-	}
-
-	off(fn) {
-		this.removeEventListener('change', fn)
-	}
-}
-
-const m1 = new ObjectModel({
+const m1 = new Model({
 	salutation: 'Hello',
 	location: 'Earth',
 })
 
-const age = new Signal(51)
+const age = signal(51)
 
 console.log({ m1, salutation: m1.salutation, location:  m1.location, age })
 
-const c2 = new Computed(() => {
+const c2 = computed(() => {
 	return `\t~ ${m1.salutation} ${m1.location} (${age}) ~`
 }, [m1.salutation, m1.location, age])
 
