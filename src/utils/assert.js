@@ -14,6 +14,18 @@ export const notNull = value => value !== undefined && value !== null
 export const isNull = value => value === undefined || value  === null
 
 /**
+ * Returns true if the given value is any of the following:
+ * - null
+ * - ''
+ * - []
+ * - {}
+ * @param {*} value - The value to verify.
+ * @return {boolean}
+ */
+export const isNullOrEmpty = value =>
+	isNull(value) || isEmptyString(value) || isEmptyArray(value) || isEmptyObject(value)
+
+/**
  * Throws an error if the provided value is null.
  * @example
  * const x = null
@@ -72,6 +84,20 @@ export const notIn = (property, obj) => !(property in obj)
  * @return {boolean}
  */
 export const isIn = (property, obj) => property in obj
+
+/**
+ * Returns true if the given value is null or an empty object.
+ * @param {*} value - The value to verify.
+ * @return {boolean}
+ */
+export const isEmptyObject = value => isNull(value) || JSON.stringify(value) === '{}'
+
+/**
+ * Returns true if the given value is not null or an empty object.
+ * @param {*} value - The value to verify.
+ * @return {boolean}
+ */
+export const notEmptyObject = value => notNull(value) && JSON.stringify(value) !== '{}'
 
 /**
  * Returns true if the given value is not null and an empty string.
