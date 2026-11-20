@@ -4,6 +4,21 @@ import { notNull } from '../../utils/assert.js'
 import { logger } from '../config.js'
 import { directives } from '../directives.js'
 
+import { Emittable } from '../../utils/emittable.js'
+
+class EachComponent extends Emittable {
+	constructor(node, value, key = 'data') {
+		super()
+
+		this.node = node
+
+		this[key] = value
+
+		// TODO change handlers
+		// TODO shouldn't need computed or anything
+	}
+}
+
 const createNode = (context, base, value, ref) => {
 	logger().log(`each (directive): ${ ref } building`, value, context)
 
@@ -13,7 +28,12 @@ const createNode = (context, base, value, ref) => {
 	clone.setAttribute('data-ref', ref)
 
 	// create scope from value or by cloning from the component
-	const newScope = 'clone' in context.scope ? context.scope.clone(value) : value
+	//const newScope = 'clone' in context.scope ? context.scope.clone(value) : value
+	const newScope = new EachComponent(clone, value, context.loopProperty, )
+	// TODO I don't think value is ever used...
+	// TODO wait a minute, this is the cause behind having to add on: () => {} noop functions in TOR
+
+	console.log(newScope)
 
 	logger().log(`each (directive): ${ ref } creating new scope`, newScope)
 
@@ -23,7 +43,8 @@ const createNode = (context, base, value, ref) => {
 }
 
 // TODO this needs to be able to handle lists of scalars as well as lists of objects
-// e.g. l = [1, 2, 3] <li data-q-each="l" data-q-text="."></li>
+// e.g. l = [1, 2, 3] <li data-q-each="list" data-q-text="."></li>
+// but this would be better handled as <li data-q-each="item in list" data-q-text="item"></li>
 export const each = (context) => {
 	const ref = `each-${ createId(10) }`
 	const initialValues = context.value ?? []

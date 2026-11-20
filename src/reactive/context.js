@@ -4,6 +4,7 @@ import { isIn, isFunction, notFunction, isNull, throwIfNull } from '../utils/ass
 import { valueFromPath } from '../utils/string.js'
 
 let contextRefs = 0
+const MATCHER = /\s+in\s+/
 
 /**
  * Context stores the current scope information, the HTML node which is being
@@ -17,6 +18,7 @@ export class Context {
 	#callback
 	#isInvertedProperty = false
 	#stores
+	#loopProperty = null
 
 	// TMP
 	#ref
@@ -41,8 +43,19 @@ export class Context {
 
 		this.#isInvertedProperty = property.startsWith('!')
 
+		const prop = property.replace(/^!/, '')
+
+		if(prop.match(MATCHER)) {
+			const [loop, propActual] = prop.split(MATCHER)
+
+			this.#property = propActual.trim()
+			this.#loopProperty = loop.trim()
+		}
+		else {
+			this.#property = prop
+		}
+
 		this.#node = node
-		this.#property = property.replace(/^!/, '')
 		this.#scope = scope
 		this.#callback = callback
 		this.#stores = stores
@@ -84,6 +97,11 @@ export class Context {
 	 */
 	get property() {
 		return this.#property
+	}
+
+	// e.g. item in prop, prop becomes context.property, item becomes context.loopProperty
+	get loopProperty() {
+		return this.#loopProperty
 	}
 
 	/**
