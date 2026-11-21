@@ -14,6 +14,18 @@ export const notNull = value => value !== undefined && value !== null
 export const isNull = value => value === undefined || value  === null
 
 /**
+ * Returns true if the given value is any of the following:
+ * - null
+ * - ''
+ * - []
+ * - {}
+ * @param {*} value - The value to verify.
+ * @return {boolean}
+ */
+export const isNullOrEmpty = value =>
+	isNull(value) || isEmptyString(value) || isEmptyArray(value) || isEmptyObject(value)
+
+/**
  * Throws an error if the provided value is null.
  * @example
  * const x = null
@@ -33,6 +45,31 @@ export const throwIfNull = (value, name, message) => {
 }
 
 /**
+ * Throws an error if the provided value is null, an empty string, or an empty array.
+ * @example
+ * const x = null
+ * throwIfNullOrEmpty(x, 'x')
+ * // throws an error with the message "Null or undefined value found for 'x'"
+ * @example
+ * const x = null
+ * throwIfNull(x, "Value not given")
+ * // throws an error with the message "Value not given"
+ * @example
+ * const x = []
+ * throwIfNullOrEmpty(x, 'x')
+ * // throws an error with the message "Empty value found for 'x'"
+ * @param {*} value -
+ * @param {string} name - the name of the variable.
+ * @param {string} message - an optional message for the error.
+ */
+export const throwIfNullOrEmpty = (value, name, message) => {
+	throwIfNull(value, name, message)
+
+	if(isEmptyString(value) || isEmptyArray(value))
+		throw new Error(message || `Empty value found for '${name}'`)
+}
+
+/**
  * Returns true if the given property doesn't exist in the object.
  * @param {string} property - The property to check for.
  * @param {Object} obj - The object the property might be in.
@@ -47,6 +84,20 @@ export const notIn = (property, obj) => !(property in obj)
  * @return {boolean}
  */
 export const isIn = (property, obj) => property in obj
+
+/**
+ * Returns true if the given value is null or an empty object.
+ * @param {*} value - The value to verify.
+ * @return {boolean}
+ */
+export const isEmptyObject = value => isNull(value) || JSON.stringify(value) === '{}'
+
+/**
+ * Returns true if the given value is not null or an empty object.
+ * @param {*} value - The value to verify.
+ * @return {boolean}
+ */
+export const notEmptyObject = value => notNull(value) && JSON.stringify(value) !== '{}'
 
 /**
  * Returns true if the given value is not null and an empty string.
