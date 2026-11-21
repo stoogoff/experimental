@@ -9,7 +9,7 @@
 <body>
 
 <div id="mount">
-	<div>
+	<!-- div>
 		<h3>Path properties</h3>
 		<p>Name (data.person.name): <strong data-q-text="data.person.name"></strong></p>
 		<p>Symbol (data.person.symbol): <strong data-q-text="data.person.symbol"></strong></p>
@@ -35,7 +35,7 @@
 			<input type="text" data-q-input="data.name" />
 		</div>
 	</div>
-	<hr />
+	<hr / -->
 	<!--div>
 		<h3>Store path properties</h3>
 		<p>Name (stores.object.name): <strong data-q-text="stores.object.name"></strong></p>
@@ -43,11 +43,15 @@
 		<div>
 			<input type="text" data-q-input="stores.object.name" />
 		</div>
-	</div>
+	</div -->
 	<ul>
-		<li data-q-each="stores.list.all" data-q-text="name"></li>
+		<li data-q-each="item in stores.list.all">
+			<strong data-q-text="item.name"></strong>
+			<em data-q-text="data.name"></em>
+		</li>
 	</ul>
-	<input type="text" data-q-input="updateName" />
+	<button data-q-click="addtoList">Add</button>
+	<!--input type="text" data-q-input="updateName" />
 	<button data-q-click="addtoList">Add</button>
 	<hr />
 	<p data-q-text="fromFunction"></p>
@@ -128,9 +132,9 @@ directives.load(document.getElementById('mount'), {
 	symbol: 'Sceptre',
 
 	addtoList(context, value) {
-		if(notEmptyString(this.data.updateName)) {
-			listStore.add({ name: this.data.updateName })
-		}
+		//if(notEmptyString(this.data.updateName)) {
+			listStore.add({ name: 'Test' })
+		//}
 	},
 
 	fromFunction(context, value) {

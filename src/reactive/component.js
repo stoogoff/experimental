@@ -51,6 +51,9 @@ export class Component extends Emitter {
 			this[key] = component[key]
 		})
 
+		// TODO this needs to be replaced with a parent property
+		// components should be able to access their parent's scope
+		// rather than just dropping the parent scope into the current context
 		Object.keys(attributes).forEach(key => {
 			this.data[key] = attributes[key]
 		})
