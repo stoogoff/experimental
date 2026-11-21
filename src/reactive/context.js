@@ -201,4 +201,10 @@ export class Context {
 		//value(evt, this)
 		value.call(this.#scope, evt, this)
 	}
+
+	on(fn) {
+		// handle all changes here
+		// check the type of value and register appropriately,
+		// e.g. if it's a list or other signal pass the registration on to that
+	}
 }

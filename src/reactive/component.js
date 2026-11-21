@@ -30,11 +30,14 @@ export class Component extends Emitter {
 				let lastValue = this.#computed[comp]()
 
 				this.on('change', (key, value, old) => {
+					console.log('component on change', key, value, old)
 					const newValue = this.#computed[comp]()
 
 					if(lastValue === newValue) return
 
-					this.emit(`change:${comp}`, comp, newValue, lastValue)
+					console.log('emitting change', `change:data.${comp}`, comp, newValue, lastValue)
+
+					this.emit(`change:data.${comp}`, comp, newValue, lastValue)
 
 					lastValue = newValue
 				})

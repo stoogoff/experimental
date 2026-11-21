@@ -1,4 +1,6 @@
 
+import { ChangeEvent } from './change.js'
+
 export class Signal extends EventTarget {
 	#value
 
@@ -15,17 +17,13 @@ export class Signal extends EventTarget {
 		if(this.value === newValue) return
 
 		this.#value = newValue
-		this.dispatchEvent(new CustomEvent('change', {
-			detail: {
-				value: this.value,
-			},
-		}))
+		this.dispatchEvent(new ChangeEvent(this.value))
 	}
 
 	on(fn) {
-		this.addEventListener('change', fn)
+		this.addEventListener(ChangeEvent.EventKey, fn)
 
-		return () => this.removeEventListener('change', fn)
+		return () => this.removeEventListener(ChangeEvent.EventKey, fn)
 	}
 
 	valueOf() {

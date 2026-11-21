@@ -31,6 +31,7 @@ export class ListStore extends Emittable {
 	}
 
 	add(item) {
+		console.log({ ...item })
 		const model = mapItem(item)
 
 		this.#data[model._id] = model
@@ -46,9 +47,15 @@ export class ListStore extends Emittable {
 
 		delete this.#data[item._id]
 
-		this._emitter.emit(Events.REMOVE, item)
+		this._emitter.emit('remove', item)
 		this._emitter.emit('change', 'all', this.all)
 
 		return item
+	}
+
+	get(id) {
+		throwIfNull(id)
+
+		return id in this.#data ? this.#data[id] : null
 	}
 }

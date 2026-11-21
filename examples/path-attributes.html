@@ -44,13 +44,30 @@
 			<input type="text" data-q-input="stores.object.name" />
 		</div>
 	</div -->
+	<h3>item in stores.list</h3>
 	<ul>
-		<li data-q-each="item in stores.list.all">
+		<li data-q-each="item in stores.list">
 			<strong data-q-text="item.name"></strong>
 			<em data-q-text="data.name"></em>
 		</li>
 	</ul>
-	<button data-q-click="addtoList">Add</button>
+	<hr />
+	<h3>item in functionList</h3>
+	<ul>
+		<li data-q-each="item in functionList">
+			<strong data-q-text="item.name"></strong>
+			<em data-q-text="data.name"></em>
+		</li>
+	</ul>
+	<hr />
+	<h3>item in data.computedList</h3>
+	<ul>
+		<li data-q-each="item in data.computedList">
+			<strong data-q-text="item.name"></strong>
+			<em data-q-text="data.name"></em>
+		</li>
+	</ul>
+	<button data-q-click="addToList">Add</button>
 	<!--input type="text" data-q-input="updateName" />
 	<button data-q-click="addtoList">Add</button>
 	<hr />
@@ -81,15 +98,18 @@ import { setLogger, ConsoleLogger, LOG_LEVEL_INFO } from '../src/utils/logger.js
 import { isEmptyString, notEmptyString, notNull } from '../src/utils/assert.js'
 import { Emittable } from '../src/utils/emittable.js'
 import { ListStore } from './components/list-store.js'
+import { list } from '../src/signals/list.js'
 
-setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
+//setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
 
-const listStore = new ListStore([
+const listStore = list([
 	{ name: 'Zeus' },
 	{ name: 'Hera' },
 	{ name: 'Artemis' },
 	{ name: 'Apollo' },
 ])
+
+console.log(listStore, listStore.valueOf())
 
 const objectStore = {
 	name: 'Artemis',
@@ -131,10 +151,41 @@ directives.load(document.getElementById('mount'), {
 	name: 'Hera',
 	symbol: 'Sceptre',
 
-	addtoList(context, value) {
+	// this should go into component
+	/*register(signal) {
+		signal.on(() => this.emit('change'))
+	}*/
+
+	created() {
+		listStore.on(() => {
+			console.log('listStore change')
+			this.emit('change')
+		})
+	},
+
+	computed: {
+		computedList() {
+			console.log('computedList')
+			return listStore.all
+		},
+	},
+
+	// this isn't really expected to work in this instance
+	functionList(context) {
+		console.log(this, context)
+		console.log('functionList')
+		return listStore.all
+	},
+
+	addToList(evt, context) {
+		console.log(evt, context)
+		console.log('addToList')
+
 		//if(notEmptyString(this.data.updateName)) {
 			listStore.add({ name: 'Test' })
 		//}
+
+		console.log(listStore.all)
 	},
 
 	fromFunction(context, value) {
@@ -147,6 +198,13 @@ directives.load(document.getElementById('mount'), {
 })
 
 </script>
+
+<!--
+
+What if context had the same on handler signature as signal? That way it the directives
+could register handler function with it and it could manage passing to the correct object
+
+-->
 
 </body>
 </html>

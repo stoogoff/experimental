@@ -16,6 +16,7 @@ class EachComponent extends Emittable {
 
 		// TODO change handlers
 		// TODO shouldn't need computed or anything
+		// This could just be a Model from the signals package
 	}
 }
 
@@ -47,10 +48,12 @@ const createNode = (context, base, value, ref) => {
 // but this would be better handled as <li data-q-each="item in list" data-q-text="item"></li>
 export const each = (context) => {
 	const ref = `each-${ createId(10) }`
-	const initialValues = context.value ?? []
+	const initialValues = context.value.valueOf() ?? context.value ?? []
 	const parent = context.node.parentNode
 	const base = context.node.cloneNode(true)
 	const insertionPoint = context.node.previousElementSibling
+
+	console.log(context.property, context.value, context.value.valueOf())
 
 	logger().log(`each (directive): ${ ref } building`, context, parent, initialValues)
 
@@ -59,7 +62,12 @@ export const each = (context) => {
 
 	context.node.replaceWith(...nodeList)
 
+	console.log('THIS', context.property, context.scope)
+	console.log('registering change', `change:${context.property}`)
+
 	context.scope.on(`change:${context.property}`, (key, values, old) => {
+		console.log('each change handler')
+
 		logger().log(`each (directive): ${ ref } rebuilding`, context, parent, values)
 
 		// get a list of nodes which belong to this each
