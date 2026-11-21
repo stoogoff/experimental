@@ -20,6 +20,8 @@
 	<button data-q-click="update">Update</button>
 </div>
 
+<form-field label="Name" type="text" name="name" />
+
 <script type="module">
 
 /*import { isFunction } from '../src/utils/assert.js'
@@ -346,6 +348,42 @@ console.log(c2.value)
 console.log(age + 2, age - 2, age.value)
 console.log(m1)
 
+
+
+class FormField extends HTMLElement {
+	#name
+	#label
+	#type = 'text'
+	#required = false
+
+	static get observedAttributes() {
+		return ['label', 'type', 'name', 'required']
+	}
+
+	attributeChangedCallback(attr, oldValue, newValue) {
+		if(oldValue === newValue) return
+
+		this[`#${attr}`] = newValue
+	}
+
+	connectedCallback() {
+		this.#label = this.getAttribute('label')
+		this.#name = this.getAttribute('name')
+		this.#type = this.getAttribute('type')
+		this.#required = Boolean(this.getAttribute('required')) ?? false
+
+		this.innerHTML = `
+			<label>
+				<span>${this.#label}</span>
+				<input type="${this.#type}" name="${this.#name}" required="${this.#required}" />
+			</label>
+		`
+
+		this.addEventListener('input', (evt) => console.log(evt.target.value))
+	}
+}
+
+customElements.define('form-field', FormField);
 
 </script>
 
