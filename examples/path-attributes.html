@@ -9,42 +9,14 @@
 <body>
 
 <div id="mount">
-	<!-- div>
+	<div>
 		<h3>Path properties</h3>
-		<p>Name (data.person.name): <strong data-q-text="data.person.name"></strong></p>
-		<p>Symbol (data.person.symbol): <strong data-q-text="data.person.symbol"></strong></p>
-		<div>
-			<input type="text" data-q-input="data.person.name" />
-		</div>
+		<p>Name (deity.name): <strong data-q-text="deity.name"></strong></p>
+		<!-- p>Symbol (deity.symbol): <strong data-q-text="deity.symbol"></strong></p -->
 	</div>
+	<button data-q-click="changeDeity">Change</button>
 	<hr />
-	<div>
-		<h3>Natural properties</h3>
-		<p>Name (name): <strong data-q-text="name"></strong></p>
-		<p>Symbol (symbol): <strong data-q-text="symbol"></strong></p>
-		<div>
-			<input type="text" data-q-input="name" />
-		</div>
-	</div>
-	<hr />
-	<div>
-		<h3>Data properties</h3>
-		<p>Name (data.name): <strong data-q-text="data.name"></strong></p>
-		<p>Symbol (data.symbol): <strong data-q-text="data.symbol"></strong></p>
-		<div>
-			<input type="text" data-q-input="data.name" />
-		</div>
-	</div>
-	<hr / -->
-	<!--div>
-		<h3>Store path properties</h3>
-		<p>Name (stores.object.name): <strong data-q-text="stores.object.name"></strong></p>
-		<p>Symbol (stores.object.symbol): <strong data-q-text="stores.object.symbol"></strong></p>
-		<div>
-			<input type="text" data-q-input="stores.object.name" />
-		</div>
-	</div -->
-	<h3>item in stores.list</h3>
+	<!--h3>item in stores.list</h3>
 	<ul>
 		<li data-q-each="item in stores.list">
 			<strong data-q-text="item.name"></strong>
@@ -67,7 +39,7 @@
 			<em data-q-text="data.name"></em>
 		</li>
 	</ul>
-	<button data-q-click="addToList">Add</button>
+	<button data-q-click="addToList">Add</button -->
 	<!--input type="text" data-q-input="updateName" />
 	<button data-q-click="addtoList">Add</button>
 	<hr />
@@ -98,7 +70,8 @@ import { setLogger, ConsoleLogger, LOG_LEVEL_INFO } from '../src/utils/logger.js
 import { isEmptyString, notEmptyString, notNull } from '../src/utils/assert.js'
 import { Emittable } from '../src/utils/emittable.js'
 import { ListStore } from './components/list-store.js'
-import { list } from '../src/signals/list.js'
+import { list, model } from '../src/signals/index.js'
+
 
 //setLogger(DIRECTIVES_LOG_KEY, ConsoleLogger, LOG_LEVEL_INFO)
 
@@ -120,6 +93,9 @@ let externalValue = 'Hello'
 
 directives.registerStore('list', listStore)
 directives.registerStore('object', objectStore)
+
+let current = 0
+const names = ['Artemis', 'Hera', 'Athena', 'Demeter']
 
 const formField = {
 	data: {
@@ -148,8 +124,10 @@ directives.load(document.getElementById('mount'), {
 		updateName: ''
 	},
 
-	name: 'Hera',
-	symbol: 'Sceptre',
+	deity: model({
+		name: 'Hera',
+		symbol: 'Sceptre',
+	}),
 
 	// this should go into component
 	/*register(signal) {
@@ -195,6 +173,14 @@ directives.load(document.getElementById('mount'), {
 
 		return externalValue
 	},
+
+	changeDeity() {
+		console.log(this.deity)
+		this.deity.name.value = names[current++]
+		console.log(this.deity)
+
+		if(current >= names.length) current = 0
+	}
 })
 
 </script>

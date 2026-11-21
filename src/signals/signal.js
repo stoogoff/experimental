@@ -1,5 +1,5 @@
 
-import { ChangeEvent } from './change.js'
+import { ChangeEvent } from './events.js'
 
 export class Signal extends EventTarget {
 	#value

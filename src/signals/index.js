@@ -1,4 +1,5 @@
 
+export * from './events.js'
 export * from './computed.js'
 export * from './list.js'
 export * from './model.js'

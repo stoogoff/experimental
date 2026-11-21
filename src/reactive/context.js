@@ -1,7 +1,8 @@
 
-import { logger } from './config.js'
 import { isIn, isFunction, notFunction, isNull, throwIfNull } from '../utils/assert.js'
 import { valueFromPath } from '../utils/string.js'
+import { Signal, List, Model, ChangeEvent, PropertyEvent } from '../signals/index.js'
+import { logger } from './config.js'
 
 let contextRefs = 0
 const MATCHER = /\s+in\s+/
@@ -206,5 +207,20 @@ export class Context {
 		// handle all changes here
 		// check the type of value and register appropriately,
 		// e.g. if it's a list or other signal pass the registration on to that
+		// What do we need to look for?
+		// check if value is a signal, list, computed, or model value,
+		// if so just register the change on that
+		// for model this would be the property change
+		// for others it's just generic change
+		// if it's not an existing object from the signals package register it as one
+		// but ideally it should be a registered signal of some kind
+		const value = this.value
+
+		console.log('context.on', value, value instanceof Signal)
+
+		// this really needs a helper function
+		if(value instanceof Signal) {
+			value.on(fn)
+		}
 	}
 }

@@ -40,3 +40,15 @@ export class RemoveEvent extends CustomEvent {
 }
 
 RemoveEvent.EventKey = EventKeys.Remove
+
+export class PropertyEvent extends CustomEvent {
+	constructor(property, value) {
+		super(PropertyEvent.EventKey(property), {
+			detail: {
+				value,
+			},
+		})
+	}
+}
+
+PropertyEvent.EventKey = (property) => `${EventKeys.Change}:${property}`
