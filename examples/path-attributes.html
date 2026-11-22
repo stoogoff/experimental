@@ -24,21 +24,21 @@
 		</li>
 	</ul>
 	<hr />
-	<h3>item in functionList</h3>
+	<h3>item in list</h3>
 	<ul>
-		<li data-q-each="item in functionList">
+		<li data-q-each="item in list">
 			<strong data-q-text="item.name"></strong>
 			<em data-q-text="data.name"></em>
 		</li>
 	</ul>
 	<hr />
-	<h3>item in data.computedList</h3>
+	<!--h3>item in data.computedList</h3>
 	<ul>
 		<li data-q-each="item in data.computedList">
 			<strong data-q-text="item.name"></strong>
 			<em data-q-text="data.name"></em>
 		</li>
-	</ul>
+	</ul-->
 	<button data-q-click="addToList">Add</button>
 	<!--input type="text" data-q-input="updateName" />
 	<button data-q-click="addtoList">Add</button>
@@ -129,6 +129,8 @@ directives.load(document.getElementById('mount'), {
 		symbol: 'Sceptre',
 	}),
 
+	list: listStore,
+
 	// this should go into component
 	/*register(signal) {
 		signal.on(() => this.emit('change'))
@@ -141,29 +143,10 @@ directives.load(document.getElementById('mount'), {
 		})*/
 	},
 
-	computed: {
-		computedList() {
-			console.log('computedList')
-			return listStore.all
-		},
-	},
-
-	// this isn't really expected to work in this instance
-	functionList(context) {
-		console.log(this, context)
-		console.log('functionList')
-		return listStore.all
-	},
-
 	addToList(evt, context) {
-		console.log(evt, context)
-		console.log('addToList')
-
 		//if(notEmptyString(this.data.updateName)) {
 			listStore.add({ name: 'Test' })
 		//}
-
-		console.log(listStore.all)
 	},
 
 	fromFunction(context, value) {
@@ -175,9 +158,7 @@ directives.load(document.getElementById('mount'), {
 	},
 
 	changeDeity() {
-		console.log(this.deity)
 		this.deity.name.value = names[current++]
-		console.log(this.deity)
 
 		if(current >= names.length) current = 0
 	}

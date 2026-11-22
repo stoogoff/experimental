@@ -6,7 +6,9 @@ export function booleanDirective(type, updateNode) {
 
 		updateNode(context.node, invert ? !initialValue : initialValue)
 
-		context.scope.on(`change:${context.property}`, (key, value, old) => {
+		context.on(() => {
+			const value = context.value
+
 			updateNode(context.node, invert ? !value : value)
 		})
 

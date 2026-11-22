@@ -3,8 +3,8 @@ export function attributeDirective(attr) {
 	return (context) => {
 		context.node.setAttribute(attr, context.value)
 
-		context.scope.on(`change:${context.property}`, (key, value, old) => {
-			context.node.setAttribute(attr, value)
+		context.on(() => {
+			context.node.setAttribute(attr, context.value)
 		})
 
 		return false

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Experimental: Signals</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<h1>Signals</h1>
+
+<p>Signals are the core to reactivity. A signal takes a value and notifies any subscribers when the value changes.</p>
+
+<div id="mount">
+	<p><em data-q-text="planet"></em></p>
+	<p><strong data-q-text="planet"></strong></p>
+	<div>
+		<button data-q-click="change">Mercury</button>
+		<button data-q-click="change">Venus</button>
+		<button data-q-click="change">Earth</button>
+		<button data-q-click="change">Mars</button>
+		<button data-q-click="change">Saturn</button>
+	</div>
+</div>
+
+<p>The value of <code>planet</code> is notified of the change when the text input loses focus. This update is propagated to the displayed text. The Javascript looks like this:</p>
+
+<pre><code>import { directives } from '../src/reactive/index.js'
+import { signal } from '../src/signals/index.js'
+
+directives.load(document.getElementById('mount'), {
+	planet: signal('Earth'),
+
+	change(_evt, context) {
+		this.planet.value = context.node.innerText
+	},
+})</code></pre>
+
+<p>The HTML code looks like this:</p>
+
+<pre><code>&lt;div id="mount"&gt;
+	&lt;p&gt;&lt;em data-q-text="planet"&gt;&lt;/em&gt;&lt;/p&gt;
+	&lt;p&gt;&lt;strong data-q-text="planet"&gt;&lt;/strong&gt;&lt;/p&gt;
+	&lt;div&gt;
+		&lt;button data-q-click="change"&gt;Mercury&lt;/button&gt;
+		&lt;button data-q-click="change"&gt;Venus&lt;/button&gt;
+		&lt;button data-q-click="change"&gt;Earth&lt;/button&gt;
+		&lt;button data-q-click="change"&gt;Mars&lt;/button&gt;
+		&lt;button data-q-click="change"&gt;Saturn&lt;/button&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+<p>The <code>signal</code> function returns an instance of the <code>Signal</code> class which has the following interface:</p>
+
+<dd>
+	<dt>value <em>(getter / setter)</em></dt>
+	<dd>The value of the signal. Setting a new value fires a <code>ChangeEvent</code> event.</dd>
+
+	<dt>on(fn) <em>(function)</em></dt>
+	<dd>Provide a function (<code>fn</code>) which subscribes to changes to the <code>value</code> property. Returns a function which removes the subscription when called.</dd>
+</dd>
+
+<p>Signals are designed for use with simple values such as string, boolean, or number. They don't notify subscribers on changes to list elements or object properties. They will notifiy subscribers if an array or object is replaced with a new array or object.</p>
+
+<p>Signal implements <code>valueOf</code> and <code>toString</code> methods using their underlying value so things like <code>signal(5) + 5 // 10</code> works as expected.</p>
+
+<script type="module">
+
+import { directives } from '../src/reactive/index.js'
+import { signal } from '../src/signals/index.js'
+
+directives.load(document.getElementById('mount'), {
+	planet: signal('Earth'),
+
+	change(_evt, context) {
+		this.planet.value = context.node.innerText
+	},
+})
+
+</script>
+
+</body>
+</html>

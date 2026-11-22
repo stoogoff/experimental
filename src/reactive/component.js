@@ -4,7 +4,7 @@ import { Emitter } from '../utils/emitter.js'
 import { isFunction } from '../utils/assert.js'
 
 export class Component extends Emitter {
-	#computed = {}
+	//#computed = {}
 
 	constructor(node, component = {}, attributes = {}) {
 		super()
@@ -13,7 +13,8 @@ export class Component extends Emitter {
 		this.created = () => {}
 		this.mounted = () => {}
 
-		this.data = new Proxy({ ...component.data }, this)
+		// signals replace the need for all of this
+		/*this.data = new Proxy({ ...component.data }, this)
 
 		if(component.watch) {
 			Object.keys(component.watch).forEach(watcher => {
@@ -42,7 +43,7 @@ export class Component extends Emitter {
 					lastValue = newValue
 				})
 			})
-		}
+		}*/
 
 		const skipProperties = ['data', 'watch', 'computed']
 
@@ -54,17 +55,18 @@ export class Component extends Emitter {
 			this[key] = component[key]
 		})
 
+		/*
 		// TODO this needs to be replaced with a parent property
 		// components should be able to access their parent's scope
 		// rather than just dropping the parent scope into the current context
 		Object.keys(attributes).forEach(key => {
 			this.data[key] = attributes[key]
-		})
+		})*/
 
 		this.created()
 	}
 
-	has(target, prop) {
+	/*has(target, prop) {
 		return prop in this.#computed || prop in target
 	}
 
@@ -113,5 +115,5 @@ export class Component extends Emitter {
 		logger().info('component.clone :: new scope', newScope)
 
 		return newScope
-	}
+	}*/
 }

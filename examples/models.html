@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Experimental: Models</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<h1>Models</h1>
+
+<p>The <code>model</code> function takes a plain Javascript object and converts all of its properties to signals.</p>
+
+<div id="mount">
+	<p>Planet name: <strong data-q-text="planet.name"></strong></p>
+	<p>Distance from the sun (AU): <strong data-q-text="planet.distanceAU"></strong></p>
+	<div>
+		<button data-q-click="change">Mercury</button>
+		<button data-q-click="change">Venus</button>
+		<button data-q-click="change">Earth</button>
+		<button data-q-click="change">Mars</button>
+		<button data-q-click="change">Saturn</button>
+	</div>
+</div>
+
+<p>Any change to properties of <code>planet</code> notify the text to update through the same change event that a signal uses. Individual properties can also be subscribed to, either directly through <code>planet.name.on(fn)</code> or by providing a property to the <code>on</code> method of the model: <code>planet.on(fn, 'name')</code>. The Javascript for this component looks like this:</p>
+
+<pre><code>import { directives } from '../src/reactive/index.js'
+import { model } from '../src/signals/index.js'
+import { notNull } from '../src/utils/assert.js'
+
+const planets = {
+	'Mercury': 0.387,
+	'Venus': 0.723,
+	'Earth': 1,
+	'Mars': 1.5,
+	'Saturn': 9.6,
+}
+
+directives.load(document.getElementById('mount'), {
+	planet: model({
+		name: 'Earth',
+		distanceAU: 1,
+	}),
+
+	change(_evt, context) {
+		const name = context.node.innerText
+		const distance = planets[name] ?? null
+
+		if(notNull(distance)) {
+			this.planet.name.value = context.node.innerText
+			this.planet.distanceAU.value = distance
+		}
+	},
+})</code></pre>
+
+<p>The HTML code looks like this:</p>
+
+<pre><code>&lt;div id="mount"&gt;
+	&lt;p&gt;Planet name: &lt;strong data-q-text="planet.name"&gt;&lt;/strong&gt;&lt;/p&gt;
+	&lt;p&gt;Distance from the sun (AU): &lt;strong data-q-text="planet.distanceAU"&gt;&lt;/strong&gt;&lt;/p&gt;
+	&lt;div&gt;
+		&lt;button data-q-click="change"&gt;Mercury&lt;/button&gt;
+		&lt;button data-q-click="change"&gt;Venus&lt;/button&gt;
+		&lt;button data-q-click="change"&gt;Earth&lt;/button&gt;
+		&lt;button data-q-click="change"&gt;Mars&lt;/button&gt;
+		&lt;button data-q-click="change"&gt;Saturn&lt;/button&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+<p>Note the <code>data-q-text</code> attributes are using standard dot notation to access the properties of the planet object.</p>
+
+<p>The <code>model</code> function returns an instance of the <code>Model</code> class which has the following interface:</p>
+
+<dd>
+	<dt>[property]</em></dt>
+	<dd>Any property provided to the <code>model</code> function is converted to a signal and used as a property of the model. Setting a new value on a property fires a <code>ChangeEvent</code> event for the model and a <code>PropertyEvent</code> for the speccific property which changed.</dd>
+
+	<dt>on(fn) <em>(function, property = undefined)</em></dt>
+	<dd>Provide a function (<code>fn</code>) which subscribes to any changes to the model. If <code>property</code> is provided, subscribe solely to changes to that property. Returns a function which removes the subscription when called.</dd>
+</dd>
+
+<script type="module">
+
+import { directives } from '../src/reactive/index.js'
+import { model } from '../src/signals/index.js'
+import { notNull } from '../src/utils/assert.js'
+
+const planets = {
+	'Mercury': 0.387,
+	'Venus': 0.723,
+	'Earth': 1,
+	'Mars': 1.5,
+	'Saturn': 9.6,
+}
+
+directives.load(document.getElementById('mount'), {
+	planet: model({
+		name: 'Earth',
+		distanceAU: 1,
+	}),
+
+	change(_evt, context) {
+		const name = context.node.innerText
+		const distance = planets[name] ?? null
+
+		if(notNull(distance)) {
+			this.planet.name.value = context.node.innerText
+			this.planet.distanceAU.value = distance
+		}
+	},
+})
+
+</script>
+
+</body>
+</html>

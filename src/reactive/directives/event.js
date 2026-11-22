@@ -1,7 +1,4 @@
 
-import { isFunction } from '../../utils/assert.js'
-import { logger } from '../config.js'
-
 export function eventHandlerDirective(name) {
 	return (context) => {
 		context.node.addEventListener(name, context)

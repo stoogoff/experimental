@@ -65,8 +65,9 @@ export const each = (context) => {
 	console.log('THIS', context.property, context.scope)
 	console.log('registering change', `change:${context.property}`)
 
-	context.scope.on(`change:${context.property}`, (key, values, old) => {
-		console.log('each change handler')
+	context.on(() => {
+		const values = context.value.all
+		console.log('each change handler', values)
 
 		logger().log(`each (directive): ${ ref } rebuilding`, context, parent, values)
 

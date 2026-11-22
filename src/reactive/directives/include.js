@@ -41,8 +41,8 @@ export const include = (context) => {
 
 	render(context.value)
 
-	context.scope.on(`change:${context.property}`, (_key, value, _old) => {
-		render(value)
+	context.on(() => {
+		render(context.value)
 	})
 
 	return false

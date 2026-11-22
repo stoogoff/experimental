@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Experimental: Computed</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<h1>Computed</h1>
+
+<p>The <code>computed</code> function takes a function and an array of model or signal dependencies. When a change event is fired on any of the dependencies the computed updates its value.</p>
+
+<div id="mount">
+	<p>Full Name: <strong data-q-text="fullName"></strong></p>
+	<p>Name: <em data-q-text="name"></em></p>
+	<p>Family Name: <em data-q-text="familyName"></em></p>
+	<div>
+		<label>Name <input type="text" data-q-input="name" /></label>
+	</div>
+	<div>
+		<label>Family Name <input type="text" data-q-input="familyName" /></label>
+	</div>
+</div>
+
+<p>The signals are updated using the change event of the input, so updates are applied when the input loses focus. The Javascript for this component looks like this:</p>
+
+<pre><code>import { directives } from '../src/reactive/index.js'
+import { computed, signal } from '../src/signals/index.js'
+
+const name = signal('John')
+const familyName = signal('Smith')
+
+directives.load(document.getElementById('mount'), {
+	name,
+	familyName,
+	fullName: computed(() => `${name} ${familyName}`, [name, familyName]),
+})</code></pre>
+
+<p>The HTML code looks like this:</p>
+
+<pre><code>&lt;div id="mount"&gt;
+	&lt;p&gt;Full Name: &lt;strong data-q-text="fullName"&gt;&lt;/strong&gt;&lt;/p&gt;
+	&lt;p&gt;Name: &lt;em data-q-text="name"&gt;&lt;/em&gt;&lt;/p&gt;
+	&lt;p&gt;Family Name: &lt;em data-q-text="familyName"&gt;&lt;/em&gt;&lt;/p&gt;
+	&lt;div&gt;
+		&lt;label&gt;Name &lt;input type="text" data-q-input="name" /&gt;&lt;/label&gt;
+	&lt;/div&gt;
+	&lt;div&gt;
+		&lt;label&gt;Family Name &lt;input type="text" data-q-input="familyName" /&gt;&lt;/label&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+<p>The <code>computed</code> function returns an instance of the <code>Computed</code> class which extends <code>Signal</code> and has the same interface:</p>
+
+<dd>
+	<dt>value <em>(getter / setter)</em></dt>
+	<dd>The value of the signal. Setting a new value fires a <code>ChangeEvent</code> event.</dd>
+
+	<dt>on(fn) <em>(function)</em></dt>
+	<dd>Provide a function (<code>fn</code>) which subscribes to changes to the <code>value</code> property. Returns a function which removes the subscription when called.</dd>
+</dd>
+
+<p>The function passed to computed receives all dependencies as arguments in the order they're declared in the array.</p>
+
+<script type="module">
+
+import { directives } from '../src/reactive/index.js'
+import { computed, signal } from '../src/signals/index.js'
+
+const name = signal('John')
+const familyName = signal('Smith')
+
+directives.load(document.getElementById('mount'), {
+	name,
+	familyName,
+	fullName: computed(() => `${name} ${familyName}`, [name, familyName]),
+})
+
+</script>
+
+</body>
+</html>
