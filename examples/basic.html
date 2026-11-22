@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Experimental: Basics</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<h1>A Basic Component</h1>
+
+<p>This component does very little except display data! It also responds to function calls but none of its data is reactive so the text will never change.</p>
+
+<div id="mount">
+	<p><em data-q-text="planet"></em></p>
+	<p><strong data-q-text="planet"></strong></p>
+	<button data-q-click="show">Click me</button>
+</div>
+
+<p>It does show the basic principals of how a component is constructed. The script block looks like this:</p>
+
+<pre><code>import { directives } from '../src/reactive/index.js'
+
+directives.load(document.getElementById('mount'), {
+	planet: 'Earth',
+
+	show() {
+		alert(this.planet)
+
+		this.planet = 'Mars'
+
+		alert(this.planet)
+	},
+})</code></pre>
+
+<p>The HTML code looks like this:</p>
+
+<pre><code>&lt;div id="mount"&gt;
+	&lt;p&gt;&lt;em data-q-text="planet"&gt;&lt;/em&gt;&lt;/p&gt;
+	&lt;p&gt;&lt;strong data-q-text="planet"&gt;&lt;/strong&gt;&lt;/p&gt;
+	&lt;button data-q-click="show"&gt;Click me&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+<p>The HTML interacts with the Javascript through the <code>data-q-*</code> attributes. The <code>q</code> part is customisable using the <code>directives.setPrefix</code> method but is really just a short identifier to distinguish <code>data</code> attributes that the system cares about. I think of the library as being <em>quick</em> for the developer, hence <em>q</em>.</p>
+
+<p>The <code>data-q-text</code> attribute displays the value of the <code>text</code> property of the <code>data</code> object using the <code>innerText</code> property of the element. It watches for changes to <code>text</code> and when that happens it sets the <code>innerText</code> property again.</p>
+<p>The <code>data-q-click</code> attribute looks for a <code>clear</code> function on the root object and calls it when an <code>click</code> event is fired. In this case the <code>clear</code> function sets the <code>text</code> property to an empty string which updates the input element and the two display elements.</p>
+
+<script type="module">
+
+import { directives } from '../src/reactive/index.js'
+
+directives.load(document.getElementById('mount'), {
+	planet: 'Earth',
+
+	show() {
+		alert(this.planet)
+
+		this.planet = 'Mars'
+
+		alert(this.planet)
+	},
+})
+
+</script>
+
+</body>
+</html>

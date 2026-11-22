@@ -12,11 +12,11 @@
 	<div>
 		<h3>Path properties</h3>
 		<p>Name (deity.name): <strong data-q-text="deity.name"></strong></p>
-		<!-- p>Symbol (deity.symbol): <strong data-q-text="deity.symbol"></strong></p -->
+		<input type="text" data-q-input="deity.name" />
 	</div>
 	<button data-q-click="changeDeity">Change</button>
 	<hr />
-	<!--h3>item in stores.list</h3>
+	<h3>item in stores.list</h3>
 	<ul>
 		<li data-q-each="item in stores.list">
 			<strong data-q-text="item.name"></strong>
@@ -39,7 +39,7 @@
 			<em data-q-text="data.name"></em>
 		</li>
 	</ul>
-	<button data-q-click="addToList">Add</button -->
+	<button data-q-click="addToList">Add</button>
 	<!--input type="text" data-q-input="updateName" />
 	<button data-q-click="addtoList">Add</button>
 	<hr />
@@ -135,10 +135,10 @@ directives.load(document.getElementById('mount'), {
 	}*/
 
 	created() {
-		listStore.on(() => {
+		/*listStore.on(() => {
 			console.log('listStore change')
 			this.emit('change')
-		})
+		})*/
 	},
 
 	computed: {

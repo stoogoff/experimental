@@ -1,7 +1,7 @@
 
 import { isIn, isFunction, notFunction, isNull, throwIfNull } from '../utils/assert.js'
 import { valueFromPath } from '../utils/string.js'
-import { Signal, List, Model, ChangeEvent, PropertyEvent } from '../signals/index.js'
+import { handlesChange, handlesPropertyChange, isSignal } from '../signals/index.js'
 import { logger } from './config.js'
 
 let contextRefs = 0
@@ -149,7 +149,17 @@ export class Context {
 	 * @param {*} value
 	 */
 	set value(value) {
-		let scope = null
+		console.log({
+			property: this.property,
+			currentValue: this.value,
+			newValue: value,
+		})
+
+		if(isSignal(this.value)) {
+			this.value.value = value
+		}
+
+		/*let scope = null
 
 		try {
 			const { stack } = valueFromPath(this.#property, this.#scope, true)
@@ -174,7 +184,7 @@ export class Context {
 		else {
 			// TODO this needs to update
 			scope = value
-		}
+		}*/
 	}
 
 	/**
@@ -198,8 +208,6 @@ export class Context {
 		}
 
 		// bind the value to the scope
-		//value = value.bind(this.#scope)
-		//value(evt, this)
 		value.call(this.#scope, evt, this)
 	}
 
@@ -216,10 +224,15 @@ export class Context {
 		// but ideally it should be a registered signal of some kind
 		const value = this.value
 
-		console.log('context.on', value, value instanceof Signal)
+		console.log('context.on', value, this.property)
 
 		// this really needs a helper function
-		if(value instanceof Signal) {
+		if(handlesPropertyChange(value)) {
+			console.log('registering on model')
+			value.on(fn, this.property)
+		}
+		else if(handlesChange(value)) {
+			console.log('registering on any signal')
 			value.on(fn)
 		}
 	}

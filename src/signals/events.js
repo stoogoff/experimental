@@ -5,49 +5,55 @@ export const EventKeys = {
 	Remove: 'remove',
 }
 
-export class ChangeEvent extends CustomEvent {
-	constructor(value) {
-		super(EventKeys.Change, {
+class BaseEvent extends CustomEvent {
+	#value
+
+	constructor(key, value) {
+		super(key, {
 			detail: {
 				value,
-			},
+			}
 		})
+
+		this.#value = value
+	}
+
+	get value() {
+		return this.#value
+	}
+
+	valueOf() {
+		return this.#value.valueOf()
+	}
+}
+
+export class ChangeEvent extends BaseEvent {
+	constructor(value) {
+		super(EventKeys.Change, value)
 	}
 }
 
 ChangeEvent.EventKey = EventKeys.Change
 
-export class AddEvent extends CustomEvent {
+export class AddEvent extends BaseEvent {
 	constructor(value) {
-		super(EventKeys.Add, {
-			detail: {
-				value,
-			},
-		})
+		super(EventKeys.Add, value)
 	}
 }
 
 AddEvent.EventKey = EventKeys.Add
 
-export class RemoveEvent extends CustomEvent {
+export class RemoveEvent extends BaseEvent {
 	constructor(value) {
-		super(EventKeys.Remove, {
-			detail: {
-				value,
-			},
-		})
+		super(EventKeys.Remove, value)
 	}
 }
 
 RemoveEvent.EventKey = EventKeys.Remove
 
-export class PropertyEvent extends CustomEvent {
+export class PropertyEvent extends BaseEvent {
 	constructor(property, value) {
-		super(PropertyEvent.EventKey(property), {
-			detail: {
-				value,
-			},
-		})
+		super(PropertyEvent.EventKey(property), value)
 	}
 }
 

@@ -1,5 +1,5 @@
 
-export const input = (context) => {
+/*export const input = (context) => {
 	const currentValue = context.value
 	const checkbox = context.node.type === 'checkbox'
 
@@ -25,4 +25,16 @@ export const input = (context) => {
 	})
 
 	return false
+}*/
+
+export const input = context => {
+	context.node.value = context.value
+
+	context.node.addEventListener('change', evt => {
+		context.value = evt.target.value
+	})
+
+	context.on(() => {
+		context.node.value = context.value
+	})
 }

@@ -10,51 +10,49 @@
 
 <h1>Basic example</h1>
 
-<p>A simple text input which updates a single property when the <code>onchange</code> event fires. The property is displayed in two places but both are updated correctly. None of the code for handling this needs to concern itself with DOM manipulation, it's all handled by the framework.</p>
+<p>A simple text input which updates a single property when the <code>change</code> event fires. The property is displayed in two places but both are updated correctly. None of the code for handling this needs to concern itself with DOM manipulation, it's all handled by the framework.</p>
 
 <div id="form">
-	<input type="text" data-q-input="textInput">
+	<input type="text" data-q-input="text">
 	<button data-q-click="clear">Clear</button>
-	<p>The first rendering of <code>textInput</code> (<strong data-q-text="textInput"></strong>)</p>
-	<p>The second rendering of <code>textInput</code> (<em data-q-text="textInput"></em>)</p>
+	<p>The first rendering of <code>text</code> (<strong data-q-text="text"></strong>)</p>
+	<p>The second rendering of <code>text</code> (<em data-q-text="text"></em>)</p>
 </div>
 
 <p>HTML elements are marked with <code>data-q-*</code> attributes, where <strong>q</strong> is a handy namespace prefix that isn't too verbose. The framework looks for these attributes in the DOM and acts accordingly. The entire Javascript code for the above functionality looks like this:</p>
 <pre><code>import { directives } from '../src/reactive/index.js'
+import { signal } from '../src/signals/index.js'
 
 directives.load(document.getElementById('form'), {
-	data: {
-		textInput: 'write something',
-	},
+	text: signal('write something'),
 
 	clear() {
-		this.data.textInput = ''
+		this.text.value = ''
 	},
 })</code></pre>
 
 <p>The HTML looks like this:</p>
 <pre><code>&lt;div>
-	&lt;input type="text" data-q-input="textInput">
+	&lt;input type="text" data-q-input="text">
 	&lt;button data-q-click="clear">Clear&lt;/button>
-	&lt;p>The first rendering of &lt;code>textInput&lt;/code> (&lt;strong data-q-text="textInput">&lt;/strong>)&lt;/p>
-	&lt;p>The second rendering of &lt;code>textInput&lt;/code> (&lt;em data-q-text="textInput">&lt;/em>)&lt;/p>
+	&lt;p>The first rendering of &lt;code>text&lt;/code> (&lt;strong data-q-text="text">&lt;/strong>)&lt;/p>
+	&lt;p>The second rendering of &lt;code>text&lt;/code> (&lt;em data-q-text="text">&lt;/em>)&lt;/p>
 &lt;/div></code></pre>
 
-<p>The <code>data-q-input</code> attribute looks for a <code>textInput</code> property within the <code>data</code> object and displays it as the input element's <code>value</code> property. When the <code>onchange</code> event fires it updates the value of the property with the current text of the input.</p>
-<p>The <code>data-q-text</code> attribute displays the value of the <code>textInput</code> property of the <code>data</code> object using the <code>innerText</code> property of the element. It watches for changes to <code>textInput</code> and when that happens it sets the <code>innerText</code> property again.</p>
-<p>The <code>data-q-click</code> attribute looks for a <code>clear</code> function on the root object and calls it when an <code>onclick</code> event is fired. In this case the <code>clear</code> function sets the <code>textInput</code> property to an empty string which updates the input element and the two display elements.</p>
+<p>The <code>data-q-input</code> attribute looks for a <code>text</code> property on the object and displays it as the input element's <code>value</code> property. When the <code>change</code> event fires it updates the value of the property with the current text of the input.</p>
+<p>The <code>data-q-text</code> attribute displays the value of the <code>text</code> property of the <code>data</code> object using the <code>innerText</code> property of the element. It watches for changes to <code>text</code> and when that happens it sets the <code>innerText</code> property again.</p>
+<p>The <code>data-q-click</code> attribute looks for a <code>clear</code> function on the root object and calls it when an <code>click</code> event is fired. In this case the <code>clear</code> function sets the <code>text</code> property to an empty string which updates the input element and the two display elements.</p>
 
 <script type="module">
 
 import { directives } from '../src/reactive/index.js'
+import { signal } from '../src/signals/index.js'
 
 directives.load(document.getElementById('form'), {
-	data: {
-		textInput: 'write something',
-	},
+	text: signal('write something'),
 
 	clear() {
-		this.data.textInput = ''
+		this.text.value = ''
 	},
 })
 
